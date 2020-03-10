@@ -222,6 +222,28 @@ function onRpcConnectionVerified(getnetworkinfo, getblockchaininfo) {
   }
 }
 
+function refreshUtxoSetSummary() {
+	if (config.slowDeviceMode) {
+		global.utxoSetSummary = null;
+		global.utxoSetSummaryPending = false;
+
+		debugLog("Skipping performance-intensive task: fetch UTXO set summary. This is skipped due to the flag 'slowDeviceMode' which defaults to 'true' to protect slow nodes. Set this flag to 'false' to enjoy UTXO set summary details.");
+
+		return;
+	}
+
+	// flag that we're working on calculating UTXO details (to differentiate cases where we don't have the details and we're not going to try computing them)
+	global.utxoSetSummaryPending = true;
+
+	coreApi.getUtxoSetSummary().then(function(result) {
+		global.utxoSetSummary = result;
+
+		result.lastUpdated = Date.now();
+
+		debugLog("Refreshed utxo summary: " + JSON.stringify(result));
+	});
+}
+
 
 app.onStartup = function() {
   global.config = config;
@@ -328,9 +350,12 @@ app.continueStartup = function() {
     setInterval(getSourcecodeProjectMetadata, 3600000);
   }
 
-
   utils.logMemoryUsage();
   setInterval(utils.logMemoryUsage, 5000);
+
+  refreshUtxoSetSummary();
+  setInterval(refreshUtxoSetSummary, 30 * 60 * 1000);
+
 };
 
 app.use(function(req, res, next) {
@@ -359,6 +384,8 @@ app.use(function(req, res, next) {
 
   res.locals.config = global.config;
   res.locals.coinConfig = global.coinConfig;
+  res.locals.utxoSetSummary = global.utxoSetSummary;
+  res.locals.utxoSetSummaryPending = global.utxoSetSummaryPending;
 
   res.locals.host = req.session.host;
   res.locals.port = req.session.port;
