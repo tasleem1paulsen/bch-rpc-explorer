@@ -62,7 +62,7 @@ module.exports = {
     "https://raw.githubusercontent.com/btccom/Blockchain-Known-Pools/master/pools.json",
     "https://raw.githubusercontent.com/blockchain/Blockchain-Known-Pools/master/pools.json"
   ],
-  maxBlockWeight: 4000000,
+  maxBlockSize: 32000000,
   targetBlockTimeSeconds: 600,
   currencyUnits:currencyUnits,
   currencyUnitsByName:{"BCH":currencyUnits[0], "mBCH":currencyUnits[1], "bits":currencyUnits[2], "sat":currencyUnits[3]},
