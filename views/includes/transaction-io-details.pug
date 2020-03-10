@@ -13,7 +13,7 @@ script.
     link.classList.add("d-none");
   }
 
-div(class="row monospace")
+div(class="row text-monospace")
   div(class="col-lg-6")
     if (txInputs)
       - var extraInputCount = 0;
@@ -211,5 +211,3 @@ div(class="row monospace")
           span(class="d-block d-md-none") Total Output:
           - var currencyValue = totalIOValues.output;
           include ./value-display.pug
-
-
