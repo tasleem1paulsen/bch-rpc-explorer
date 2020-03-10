@@ -1,5 +1,5 @@
 var debug = require("debug");
-var debugLog = debug("btcexp:router");
+var debugLog = debug("bchexp:router");
 
 var express = require('express');
 var csurf = require('csurf');
@@ -337,6 +337,23 @@ router.get("/blocks", function(req, res, next) {
 
     next();
   });
+});
+
+router.get("/mining-summary", function(req, res, next) {
+	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
+		res.locals.currentBlockHeight = getblockchaininfo.blocks;
+
+		res.render("mining-summary");
+
+		next();
+
+	}).catch(function(err) {
+		res.locals.userMessage = "Error: " + err;
+
+		res.render("mining-summary");
+
+		next();
+	});
 });
 
 router.get("/search", function(req, res, next) {
