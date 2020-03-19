@@ -1,5 +1,5 @@
 - var colClass = "col-lg-6 px-3";
-if (exchangeRates)
+if (exchangeRates || networkVolume)
 	- colClass = "col-lg-4 px-3";
 
 - var utxoCalculatingDesc = "At startup the app pulls a summary of the UTXO set. Until this summary is retrieved this data can't be displayed. Wait for the summary request to your node to return, then refresh this page.";
@@ -61,6 +61,21 @@ div.row.index-summary
 
 						span(class=colorClass) #{mempoolInfo.size.toLocaleString()}
 
+				//tr
+				//	th.px-2.px-lg-0.px-xl-2
+				//		i.fas.fa-bullseye.mr-1.summary-icon
+				//		span.border-dotted(title="Current fee estimates (using 'estimatesmartfee') for getting a transaction included in 1 block, 6 blocks (1 hr), 144 blocks (1 day), or 1,008 blocks (1 week).", data-toggle="tooltip") Fee Targets
+				//		if (false)
+				//			small.ml-1 (1/h/d/w)
+				//	td.text-right.text-monospace #{smartFeeEsimates[1]}
+				//		small.d-md-none  
+				//		small.text-muted /
+				//		span #{smartFeeEsimates[6]}
+				//		small.text-muted /
+				//		span #{smartFeeEsimates[144]}
+				//		small.text-muted /
+				//		span #{smartFeeEsimates[1008]}
+				//		small  sat/vB
 
 	div(class=colClass)
 		h5.h6 Blockchain

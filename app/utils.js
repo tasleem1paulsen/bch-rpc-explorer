@@ -377,12 +377,21 @@ function getMinerFromCoinbaseTx(tx) {
             var minerInfo = miningPoolsConfig.coinbase_tags[coinbaseTag];
             minerInfo.identifiedBy = "coinbase tag '" + coinbaseTag + "'";
 
-            return minerInfo;
-          }
-        }
-      }
-    }
-  }
+						return minerInfo;
+					}
+				}
+			}
+
+			for (var blockHash in miningPoolsConfig.block_hashes) {
+				if (blockHash == tx.blockhash) {
+					var minerInfo = miningPoolsConfig.block_hashes[blockHash];
+					minerInfo.identifiedBy = "known block hash '" + blockHash + "'";
+
+					return minerInfo;
+				}
+			}
+		}
+	}
 
   return null;
 }

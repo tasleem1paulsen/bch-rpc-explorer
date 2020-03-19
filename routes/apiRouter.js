@@ -56,6 +56,58 @@ router.get("/block-stats-by-height/:blockHeights", function(req, res, next) {
 	});
 });
 
+router.get("/mempool-txs/:txids", function(req, res, next) {
+	var txids = req.params.txids.split(",");
+
+	var promises = [];
+
+	for (var i = 0; i < txids.length; i++) {
+		promises.push(coreApi.getMempoolTxDetails(txids[i], false));
+	}
+
+	Promise.all(promises).then(function(results) {
+		res.json(results);
+
+		next();
+
+	}).catch(function(err) {
+		res.json({success:false, error:err});
+
+		next();
+	});
+});
+
+router.get("/utils/:func/:params", function(req, res, next) {
+	var func = req.params.func;
+	var params = req.params.params;
+
+	var data = null;
+
+	if (func == "formatLargeNumber") {
+		if (params.indexOf(",") > -1) {
+			var parts = params.split(",");
+
+			data = utils.formatLargeNumber(parseInt(parts[0]), parseInt(parts[1]));
+
+		} else {
+			data = utils.formatLargeNumber(parseInt(params));
+		}
+	} else if (func == "formatCurrencyAmountInSmallestUnits") {
+		var parts = params.split(",");
+
+		data = utils.formatCurrencyAmountInSmallestUnits(new Decimal(parts[0]), parseInt(parts[1]));
+
+		console.log("ABC: " + JSON.stringify(data));
+
+	} else {
+		data = {success:false, error:`Unknown function: ${func}`};
+	}
+
+	res.json(data);
+
+	next();
+});
+
 
 
 module.exports = router;

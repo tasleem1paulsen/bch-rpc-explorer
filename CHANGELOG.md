@@ -34,13 +34,17 @@
     * Outputs total value
     * UTXO count change
     * Min / Max tx sizes
+- New tool `/block-stats` for viewing summarized block data from recent blocks
 - New tool `/mining-summary` for viewing summarized mining data from recent blocks
+- Change `/mempool-summary` to load data via ajax (UX improvement to give feedback while loading large data sets)
 - Zero-indexing for tx inputs/outputs (#173)
 - Labels for transaction output types
-- Tweaked styling
+- Configurable UI "sub-header" links
 - Start of RPC API versioning support
-- Remove "Bitcoin Explorer" H1 from homepage (it's redundant)
-
+- Tweaked styling
+- Homepage tweaks
+    * Remove "Bitcoin Explorer" H1 (it's redundant)
+    * Hide the "Date" (timestamp) column for recent blocks (the Age+TTM is more valuable)
 
 #### v0.0.2
 ##### 2020-02-05
