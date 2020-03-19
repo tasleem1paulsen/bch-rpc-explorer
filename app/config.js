@@ -53,7 +53,8 @@ var siteToolsAux = '[ \
   {"name":"Mempool Summary", "url":"/mempool-summary", "desc":"Detailed summary of the current mempool for this node.", "fontawesome":"fas fa-clipboard-list"}, \
   {"name":"Unconfirmed Txs", "url":"/unconfirmed-tx", "desc":"Browse unconfirmed/pending transactions.", "fontawesome":"fas fa-unlock-alt"}, \
   {"name":"Bitcoin Cash Fun", "url":"/fun", "desc":"See fun/interesting historical blockchain data.", "fontawesome":"fas fa-certificate"}, \
-  {"name":"Mining Summary", "url":"/mining-summary", "desc":"Summary of recent data about miners.", "fontawesome":"fas fa-chart-pie"} \
+  {"name":"Mining Summary", "url":"/mining-summary", "desc":"Summary of recent data about miners.", "fontawesome":"fas fa-chart-pie"}, \
+  {"name":"Block Stats", "url":"/block-stats", "desc":"Summary data for blocks in configurable range.", "fontawesome":"fas fa-layer-group"} \
 ]'
 
 var siteToolsJSON = JSON.parse(siteToolsAux)
@@ -185,8 +186,8 @@ module.exports = {
         }
       ]
     },
-    subHeaderToolsList:[0, 1, 4, 7], // indexes in "siteTools" below that are shown in the site "sub menu" (visible on all pages except homepage)
-    toolsDropdownIndexList: [0, 1, 4, 7, 3, 2, 5, 6],
+    subHeaderToolsList:[0, 1, 4, 7, 8], // indexes in "siteTools" below that are shown in the site "sub menu" (visible on all pages except homepage)
+    toolsDropdownIndexList: [0, 1, 4, 7, 8, 3, 2, 5, 6],
   },
 
   credentials: credentials,
