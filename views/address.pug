@@ -88,7 +88,7 @@ block content
 
           div.card.mb-3.shadow-sm
             div.card-header
-              h3.h6 Summary
+              h3.h6.mb-0 Summary
                 if (config.addressApi)
                     small.text-muted.border-dotted.ml-2(title=`Some details for this address were queried from ${config.addressApi}` data-toggle="tooltip") Trust Note
               hr
@@ -342,21 +342,21 @@ block content
                             span(class="text-danger") -
                               include includes/value-display.pug
 
-												div.col-md-4
-													div.text-md-right
-														if (tx.time)
-															- var timestampHuman = tx.time;
-															include includes/timestamp-human.pug
+                        div.col-md-4
+                          div.text-md-right
+                            if (tx.time)
+                              - var timestampHuman = tx.time;
+                              include includes/timestamp-human.pug
 
-															br
+                              br
 
-															- var timeAgoTime = tx.time;
-															small.text-muted (
-																include includes/time-ago-text.pug
-																span ago)
+                              - var timeAgoTime = tx.time;
+                              small.text-muted (
+                                include includes/time-ago-text.pug
+                                span ago)
 
-														else
-															span.text-danger Unconfirmed
+                            else
+                              span.text-danger Unconfirmed
 
                     div.card-body
                       if (true)
