@@ -327,6 +327,8 @@ function refreshNetworkVolumes() {
 				for (var i = 0; i < results.length; i++) {
 					if (results[i].time * 1000 > cutoff1d) {
 						volume1d = volume1d.plus(new Decimal(results[i].total_out));
+						volume1d = volume1d.plus(new Decimal(results[i].subsidy));
+						volume1d = volume1d.plus(new Decimal(results[i].totalfee));
 						blocks1d++;
 
 						endBlock1d = results[i].height;
@@ -335,6 +337,8 @@ function refreshNetworkVolumes() {
 
 					if (results[i].time * 1000 > cutoff7d) {
 						volume7d = volume7d.plus(new Decimal(results[i].total_out));
+						volume7d = volume7d.plus(new Decimal(results[i].subsidy));
+						volume7d = volume7d.plus(new Decimal(results[i].totalfee));
 						blocks7d++;
 
 						endBlock7d = results[i].height;
