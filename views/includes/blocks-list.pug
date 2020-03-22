@@ -23,10 +23,11 @@ div.table-responsive
 
 				th.data-header.text-right
 					span.border-dotted(title="The average fee (sat/B) for all block transactions.", data-toggle="tooltip") Avg Fee
-					small  (sat/B)
+
+				th.data-header.text-right Σ Fee
 				
-				th.data-header.text-right Size
-					small  (kB)
+				th.data-header.text-right % Full
+
 		tbody
 
 			each block, blockIndex in blocks
@@ -109,8 +110,6 @@ div.table-responsive
 							td.data-cell.text-monospace.text-right
 								debugLog(blockstatsByHeight[block.height])
 								if (blockstatsByHeight[block.height])
-									//- var currencyValue = parseInt(new Decimal(blockstatsByHeight[block.height].total_out).dividedBy(coinConfig.baseCurrencyUnit.multiplier));
-									- var currencyValue = parseInt(new Decimal(blockstatsByHeight[block.height].total_out).plus(blockstatsByHeight[block.height].subsidy).plus(blockstatsByHeight[block.height].totalfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier));
 									- var currencyValue = parseInt(new Decimal(blockstatsByHeight[block.height].total_out).plus(blockstatsByHeight[block.height].subsidy));
 									- var currencyValueDecimals = 0;
 									include ./value-display.pug
@@ -118,35 +117,38 @@ div.table-responsive
 								else
 
 						td.data-cell.text-monospace.text-right
-							- var currencyValue = new Decimal(block.totalFees);
-							- var currencyValueDecimals = 3;
+							- var currencyValue = new Decimal(block.totalFees).dividedBy(block.size).toDecimalPlaces(9);
+							- var currencyValueDecimals = 7;
 							include ./value-display.pug
 
+						td.data-cell.text-monospace.text-right
+							- var currencyValue = new Decimal(block.totalFees).toDecimalPlaces(2);
+							- var currencyValueDecimals = 2;
+							include ./value-display.pug
 							
 						
-						if (true)
-							td.data-cell.text-monospace.text-right
-								- var bSizeK = parseInt(block.size / 1000);
-								- var full = new Decimal(100 * block.size / coinConfig.maxBlockSize).toDecimalPlaces(1);
-								- var full2 = full.toDP(2);
+						td.data-cell.text-monospace.text-right
+							- var bSizeK = parseInt(block.size / 1000);
+							- var full = new Decimal(100 * block.size / coinConfig.maxBlockSize).toDecimalPlaces(1);
+							- var full2 = full.toDP(2);
 
-									span #{full2} 
-									if (full > 90)
-										img(src="/img/block-fullness-3.png", style="width: 18px; height: 18px;")
-									else if (full > 50)
-										img(src="/img/block-fullness-2.png", style="width: 18px; height: 18px;")
-									else if (full > 25)
-										img(src="/img/block-fullness-1.png", style="width: 18px; height: 18px;")
-									else
-										img(src="/img/block-fullness-0.png", style="width: 18px; height: 18px;")
+								span #{full2} 
+								if (full > 90)
+									img(src="/img/block-fullness-3.png", style="width: 18px; height: 18px;")
+								else if (full > 50)
+									img(src="/img/block-fullness-2.png", style="width: 18px; height: 18px;")
+								else if (full > 25)
+									img(src="/img/block-fullness-1.png", style="width: 18px; height: 18px;")
+								else
+									img(src="/img/block-fullness-0.png", style="width: 18px; height: 18px;")
+
 								//span #{bSizeK.toLocaleString()} 
-								//small.font-weight-light.text-muted (#{fullPercent}%)
+								//small.font-weight-light.text-muted (#{full} %)
 
 							//	div(class="progress", style="height: 4px;")
 							//		div(class="progress-bar", role="progressbar", style=("width: " + fullPercent + "%;"), aria-valuenow=parseInt(100 * block.size / coinConfig.maxBlockSize), aria-valuemin="0" ,aria-valuemax="100")
 							//td.data-cell.text-monospace.text-right
 							//	- var bSizeK = parseInt(block.size / 1000);
 							//	span #{bSizeK.toLocaleString()}
-
 
 						- var lastBlock = block;
