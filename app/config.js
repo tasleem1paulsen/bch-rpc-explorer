@@ -188,7 +188,7 @@ module.exports = {
       ]
     },
     subHeaderToolsList:[0, 1, 4, 7, 8, 9], // indexes in "siteTools" below that are shown in the site "sub menu" (visible on all pages except homepage)
-    toolsDropdownIndexList: [0, 1, 4, 7, 8, 9, 3, 2, 5, 6],
+    prioritizedToolIdsList: [0, 1, 4, 7, 8, 9, 3, 2, 5, 6],
   },
 
   credentials: credentials,

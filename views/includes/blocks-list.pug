@@ -110,7 +110,7 @@ div.table-responsive
 							td.data-cell.text-monospace.text-right
 								debugLog(blockstatsByHeight[block.height])
 								if (blockstatsByHeight[block.height])
-									- var currencyValue = parseInt(new Decimal(blockstatsByHeight[block.height].total_out).plus(blockstatsByHeight[block.height].subsidy));
+									- var currencyValue = parseInt(new Decimal(blockstatsByHeight[block.height].total_out).plus(blockstatsByHeight[block.height].subsidy).plus(blockstatsByHeight[block.height].totalfee));
 									- var currencyValueDecimals = 0;
 									include ./value-display.pug
 

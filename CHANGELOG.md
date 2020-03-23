@@ -45,6 +45,7 @@
 - Homepage tweaks
     * Remove "Bitcoin Explorer" H1 (it's redundant)
     * Hide the "Date" (timestamp) column for recent blocks (the Age+TTM is more valuable)
+- New tool `/block-analysis` for analyzing the details of transactions in a block.* **IMPORTANT**: Use of `/block-analysis` can put heavy memory pressure on this app, depending on the details of the block being analyzed. If your app is crashing, consider setting a higher memory ceiling: `node --max_old_space_size=XXX bin/www` (where `XXX` is measured in MB).
 
 #### v0.0.2
 ##### 2020-02-05
