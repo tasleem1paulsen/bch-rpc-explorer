@@ -54,7 +54,8 @@ var siteToolsAux = '[ \
   {"name":"Unconfirmed Txs", "url":"/unconfirmed-tx", "desc":"Browse unconfirmed/pending transactions.", "fontawesome":"fas fa-unlock-alt"}, \
   {"name":"Bitcoin Cash Fun", "url":"/fun", "desc":"See fun/interesting historical blockchain data.", "fontawesome":"fas fa-certificate"}, \
   {"name":"Mining Summary", "url":"/mining-summary", "desc":"Summary of recent data about miners.", "fontawesome":"fas fa-chart-pie"}, \
-  {"name":"Block Stats", "url":"/block-stats", "desc":"Summary data for blocks in configurable range.", "fontawesome":"fas fa-layer-group"} \
+  {"name":"Block Stats", "url":"/block-stats", "desc":"Summary data for blocks in configurable range.", "fontawesome":"fas fa-layer-group"} ,\
+  {"name":"Block Analysis", "url":"/block-analysis", "desc":"Summary analysis for all transactions in a block.", "fontawesome":"fas fa-angle-double-down"} \
 ]'
 
 var siteToolsJSON = JSON.parse(siteToolsAux)
@@ -186,8 +187,8 @@ module.exports = {
         }
       ]
     },
-    subHeaderToolsList:[0, 1, 4, 7, 8], // indexes in "siteTools" below that are shown in the site "sub menu" (visible on all pages except homepage)
-    toolsDropdownIndexList: [0, 1, 4, 7, 8, 3, 2, 5, 6],
+    subHeaderToolsList:[0, 1, 4, 7, 8, 9], // indexes in "siteTools" below that are shown in the site "sub menu" (visible on all pages except homepage)
+    toolsDropdownIndexList: [0, 1, 4, 7, 8, 9, 3, 2, 5, 6],
   },
 
   credentials: credentials,
@@ -202,4 +203,5 @@ module.exports = {
       "BCH":{address:"bitcoincash:pq6snv5fcx2fp6dlzg7s0m9zs8yqh74335tzvvfcmq"}
     }
   }
+
 };
