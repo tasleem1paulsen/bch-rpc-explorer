@@ -410,7 +410,7 @@ function getTxTotalInputOutputValues(tx, txInputs, blockHeight) {
 
         if (txInput) {
           try {
-            var vout = txInput.vout[tx.vin[i].vout];
+            var vout = txInput;
             if (vout.value) {
               totalInputValue = totalInputValue.plus(new Decimal(vout.value));
             }

@@ -23,6 +23,8 @@ var coreApi = require("./../app/api/coreApi.js");
 var addressApi = require("./../app/api/addressApi.js");
 var rpcApi = require("./../app/api/rpcApi.js");
 
+const v8 = require('v8');
+
 const forceCsrf = csurf({ ignoreMethods: [] });
 
 router.get("/", function(req, res, next) {
@@ -782,13 +784,16 @@ router.get("/tx/:transactionId", function(req, res, next) {
 
   res.locals.result = {};
 
-  coreApi.getRawTransaction(txid).then(function(rawTxResult) {
-    res.locals.result.getrawtransaction = rawTxResult;
+	coreApi.getRawTransactionsWithInputs([txid]).then(function(rawTxResult) {
+		var tx = rawTxResult.transactions[0];
+
+		res.locals.result.getrawtransaction = tx;
+		res.locals.result.txInputs = rawTxResult.txInputsByTransaction[txid]
 
     var promises = [];
 
     promises.push(new Promise(function(resolve, reject) {
-      coreApi.getTxUtxos(rawTxResult).then(function(utxos) {
+      coreApi.getTxUtxos(tx).then(function(utxos) {
         res.locals.utxos = utxos;
 
         resolve();
@@ -799,7 +804,7 @@ router.get("/tx/:transactionId", function(req, res, next) {
         reject(err);
       });
     }));
-    if (rawTxResult.confirmations == null) {
+    if (tx.confirmations == null) {
 
       promises.push(new Promise(function(resolve, reject) {
         coreApi.getMempoolTxDetails(txid).then(function(mempoolDetails) {
@@ -816,21 +821,10 @@ router.get("/tx/:transactionId", function(req, res, next) {
     }
 
     promises.push(new Promise(function(resolve, reject) {
-      global.rpcClient.command('getblock', rawTxResult.blockhash, function(err3, result3, resHeaders3) {
+      global.rpcClient.command('getblock', tx.blockhash, function(err3, result3, resHeaders3) {
         res.locals.result.getblock = result3;
 
-        var txids = [];
-        for (var i = 0; i < rawTxResult.vin.length; i++) {
-          if (!rawTxResult.vin[i].coinbase) {
-            txids.push(rawTxResult.vin[i].txid);
-          }
-        }
-
-        coreApi.getRawTransactions(txids).then(function(txInputs) {
-          res.locals.result.txInputs = txInputs;
-
-          resolve();
-        });
+        resolve()
       });
     }));
 
@@ -839,17 +833,11 @@ router.get("/tx/:transactionId", function(req, res, next) {
 
       next();
 
-    }).catch(function(err) {
-      res.locals.pageErrors.push(utils.logError("1237y4ewssgt", err));
-
-      res.render("transaction");
-
-      next();
     });
 
 
   }).catch(function(err) {
-    res.locals.userMessage = "Failed to load transaction with txid=" + txid + ": " + err;
+    res.locals.pageErrors.push(utils.logError("1237y4ewssgt", err));
 
     res.render("transaction");
 
@@ -1049,12 +1037,12 @@ router.get("/address/:address", function(req, res, next) {
                       var vinJ = tx.vin[j];
 
                       if (txInput != null) {
-                        if (txInput.vout[vinJ.vout] && txInput.vout[vinJ.vout].scriptPubKey && txInput.vout[vinJ.vout].scriptPubKey.addresses && txInput.vout[vinJ.vout].scriptPubKey.addresses.includes(address)) {
+                        if (txInput && txInput.scriptPubKey && txInput.scriptPubKey.addresses && txInput.scriptPubKey.addresses.includes(address)) {
                           if (addrLossesByTx[tx.txid] == null) {
                             addrLossesByTx[tx.txid] = new Decimal(0);
                           }
 
-                          addrLossesByTx[tx.txid] = addrLossesByTx[tx.txid].plus(new Decimal(txInput.vout[vinJ.vout].value));
+                        addrLossesByTx[tx.txid] = addrLossesByTx[tx.txid].plus(new Decimal(txInput.value));
                         }
                       }
                     }
@@ -1443,6 +1431,15 @@ router.get("/tools", function(req, res, next) {
 
 	next();
 });
+
+router.get("/admin", function(req, res, next) {
+	res.locals.memstats = v8.getHeapStatistics();
+
+	res.render("admin");
+
+	next();
+});
+
 
 router.get("/changelog", function(req, res, next) {
   res.locals.changelogHtml = marked(global.changelogMarkdown);

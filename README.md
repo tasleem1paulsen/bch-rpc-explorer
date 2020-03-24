@@ -13,9 +13,9 @@ Live demo available at: [https://explorer.bitcoinunlimited.info](https://explore
 
 # Features
 
-* Browse blocks
-* View block details
-* View transaction details, with navigation "backward" via spent transaction outputs
+* Network Summary "dashboard"
+* View details of blocks, transactions, and addresses
+* Analysis tools for viewing stats on blocks, transactions, and miner activity
 * View JSON content used to generate most pages
 * Search by transaction ID, block hash/height, and address
 * Optional transaction history for addresses by querying from ElectrumX and blockchair.com
