@@ -170,6 +170,25 @@ function getBlockByHeight(blockHeight) {
 	});
 }
 
+function getBlockHeaderByHash(blockhash) {
+	return getRpcDataWithParams({method:"getblockheader", parameters:[blockhash]});
+}
+
+function getBlockHeaderByHeight(blockHeight) {
+	return new Promise(function(resolve, reject) {
+		getRpcDataWithParams({method:"getblockhash", parameters:[blockHeight]}).then(function(blockhash) {
+			getBlockHeaderByHash(blockhash).then(function(blockHeader) {
+				resolve(blockHeader);
+
+			}).catch(function(err) {
+				reject(err);
+			});
+		}).catch(function(err) {
+			reject(err);
+		});
+	});
+}
+
 function getBlockByHash(blockHash) {
 	debugLog("getBlockByHash: %s", blockHash);
 
@@ -439,5 +458,8 @@ module.exports = {
 	getNetworkHashrate: getNetworkHashrate,
 	getBlockStats: getBlockStats,
 	getBlockStatsByHeight: getBlockStatsByHeight,
-	minRpcVersions: minRpcVersions,
+	getBlockHeaderByHash: getBlockHeaderByHash,
+	getBlockHeaderByHeight: getBlockHeaderByHeight,
+
+	minRpcVersions: minRpcVersions
 };

@@ -63,6 +63,7 @@ module.exports = {
     "https://raw.githubusercontent.com/blockchain/Blockchain-Known-Pools/master/pools.json"
   ],
   maxBlockSize: 32000000,
+  difficultyAdjustmentBlockCount: 1,
   maxSupply: new Decimal(20999817.31308491), // ref: https://bitcoin.stackexchange.com/a/38998
   targetBlockTimeSeconds: 600,
   currencyUnits:currencyUnits,

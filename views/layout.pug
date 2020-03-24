@@ -53,26 +53,26 @@ html(lang="en")
 							if (config.siteTools)
 								li.nav-item.dropdown
 									a.nav-link.dropdown-toggle(href="javascript:void(0)", role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
-										span	Tools
+										span Tools
 									divi.dropdown-menu.shadow(aria-label="Tools Items")
 										each itemIndex in config.site.prioritizedToolIdsList
 											- var item = config.siteTools[itemIndex];
 
 											a.dropdown-item(href=item.url)
 												i(class=item.fontawesome, style="width: 20px; margin-right: 10px;")
-												span	#{item.name}
+												span #{item.name}
 
 							if (config.site.header.dropdowns)
 								each dropdown, ddIndex in config.site.header.dropdowns
 									li.nav-item.dropdown
 										a.nav-link.dropdown-toggle(href="javascript:void(0)", role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
-											span	#{dropdown.title}
+											span #{dropdown.title}
 										div.dropdown-menu.shadow(aria-label=(dropdown.title + " Items"))
 											each dropdownLink in dropdown.links
 												a.dropdown-item(href=dropdownLink.url)
 													if (dropdownLink.imgUrl)
 														img(src=dropdownLink.imgUrl, style="width: 24px; height: 24px; margin-right: 8px;", alt=dropdownLink.name)
-													span	#{dropdownLink.name}
+													span #{dropdownLink.name}
 
 
 						form.form-inline.mr-3(method="post", action="/search")
@@ -87,7 +87,7 @@ html(lang="en")
 						ul(class="navbar-nav")
 							li.nav-item.dropdown
 								a.nav-link.dropdown-toggle(href="javascript:void(0)", role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false") 
-									span	Admin Tools
+									span Admin Tools
 								div.dropdown-menu.dropdown-menu-right.shadow(aria-label="Admin Tools Items")
 									.dropdown-item(href="/admin") Admin Dashboard
 							li(class="nav-item dropdown")
@@ -102,17 +102,17 @@ html(lang="en")
 													each valueName in item.values
 														if (currencyFormatType == valueName)
 															i(class="fas fa-check")
-													span	#{item.name}
+													span #{item.name}
 
 									span(class="dropdown-header") Theme
 									a(class="dropdown-item", href="/changeSetting?name=uiTheme&value=light")
 										if (session.uiTheme == "light" || session.uiTheme == "")
 											i(class="fas fa-check")
-										span	Light
+										span Light
 									a(class="dropdown-item", href="/changeSetting?name=uiTheme&value=dark")
 										if (session.uiTheme == "dark")
 											i(class="fas fa-check")
-										span	Dark
+										span Dark
 
 		if (host && port && !homepage && config.site.header.showToolsSubheader)
 			div(id="sub-menu", class="container mb-2 pt-2 d-lg-block d-none border-top", style="")
