@@ -29,38 +29,49 @@ var exponentScales = [
 ];
 
 var ipMemoryCache = {};
+
+var ipRedisCache = null;
+if (redisCache.active) {
+	var onRedisCacheEvent = function(cacheType, eventType, cacheKey) {
+		global.cacheStats.redis[eventType]++;
+		//debugLog(`cache.${cacheType}.${eventType}: ${cacheKey}`);
+	}
+
+	ipRedisCache = redisCache.createCache("v0", onRedisCacheEvent);
+}
+
 var ipCache = {
-  get:function(key) {
-    return new Promise(function(resolve, reject) {
-      if (ipMemoryCache[key] != null) {
-        resolve({key:key, value:ipMemoryCache[key]});
+	get:function(key) {
+		return new Promise(function(resolve, reject) {
+			if (ipMemoryCache[key] != null) {
+				resolve({key:key, value:ipMemoryCache[key]});
 
-        return;
-      }
+				return;
+			}
 
-      if (redisCache.active) {
-        redisCache.get("ip-" + key).then(function(redisResult) {
-          if (redisResult != null) {
-            resolve({key:key, value:redisResult});
+			if (ipRedisCache != null) {
+				ipRedisCache.get("ip-" + key).then(function(redisResult) {
+					if (redisResult != null) {
+						resolve({key:key, value:redisResult});
 
-            return;
-          }
+						return;
+					}
 
-          resolve({key:key, value:null});
-        });
+					resolve({key:key, value:null});
+				});
 
-      } else {
-        resolve({key:key, value:null});
-      }
-    });
-  },
-  set:function(key, value, expirationMillis) {
-    ipMemoryCache[key] = value;
+			} else {
+				resolve({key:key, value:null});
+			}
+		});
+	},
+	set:function(key, value, expirationMillis) {
+		ipMemoryCache[key] = value;
 
-    if (redisCache.active) {
-      redisCache.set("ip-" + key, value, expirationMillis);
-    }
-  }
+		if (ipRedisCache != null) {
+			ipRedisCache.set("ip-" + key, value, expirationMillis);
+		}
+	}
 };
 
 
