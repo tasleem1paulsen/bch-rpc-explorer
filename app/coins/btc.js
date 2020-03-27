@@ -64,7 +64,11 @@ module.exports = {
 	],
 	maxBlockSize: 32000000,
 	difficultyAdjustmentBlockCount: 1,
-	maxSupply: new Decimal(20999817.31308491), // ref: https://bitcoin.stackexchange.com/a/38998
+	maxSupplyByNetwork: {
+		"main": new Decimal(20999817.31308491), // ref: https://bitcoin.stackexchange.com/a/38998
+		"test": new Decimal(21000000),
+		"regtest": new Decimal(21000000)
+	},
 	targetBlockTimeSeconds: 600,
 	targetBlockTimeMinutes: 10,
 	currencyUnits:currencyUnits,

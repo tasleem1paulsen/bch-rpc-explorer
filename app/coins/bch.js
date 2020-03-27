@@ -1,1 +1,1 @@
-app/coins/btc.js
+btc.js
