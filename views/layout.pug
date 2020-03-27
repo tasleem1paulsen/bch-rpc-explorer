@@ -34,8 +34,13 @@ html(lang="en")
 						else
 							img.header-image(src="/img/logo/bch.svg", alt="logo")
 
+						if (coinConfig.siteTitlesByNetwork && coinConfig.siteTitlesByNetwork[activeBlockchain])
+							span #{coinConfig.siteTitlesByNetwork[activeBlockchain]}
+						else
+							span Bitcoin Cash Explorer
+						
 				button.navbar-toggler.navbar-toggler-right(type="button", data-toggle="collapse", data-target="#navbarNav", aria-label="collapse navigation")
-					span(class="navbar-toggler-icon")
+					span.navbar-toggler-icon
 
 				div.collapse.navbar-collapse(id="navbarNav")
 					if (rpcClient)
