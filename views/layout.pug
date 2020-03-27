@@ -29,9 +29,10 @@ html(lang="en")
 			div.container
 				a.navbar-brand(href="/")
 					span
-						if (coinConfig.logoUrl)
-							img.header-image(src=coinConfig.logoUrl, alt="logo")
-						span #{coinConfig.siteTitle}
+						if (coinConfig.logoUrlsByNetwork && coinConfig.logoUrlsByNetwork[activeBlockchain])
+							img.header-image(src=coinConfig.logoUrlsByNetwork[activeBlockchain], alt="logo")
+						else
+							img.header-image(src="/img/logo/bch.svg", alt="logo")
 
 				button.navbar-toggler.navbar-toggler-right(type="button", data-toggle="collapse", data-target="#navbarNav", aria-label="collapse navigation")
 					span(class="navbar-toggler-icon")
@@ -44,11 +45,11 @@ html(lang="en")
 									a.nav-link(href="/about")
 										span About
 
-							if (global.activeBlockchain != "main")
-								- var chainName = global.activeBlockchain == "test" ? "testnet" : global.activeBlockchain
+							if (activeBlockchain != "main")
+								- var chainName = activeBlockchain == "test" ? "testnet" : activeBlockchain
 
 								li.nav-item
-									a.nav-link.text-warning(title=`Current node's chain: ${global.activeBlockchain}` data-toggle="tooltip") [#{chainName}]
+									a.nav-link.text-warning(title=`Current node's chain: ${activeBlockchain}` data-toggle="tooltip") [#{chainName}]
 
 							if (config.siteTools)
 								li.nav-item.dropdown
