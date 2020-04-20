@@ -1,3 +1,18 @@
+#### v0.0.3
+##### 2020-TBD
+
+- `10f0ca9` Disable stack logging by default. (Dan Janosik)
+- `4916dd1` more detailed network info on /node-status (Dan Janosik)
+- `009dd45` testnet support from blockchair (Dan Janosik)
+- `610d0a5` Updated frontend dependencies: (Dan Janosik)
+- `3156888` Escape search query printed in user alert message (Dan Janosik)
+- `f34c2fd` Restructure the list of API providers  (#19) (Andrea Suisani)
+- `c98b63a` Update mining pools data (#18) (Andrea Suisani)
+- `1c41930` Bump package version to 0.0.3 (#17) (Andrea Suisani)
+- `2c41038` no coinbase in average fee (#16) (Proteus)
+- `5e40488` Add 2 more URLs in the "Related Sites" menu (#15) (Andrea Suisani)
+
+
 #### v0.0.2
 ##### 2020-02-05
 
