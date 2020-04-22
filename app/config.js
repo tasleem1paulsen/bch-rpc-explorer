@@ -53,7 +53,7 @@ var siteToolsAux = '[ \
   {"name":"Mempool Summary", "url":"/mempool-summary", "desc":"Detailed summary of the current mempool for this node.", "fontawesome":"fas fa-clipboard-list"}, \
   {"name":"Unconfirmed Transactions", "url":"/unconfirmed-tx", "desc":"Browse unconfirmed/pending transactions.", "fontawesome":"fas fa-unlock-alt"}, \
   {"name":"Bitcoin Cash Fun", "url":"/fun", "desc":"See fun/interesting historical blockchain data.", "fontawesome":"fas fa-certificate"}, \
-  {"name":"Mining Summary", "url":"/mining-summary", "desci":"Summary of recent data about miners.", "fontawesome":"fas fa-chart-pie"} \
+  {"name":"Mining Summary", "url":"/mining-summary", "desc":"Summary of recent data about miners.", "fontawesome":"fas fa-chart-pie"} \
 ]'
 
 var siteToolsJSON = JSON.parse(siteToolsAux)
@@ -159,13 +159,17 @@ module.exports = {
   redisUrl:process.env.BTCEXP_REDIS_URL,
 
   site: {
+    homepage:{
+      recentBlocksCount:10
+    },
     blockTxPageSize:20,
     addressTxPageSize:10,
     txMaxInput:15,
-    browseBlocksPageSize:20,
+    browseBlocksPageSize:50,
     addressPage:{
       txOutputMaxDefaultDisplay:10
     },
+    valueDisplayMaxLargeDigits: 4,
     header:{
       showToolsSubheader:(process.env.BTCEXP_UI_SHOW_TOOLS_SUBHEADER == "true"),
       dropdowns:[
@@ -180,7 +184,9 @@ module.exports = {
           ]
         }
       ]
-    }
+    },
+    subHeaderToolsList:[0, 1, 4, 7], // indexes in "siteTools" below that are shown in the site "sub menu" (visible on all pages except homepage)
+    toolsDropdownIndexList: [0, 1, 4, 7, 3, 2, 5, 6],
   },
 
   credentials: credentials,

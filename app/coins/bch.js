@@ -63,6 +63,7 @@ module.exports = {
     "https://raw.githubusercontent.com/blockchain/Blockchain-Known-Pools/master/pools.json"
   ],
   maxBlockSize: 32000000,
+  maxSupply: new Decimal(20999817.31308491), // ref: https://bitcoin.stackexchange.com/a/38998
   targetBlockTimeSeconds: 600,
   currencyUnits:currencyUnits,
   currencyUnitsByName:{"BCH":currencyUnits[0], "mBCH":currencyUnits[1], "bits":currencyUnits[2], "sat":currencyUnits[3]},

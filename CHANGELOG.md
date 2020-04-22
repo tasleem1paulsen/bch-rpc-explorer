@@ -11,6 +11,27 @@
 - `1c41930` Bump package version to 0.0.3 (#17) (Andrea Suisani)
 - `2c41038` no coinbase in average fee (#16) (Proteus)
 - `5e40488` Add 2 more URLs in the "Related Sites" menu (#15) (Andrea Suisani)
+- Optional querying of UTXO set summary
+    * Note: this is disabled by default to protect slow nodes. Set 'BTCEXP_SLOW_DEVICE_MODE' to false in your `.env` file to enjoy this feature.
+- More data in homepage "Network Summary":
+    * Fee estimates (estimatesmartfee) for 1, 6, 144, 1008 blocks
+    * Hashrate estimate for 1+7 days
+    * New item for 'Chain Rewrite Days', using 7day hashrate
+    * New data based on optional UTXO set summary (see note above):
+        * UTXO set size
+        * Total coins in circulation
+        * Market cap
+- Tweaks to data in blocks lists:
+    * Simpler timestamp formatting for easy reading
+    * Include "Time-to-Mine" (TTM) for each block (with green/red highlighting for "fast"/"slow" (<5min/>15min) blocks)
+    * Display average fee in sat/vB
+    * Add total fees display
+    * Demote display of "block size" value to hover
+    * Show weight in kWu instead of Wu
+- New tool `/mining-summary` for viewing summarized mining data from recent blocks
+- Zero-indexing for tx inputs/outputs (#173)
+- Labels for transaction output types
+- Tweaked styling
 
 
 #### v0.0.2

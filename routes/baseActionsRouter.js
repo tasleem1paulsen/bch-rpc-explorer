@@ -45,18 +45,33 @@ router.get("/", function(req, res, next) {
 
   res.locals.homepage = true;
 
-  var promises = [];
+	// variables used by blocks-list.pug
+	res.locals.offset = 0;
+	res.locals.sort = "desc";
 
-  promises.push(coreApi.getMempoolInfo());
-  promises.push(coreApi.getMiningInfo());
+	var feeConfTargets = [1, 6, 144, 1008];
+	res.locals.feeConfTargets = feeConfTargets;
 
-  coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
-    res.locals.getblockchaininfo = getblockchaininfo;
+
+	var promises = [];
+
+	promises.push(coreApi.getMempoolInfo());
+	promises.push(coreApi.getMiningInfo());
+
+	// This is a placeholder for fee estimate inca we wouldned it in the future
+	promises.push(0);
+
+	promises.push(coreApi.getNetworkHashrate(144));
+	promises.push(coreApi.getNetworkHashrate(1008));
+
+	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
+		res.locals.getblockchaininfo = getblockchaininfo;
 
     if (getblockchaininfo.chain !== 'regtest') {
       var targetBlocksPerDay = 24 * 60 * 60 / global.coinConfig.targetBlockTimeSeconds;
 
-      promises.push(coreApi.getTxCountStats(targetBlocksPerDay / 4, -targetBlocksPerDay, "latest"));
+			// promiseResults[4] (if not regtest)
+			promises.push(coreApi.getTxCountStats(targetBlocksPerDay / 4, -targetBlocksPerDay, "latest"));
 
       var chainTxStatsIntervals = [ targetBlocksPerDay, targetBlocksPerDay * 7, targetBlocksPerDay * 30, targetBlocksPerDay * 365 ]
         .filter(numBlocks => numBlocks <= getblockchaininfo.blocks);
@@ -70,16 +85,17 @@ router.get("/", function(req, res, next) {
       }
     }
 
-    var blockHeights = [];
-    if (getblockchaininfo.blocks) {
-      for (var i = 0; i < 10; i++) {
-        blockHeights.push(getblockchaininfo.blocks - i);
-      }
-    } else if (global.activeBlockchain == "regtest") {
-      // hack: default regtest node returns getblockchaininfo.blocks=0, despite having a genesis block
-      // hack this to display the genesis block
-      blockHeights.push(0);
-    }
+		var blockHeights = [];
+		if (getblockchaininfo.blocks) {
+			// +1 to page size here so we have the next block to calculate T.T.M.
+			for (var i = 0; i < (config.site.homepage.recentBlocksCount + 1); i++) {
+				blockHeights.push(getblockchaininfo.blocks - i);
+			}
+		} else if (global.activeBlockchain == "regtest") {
+			// hack: default regtest node returns getblockchaininfo.blocks=0, despite having a genesis block
+			// hack this to display the genesis block
+			blockHeights.push(0);
+		}
 
     if (getblockchaininfo.chain !== 'regtest') {
       promises.push(coreApi.getChainTxStats(getblockchaininfo.blocks - 1));
@@ -92,13 +108,26 @@ router.get("/", function(req, res, next) {
         res.locals.mempoolInfo = promiseResults[0];
         res.locals.miningInfo = promiseResults[1];
 
-        if (getblockchaininfo.chain !== 'regtest') {
-          res.locals.txStats = promiseResults[2];
+				var rawSmartFeeEsimates = promiseResults[2];
+				var smartFeeEsimates = {};
 
-          var chainTxStats = [];
-          for (var i = 0; i < res.locals.chainTxStatsLabels.length; i++) {
-            chainTxStats.push(promiseResults[i + 3]);
-          }
+				//for (var i = 0; i < feeConfTargets.length; i++) {
+				//	smartFeeEsimates[feeConfTargets[i]] = parseInt(new Decimal(rawSmartFeeEsimates[i].feerate).times(coinConfig.baseCurrencyUnit.multiplier).dividedBy(1000));
+				//}
+
+
+				res.locals.smartFeeEsimates = smartFeeEsimates;
+
+				res.locals.hashrate1d = promiseResults[3];
+				res.locals.hashrate7d = promiseResults[4];
+
+				if (getblockchaininfo.chain !== 'regtest') {
+					res.locals.txStats = promiseResults[5];
+
+					var chainTxStats = [];
+					for (var i = 0; i < res.locals.chainTxStatsLabels.length; i++) {
+						chainTxStats.push(promiseResults[i + 6]);
+					}
 
           res.locals.chainTxStats = chainTxStats;
         }
@@ -283,60 +312,60 @@ router.get("/changeSetting", function(req, res, next) {
 });
 
 router.get("/blocks", function(req, res, next) {
-  var limit = config.site.browseBlocksPageSize;
-  var offset = 0;
-  var sort = "desc";
+	var limit = config.site.browseBlocksPageSize;
+	var offset = 0;
+	var sort = "desc";
 
-  if (req.query.limit) {
-    limit = parseInt(req.query.limit);
-  }
+	if (req.query.limit) {
+		limit = parseInt(req.query.limit);
+	}
 
-  if (req.query.offset) {
-    offset = parseInt(req.query.offset);
-  }
+	if (req.query.offset) {
+		offset = parseInt(req.query.offset);
+	}
 
-  if (req.query.sort) {
-    sort = req.query.sort;
-  }
+	if (req.query.sort) {
+		sort = req.query.sort;
+	}
 
-  res.locals.limit = limit;
-  res.locals.offset = offset;
-  res.locals.sort = sort;
-  res.locals.paginationBaseUrl = "/blocks";
+	res.locals.limit = limit;
+	res.locals.offset = offset;
+	res.locals.sort = sort;
+	res.locals.paginationBaseUrl = "/blocks";
 
-  coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
-    res.locals.blockCount = getblockchaininfo.blocks;
-    res.locals.blockOffset = offset;
+	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
+		res.locals.blockCount = getblockchaininfo.blocks;
+		res.locals.blockOffset = offset;
 
-    var blockHeights = [];
-    if (sort == "desc") {
-      for (var i = (getblockchaininfo.blocks - offset); i > (getblockchaininfo.blocks - offset - limit); i--) {
-        if (i >= 0) {
-          blockHeights.push(i);
-        }
-      }
-    } else {
-      for (var i = offset; i < (offset + limit); i++) {
-        if (i >= 0) {
-          blockHeights.push(i);
-        }
-      }
-    }
+		var blockHeights = [];
+		if (sort == "desc") {
+			for (var i = (getblockchaininfo.blocks - offset); i > (getblockchaininfo.blocks - offset - limit - 1); i--) {
+				if (i >= 0) {
+					blockHeights.push(i);
+				}
+			}
+		} else {
+			for (var i = offset - 1; i < (offset + limit); i++) {
+				if (i >= 0) {
+					blockHeights.push(i);
+				}
+			}
+		}
 
-    coreApi.getBlocksByHeight(blockHeights).then(function(blocks) {
-      res.locals.blocks = blocks;
+		coreApi.getBlocksByHeight(blockHeights).then(function(blocks) {
+			res.locals.blocks = blocks;
 
-      res.render("blocks");
+			res.render("blocks");
 
-      next();
-    });
-  }).catch(function(err) {
-    res.locals.userMessage = "Error: " + err;
+			next();
+		});
+	}).catch(function(err) {
+		res.locals.userMessage = "Error: " + err;
 
-    res.render("blocks");
+		res.render("blocks");
 
-    next();
-  });
+		next();
+	});
 });
 
 router.get("/mining-summary", function(req, res, next) {
