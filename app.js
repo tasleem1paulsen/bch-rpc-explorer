@@ -19,6 +19,7 @@ var debug = require("debug");
 debug.enable(process.env.DEBUG || "bchexp:app,bchexp:error");
 
 var debugLog = debug("bchexp:app");
+var debugLogError = debug("bchexp:error");
 var debugPerfLog = debug("bchexp:actionPerformace");
 
 var express = require('express');
@@ -51,6 +52,7 @@ global.appVersion = package_json.version;
 var crawlerBotUserAgentStrings = [ "Googlebot", "Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot", "facebot", "ia_archiver" ];
 
 var baseActionsRouter = require('./routes/baseActionsRouter');
+var apiActionsRouter = require('./routes/api');
 
 var app = express();
 
@@ -90,6 +92,8 @@ process.on("unhandledRejection", (reason, p) => {
 });
 
 function loadMiningPoolConfigs() {
+  debugLog("Loading mining pools config");
+
   global.miningPoolsConfigs = [];
 
   var miningPoolsConfigDir = path.join(__dirname, "public", "txt", "mining-pools-configs", global.coinConfig.ticker);
@@ -108,15 +112,15 @@ function loadMiningPoolConfigs() {
 
       global.miningPoolsConfigs.push(JSON.parse(contents));
     });
-  });
 
-  for (var i = 0; i < global.miningPoolsConfigs.length; i++) {
-    for (var x in global.miningPoolsConfigs[i].payout_addresses) {
-      if (global.miningPoolsConfigs[i].payout_addresses.hasOwnProperty(x)) {
-        global.specialAddresses[x] = {type:"minerPayout", minerInfo:global.miningPoolsConfigs[i].payout_addresses[x]};
+    for (var i = 0; i < global.miningPoolsConfigs.length; i++) {
+      for (var x in global.miningPoolsConfigs[i].payout_addresses) {
+        if (global.miningPoolsConfigs[i].payout_addresses.hasOwnProperty(x)) {
+          global.specialAddresses[x] = {type:"minerPayout", minerInfo:global.miningPoolsConfigs[i].payout_addresses[x]};
+        }
       }
     }
-  }
+  });
 }
 
 function getSourcecodeProjectMetadata() {
@@ -153,9 +157,7 @@ function loadChangelog() {
 }
 
 function loadHistoricalDataForChain(chain) {
-  global.specialTransactions = {};
-  global.specialBlocks = {};
-  global.specialAddresses = {};
+  debugLog(`Loading historical data for chain=${chain}`);
 
   if (config.donations.addresses && config.donations.addresses[coinConfig.ticker]) {
     global.specialAddresses[config.donations.addresses[coinConfig.ticker].address] = {type:"donation"};
@@ -204,7 +206,50 @@ function onRpcConnectionVerified(getnetworkinfo, getblockchaininfo) {
   // localservicenames introduced in 0.19
   var services = getnetworkinfo.localservicesnames ? ("[" + getnetworkinfo.localservicesnames.join(", ") + "]") : getnetworkinfo.localservices;
 
-  debugLog(`RPC Connected: version=${getnetworkinfo.version} (${getnetworkinfo.subversion}), protocolversion=${getnetworkinfo.protocolversion}, chain=${getblockchaininfo.chain}, services=${services}`);
+  global.getnetworkinfo = getnetworkinfo;
+
+  var bitcoinCoreVersionRegex = /^.*\/BCH Unlimited\:(.*)\/.*$/;
+
+  var match = bitcoinCoreVersionRegex.exec(getnetworkinfo.subversion);
+  if (match) {
+    global.btcNodeVersion = match[1];
+
+    var semver4PartRegex = /^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$/;
+
+    var semver4PartMatch = semver4PartRegex.exec(global.btcNodeVersion);
+    if (semver4PartMatch) {
+      var p0 = semver4PartMatch[1];
+      var p1 = semver4PartMatch[2];
+      var p2 = semver4PartMatch[3];
+      var p3 = semver4PartMatch[4];
+
+      // drop last segment, which usually indicates a bug fix release which is (hopefully) irrelevant for RPC API versioning concerns
+      global.btcNodeSemver = `${p0}.${p1}.${p2}`;
+
+    } else {
+      var semver3PartRegex = /^([0-9]+)\.([0-9]+)\.([0-9]+)$/;
+
+      var semver3PartMatch = semver3PartRegex.exec(global.btcNodeVersion);
+      if (semver3PartMatch) {
+        var p0 = semver3PartMatch[1];
+        var p1 = semver3PartMatch[2];
+        var p2 = semver3PartMatch[3];
+
+        global.btcNodeSemver = `${p0}.${p1}.${p2}`;
+
+      } else {
+        // short-circuit: force all RPC calls to pass their version checks - this will likely lead to errors / instability / unexpected results
+        global.btcNodeSemver = "1000.1000.0"
+      }
+    }
+  } else {
+    // short-circuit: force all RPC calls to pass their version checks - this will likely lead to errors / instability / unexpected results
+    global.btcNodeSemver = "1000.1000.0"
+
+    debugErrorLog(`Unable to parse node version string: ${getnetworkinfo.subversion} - RPC versioning will likely be unreliable. Is your node a version of Bitcoin Core?`);
+  }
+
+  debugLog(`RPC Connected: version=${getnetworkinfo.version} subversion=${getnetworkinfo.subversion}, parsedVersion(used for RPC versioning)=${global.btcNodeSemver}, protocolversion=${getnetworkinfo.protocolversion}, chain=${getblockchaininfo.chain}, services=${services}`);
 
   // load historical/fun items for this chain
   loadHistoricalDataForChain(global.activeBlockchain);
@@ -219,11 +264,37 @@ function onRpcConnectionVerified(getnetworkinfo, getblockchaininfo) {
   }
 }
 
+function refreshUtxoSetSummary() {
+  if (config.slowDeviceMode) {
+    global.utxoSetSummary = null;
+    global.utxoSetSummaryPending = false;
+
+    debugLog("Skipping performance-intensive task: fetch UTXO set summary. This is skipped due to the flag 'slowDeviceMode' which defaults to 'true' to protect slow nodes. Set this flag to 'false' to enjoy UTXO set summary details.");
+
+    return;
+  }
+
+  // flag that we're working on calculating UTXO details (to differentiate cases where we don't have the details and we're not going to try computing them)
+  global.utxoSetSummaryPending = true;
+
+  coreApi.getUtxoSetSummary().then(function(result) {
+    global.utxoSetSummary = result;
+
+    result.lastUpdated = Date.now();
+
+    debugLog("Refreshed utxo summary: " + JSON.stringify(result));
+  });
+}
+
 
 app.onStartup = function() {
   global.config = config;
   global.coinConfig = coins[config.coin];
   global.coinConfigs = coins;
+
+  global.specialTransactions = {};
+  global.specialBlocks = {};
+  global.specialAddresses = {};
 
   loadChangelog();
 
@@ -325,9 +396,12 @@ app.continueStartup = function() {
     setInterval(getSourcecodeProjectMetadata, 3600000);
   }
 
-
   utils.logMemoryUsage();
   setInterval(utils.logMemoryUsage, 5000);
+
+  refreshUtxoSetSummary();
+  setInterval(refreshUtxoSetSummary, 30 * 60 * 1000);
+
 };
 
 app.use(function(req, res, next) {
@@ -356,6 +430,9 @@ app.use(function(req, res, next) {
 
   res.locals.config = global.config;
   res.locals.coinConfig = global.coinConfig;
+  res.locals.exchangeRates = global.exchangeRates;
+  res.locals.utxoSetSummary = global.utxoSetSummary;
+  res.locals.utxoSetSummaryPending = global.utxoSetSummaryPending;
 
   res.locals.host = req.session.host;
   res.locals.port = req.session.port;
@@ -387,6 +464,18 @@ app.use(function(req, res, next) {
 
     } else {
       req.session.uiTheme = "";
+    }
+  }
+
+  // blockPage.showTechSummary
+  if (!req.session.blockPageShowTechSummary) {
+    var cookieValue = req.cookies['user-setting-blockPageShowTechSummary'];
+
+    if (cookieValue) {
+      req.session.blockPageShowTechSummary = cookieValue;
+
+    } else {
+      req.session.blockPageShowTechSummary = "true";
     }
   }
 
@@ -444,6 +533,7 @@ app.use(csurf(), (req, res, next) => {
 });
 
 app.use('/', baseActionsRouter);
+app.use('/api/', apiActionsRouter);
 
 app.use(function(req, res, next) {
   var time = Date.now() - req.startTime;

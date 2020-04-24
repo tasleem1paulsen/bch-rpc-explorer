@@ -144,15 +144,15 @@ function shouldCacheTransaction(tx) {
 
 
 function getBlockchainInfo() {
-	return tryCacheThenRpcApi(miscCache, "getBlockchainInfo", 10000, rpcApi.getBlockchainInfo);
+	return tryCacheThenRpcApi(miscCache, "getBlockchainInfo", 10 * 1000, rpcApi.getBlockchainInfo);
 }
 
 function getNetworkInfo() {
-	return tryCacheThenRpcApi(miscCache, "getNetworkInfo", 10000, rpcApi.getNetworkInfo);
+	return tryCacheThenRpcApi(miscCache, "getNetworkInfo", 10 * 1000, rpcApi.getNetworkInfo);
 }
 
 function getNetTotals() {
-	return tryCacheThenRpcApi(miscCache, "getNetTotals", 10000, rpcApi.getNetTotals);
+	return tryCacheThenRpcApi(miscCache, "getNetTotals", 10 * 1000, rpcApi.getNetTotals);
 }
 
 function getMempoolInfo() {
@@ -160,7 +160,7 @@ function getMempoolInfo() {
 }
 
 function getMiningInfo() {
-	return tryCacheThenRpcApi(miscCache, "getMiningInfo", 30000, rpcApi.getMiningInfo);
+	return tryCacheThenRpcApi(miscCache, "getMiningInfo", 30 * 1000, rpcApi.getMiningInfo);
 }
 
 function getUptimeSeconds() {
@@ -168,9 +168,25 @@ function getUptimeSeconds() {
 }
 
 function getChainTxStats(blockCount) {
-	return tryCacheThenRpcApi(miscCache, "getChainTxStats-" + blockCount, 1200000, function() {
+	return tryCacheThenRpcApi(miscCache, "getChainTxStats-" + blockCount, 20 * 60 * 1000, function() {
 		return rpcApi.getChainTxStats(blockCount);
 	});
+}
+
+function getNetworkHashrate(blockCount) {
+	return tryCacheThenRpcApi(miscCache, "getNetworkHashrate-" + blockCount, 20 * 60 * 1000, function() {
+		return rpcApi.getNetworkHashrate(blockCount);
+	});
+}
+
+function getBlockStats(hash) {
+	return tryCacheThenRpcApi(miscCache, "getBlockStats-" + hash, 1000 * 60 * 1000, function() {
+		return rpcApi.getBlockStats(hash);
+	});
+}
+
+function getUtxoSetSummary() {
+	return tryCacheThenRpcApi(miscCache, "getUtxoSetSummary", 15 * 60 * 1000, rpcApi.getUtxoSetSummary);
 }
 
 function getTxCountStats(dataPtCount, blockStart, blockEnd) {
@@ -240,6 +256,28 @@ function getTxCountStats(dataPtCount, blockStart, blockEnd) {
 		});
 	});
 }
+
+//function getSmartFeeEstimates(mode, confTargetBlockCounts) {
+//	return new Promise(function(resolve, reject) {
+//		var promises = [];
+//		for (var i = 0; i < confTargetBlockCounts.length; i++) {
+//			promises.push(getSmartFeeEstimate(mode, confTargetBlockCounts[i]));
+//		}
+//
+//		Promise.all(promises).then(function(results) {
+//			resolve(results);
+//
+//		}).catch(function(err) {
+//			reject(err);
+//		});
+//	});
+//}
+//
+//function getSmartFeeEstimate(mode, confTargetBlockCount) {
+//	return tryCacheThenRpcApi(miscCache, "getSmartFeeEstimate-" + mode + "-" + confTargetBlockCount, 10 * 60 * 1000, function() {
+//		return rpcApi.getSmartFeeEstimate(mode, confTargetBlockCount);
+//	});
+//}
 
 function getPeerSummary() {
 	return new Promise(function(resolve, reject) {
@@ -508,7 +546,7 @@ function getMempoolStats() {
 				var fee = txMempoolInfo.modifiedfee;
 				var size = txMempoolInfo.vsize ? txMempoolInfo.vsize : txMempoolInfo.size;
 				var feePerByte = txMempoolInfo.modifiedfee / size;
-				var satoshiPerByte = feePerByte * 100000000;
+				var satoshiPerByte = feePerByte * 100000000; // TODO: magic number - replace with coinConfig.baseCurrencyUnit.multiplier
 				var age = Date.now() / 1000 - txMempoolInfo.time;
 
 				var addedToBucket = false;
@@ -956,5 +994,10 @@ module.exports = {
 	getPeerSummary: getPeerSummary,
 	getChainTxStats: getChainTxStats,
 	getMempoolDetails: getMempoolDetails,
-	getTxCountStats: getTxCountStats
+	getTxCountStats: getTxCountStats,
+//	getSmartFeeEstimates: getSmartFeeEstimates,
+//	getSmartFeeEstimate: getSmartFeeEstimate,
+	getUtxoSetSummary: getUtxoSetSummary,
+	getNetworkHashrate: getNetworkHashrate,
+	getBlockStats: getBlockStats,
 };

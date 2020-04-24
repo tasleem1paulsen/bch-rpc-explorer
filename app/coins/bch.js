@@ -62,7 +62,8 @@ module.exports = {
     "https://raw.githubusercontent.com/btccom/Blockchain-Known-Pools/master/pools.json",
     "https://raw.githubusercontent.com/blockchain/Blockchain-Known-Pools/master/pools.json"
   ],
-  maxBlockWeight: 4000000,
+  maxBlockSize: 32000000,
+  maxSupply: new Decimal(20999817.31308491), // ref: https://bitcoin.stackexchange.com/a/38998
   targetBlockTimeSeconds: 600,
   currencyUnits:currencyUnits,
   currencyUnitsByName:{"BCH":currencyUnits[0], "mBCH":currencyUnits[1], "bits":currencyUnits[2], "sat":currencyUnits[3]},
@@ -252,6 +253,14 @@ module.exports = {
       summary: "First block containing a (non-coinbase) transaction.",
       alertBodyHtml: "This block comes 9 days after the genesis block and is the first to contain a transfer of bitcoin. Before this block all blocks contained only coinbase transactions which mint new bitcoin.",
       referenceUrl: "https://bitcointalk.org/index.php?topic=91806.msg1012234#msg1012234"
+    },
+    {
+      type: "tx",
+      date: "2009-01-12",
+      chain: "main",
+      txid: "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16",
+      summary: "The first transfer of bitcoin.",
+      alertBodyHtml: "This transaction is the first instance of the transfer of bitcoin from one person to another. It also has the added distinction of being (one of?) the only known transfers of bitcoin from Satoshi Nakamoto, in this case sending bitcoin to Hal Finney as a test."
     },
     {
       type:"address",

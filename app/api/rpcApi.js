@@ -3,6 +3,7 @@ var debug = require('debug');
 var debugLog = debug("btcexp:rpc");
 
 var async = require("async");
+var semver = require("semver");
 
 var utils = require("../utils.js");
 var config = require("../config.js");
@@ -55,6 +56,28 @@ function getPeerInfo() {
 
 function getMempoolTxids() {
 	return getRpcDataWithParams({method:"getrawmempool", parameters:[false]});
+}
+
+function getSmartFeeEstimate(mode="CONSERVATIVE", confTargetBlockCount) {
+	return getRpcDataWithParams({method:"estimatesmartfee", parameters:[confTargetBlockCount, mode]});
+}
+
+function getNetworkHashrate(blockCount=144) {
+	return getRpcDataWithParams({method:"getnetworkhashps", parameters:[blockCount]});
+}
+
+function getBlockStats(hash) {
+	if (semver.gte(global.btcNodeSemver, "1.8.0")) {
+		return getRpcDataWithParams({method:"getblockstats", parameters:[hash]});
+
+	} else {
+		// unsupported
+		return nullPromise();
+	}
+}
+
+function getUtxoSetSummary() {
+	return getRpcData("gettxoutsetinfo");
 }
 
 function getRawMempool() {
@@ -129,6 +152,7 @@ function getBlockByHash(blockHash) {
 			getRawTransaction(block.tx[0]).then(function(tx) {
 				block.coinbaseTx = tx;
 				block.totalFees = utils.getBlockTotalFeesFromCoinbaseTxAndBlockHeight(tx, block.height);
+				block.subsidy = coinConfig.blockRewardFunction(block.height, global.activeBlockchain);
 				block.miner = utils.getMinerFromCoinbaseTx(tx);
 
 				resolve(block);
@@ -324,6 +348,11 @@ function getRpcDataWithParams(request) {
 	});
 }
 
+function nullPromise() {
+	return new Promise(function(resolve, reject) {
+		resolve(null);
+	});
+}
 
 module.exports = {
 	getBlockchainInfo: getBlockchainInfo,
@@ -343,5 +372,9 @@ module.exports = {
 	getRpcMethodHelp: getRpcMethodHelp,
 	getAddress: getAddress,
 	getPeerInfo: getPeerInfo,
-	getChainTxStats: getChainTxStats
+	getChainTxStats: getChainTxStats,
+	getSmartFeeEstimate: getSmartFeeEstimate,
+	getUtxoSetSummary: getUtxoSetSummary,
+	getNetworkHashrate: getNetworkHashrate,
+	getBlockStats: getBlockStats,
 };
