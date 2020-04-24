@@ -27,11 +27,19 @@
     * Display average fee in sat/vB
     * Add total fees display
     * Demote display of "block size" value to hover
-    * Show weight in kWu instead of Wu
+- New data in "Summary" on Block pages (supported for bitcoind v0.17.0+)
+    * Fee percentiles
+    * Min / Max fees
+    * Input / Output counts
+    * Outputs total value
+    * UTXO count change
+    * Min / Max tx sizes
 - New tool `/mining-summary` for viewing summarized mining data from recent blocks
 - Zero-indexing for tx inputs/outputs (#173)
 - Labels for transaction output types
 - Tweaked styling
+- Start of RPC API versioning support
+- Remove "Bitcoin Explorer" H1 from homepage (it's redundant)
 
 
 #### v0.0.2
