@@ -1,5 +1,13 @@
 {
     "coinbase_tags" : {
+        "solomining.io": {
+            "name": "SoloMining",
+            "link": "https://www.solomining.io/"
+        },
+        "easy2mine.com": {
+            "name": "Easy2mine",
+            "link": "https://www.easy2mine.com/"
+        },
         "SBICrypto": {
             "name": "SBI Crypto pool",
             "link": "https://www.sbicrypto.com/en/"
