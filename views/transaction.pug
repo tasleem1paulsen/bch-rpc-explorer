@@ -100,12 +100,10 @@ block content
                       include includes/timestamp-human.pug
                       small.ml-1 utc
 
-                      br
-
                       - var timeAgoTime = result.getrawtransaction.time;
-                      span.text-muted (
+                      span.text-muted.ml-2 (
                         include includes/time-ago-text.pug
-                        span )
+                        span ago)
 
               div.row
                 div.summary-table-label Version
@@ -114,7 +112,8 @@ block content
               div.row
                 div.summary-table-label Size
                 div.summary-table-content.text-monospace
-                  span #{result.getrawtransaction.size.toLocaleString()} B
+                  span #{result.getrawtransaction.size.toLocaleString()}
+                  small B
 
             if (result.getrawtransaction.locktime > 0)
               div.row
@@ -157,7 +156,7 @@ block content
               if (parseFloat(totalOutputValue) < parseFloat(blockRewardMax))
                 div.row
                   div.summary-table-label
-                    span.border-dotted(data-toggle="tooltip" title="The miner of this transaction's block failed to collect this value. As a result, it is lost.") Fees Destroyed
+                    span.border-dotted(data-toggle="tooltip" title="The miner of this transaction's block failed to collect this value. As a result, it is permanently lost.") Fees Destroyed
                   div.summary-table-content.text-monospace.text-danger
                     - var currencyValue = new Decimal(blockRewardMax).minus(totalOutputValue);
                     include includes/value-display.pug
@@ -197,7 +196,8 @@ block content
                 div.row
                   div.summary-table-label Fee Rate
                   div.summary-table-content.text-monospace
-                    span.text-muted (#{utils.addThousandsSeparators(new DecimalRounded(totalInputValue).minus(totalOutputValue).dividedBy(result.getrawtransaction.size).times(100000000))} sat/B)
+                    span.text-muted (#{utils.addThousandsSeparators(new DecimalRounded(totalInputValue).minus(totalOutputValue).dividedBy(result.getrawtransaction.size).times(100000000))}
+                      small sat/B)
 
 
         if (result.getrawtransaction.vin[0].coinbase)

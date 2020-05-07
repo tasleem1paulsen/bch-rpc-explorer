@@ -68,8 +68,30 @@ function getNetworkHashrate(blockCount=144) {
 
 function getBlockStats(hash) {
 	if (semver.gte(global.btcNodeSemver, "1.8.0")) {
-		return getRpcDataWithParams({method:"getblockstats", parameters:[hash]});
+		if (hash == coinConfig.genesisBlockHashesByNetwork[global.activeBlockchain] && coinConfig.genesisBlockStatsByNetwork[global.activeBlockchain]) {
+			return new Promise(function(resolve, reject) {
+				resolve(coinConfig.genesisBlockStatsByNetwork[global.activeBlockchain]);
+			});
 
+		} else {
+			return getRpcDataWithParams({method:"getblockstats", parameters:[hash]});
+		}
+	} else {
+		// unsupported
+		return nullPromise();
+	}
+}
+
+function getBlockStatsByHeight(height) {
+	if (semver.gte(global.btcNodeSemver, "0.17.0")) {
+		if (height == 0 && coinConfig.genesisBlockStatsByNetwork[global.activeBlockchain]) {
+			return new Promise(function(resolve, reject) {
+				resolve(coinConfig.genesisBlockStatsByNetwork[global.activeBlockchain]);
+			});
+
+		} else {
+			return getRpcDataWithParams({method:"getblockstats", parameters:[height]});
+		}
 	} else {
 		// unsupported
 		return nullPromise();
@@ -377,4 +399,5 @@ module.exports = {
 	getUtxoSetSummary: getUtxoSetSummary,
 	getNetworkHashrate: getNetworkHashrate,
 	getBlockStats: getBlockStats,
+	getBlockStatsByHeight: getBlockStatsByHeight,
 };

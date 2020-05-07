@@ -5,14 +5,24 @@ div.table-responsive
 				//th
 				th
 				th.data-header.text-right Height
-				th.data-header.text-right Date
-					small  (utc)
+
+				if (!hideTimestampColumn)
+					th.data-header.text-right
+						span.border-dotted(title="UTC timestamp of the block.", data-toggle="tooltip") Date
+
 				th.data-header.text-right Age
 				th.data-header.text-right
 					span.border-dotted(title="Time To Mine - The time it took to mine this block after the previous block. 'Fast' blocks (mined in < 5min) are shown in green; 'slow' blocks (mined in > 15min) are shown in red.", data-toggle="tooltip") T.T.M.
 				th.data-header.text-right Miner
-				th.data-header.text-right Transactions
-				th.data-header.text-right Avg Fee
+				th.data-header.text-right
+					span.border-dotted(title="The number of transactions included in each block.", data-toggle="tooltip") N(tx)
+
+				if (blockstatsByHeight)
+					th.data-header.text-right
+						span.border-dotted(title="The total output of all transactions in each block.", data-toggle="tooltip") Volume
+
+				th.data-header.text-right
+					span.border-dotted(title="The average fee (sat/B) for all block transactions.", data-toggle="tooltip") Avg Fee
 					small  (sat/B)
 				
 				th.data-header.text-right Size
@@ -48,16 +58,20 @@ div.table-responsive
 							if (blockIndex < blocks.length - 1)
 								- var timeDiff = moment.duration(moment.utc(new Date(parseInt(block.time) * 1000)).diff(moment.utc(new Date(parseInt(blocks[blockIndex + 1].time) * 1000))));
 
-						td.data-cell.text-monospace.text-right
-							- var timestampHuman = block.time;
-							include timestamp-human.pug
-							
+						if (!hideTimestampColumn)
+							td.data-cell.text-monospace.text-right
+								- var timestampHuman = block.time;
+								include timestamp-human.pug
+								
 
 						td.data-cell.text-monospace.text-right
 							if (sort != "asc" && blockIndex == 0 && offset == 0 && timeAgoTime > (15 * 60 * 1000))
-								span.text-danger.border-dotted(title="It's been > 15 min since this latest block.", data-toggle="tooltip") #{utils.shortenTimeDiff(timeAgo.format())}
+								- var timeAgoTime = block.time;
+								span.text-danger.border-dotted(title="It's been > 15 min since this latest block.", data-toggle="tooltip")
+									include ./time-ago-text.pug
 							else
-								span #{utils.shortenTimeDiff(timeAgo.format())}
+								- var timeAgoTime = block.time;
+								include ./time-ago-text.pug
 
 						td.data-cell.text-monospace.text-right
 							if (timeDiff)
@@ -67,7 +81,14 @@ div.table-responsive
 								if (timeDiff > 900000)
 									- var colorClass = "text-danger";
 
-								span.font-weight-light(class=colorClass) #{utils.shortenTimeDiff(timeDiff.format())}
+								span.font-weight-light(class=colorClass)
+									span #{timeDiff.format()}
+
+									if (false)
+										if (timeDiff.asMinutes() < 1)
+											span #{parseInt(timeDiff.asSeconds())}s
+										else
+											span #{parseInt(timeDiff.asMinutes())}m #{parseInt(timeDiff.asSeconds())}s
 
 							else
 								if (block.height == 0)
@@ -84,6 +105,18 @@ div.table-responsive
 						
 						td.data-cell.text-monospace.text-right #{block.tx.length.toLocaleString()}
 
+						if (blockstatsByHeight)
+							td.data-cell.text-monospace.text-right
+								debugLog(blockstatsByHeight[block.height])
+								if (blockstatsByHeight[block.height])
+									//- var currencyValue = parseInt(new Decimal(blockstatsByHeight[block.height].total_out).dividedBy(coinConfig.baseCurrencyUnit.multiplier));
+									- var currencyValue = parseInt(new Decimal(blockstatsByHeight[block.height].total_out).plus(blockstatsByHeight[block.height].subsidy).plus(blockstatsByHeight[block.height].totalfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier));
+									- var currencyValue = parseInt(new Decimal(blockstatsByHeight[block.height].total_out).plus(blockstatsByHeight[block.height].subsidy));
+									- var currencyValueDecimals = 0;
+									include ./value-display.pug
+
+								else
+
 						td.data-cell.text-monospace.text-right
 							- var currencyValue = new Decimal(block.totalFees);
 							- var currencyValueDecimals = 3;
@@ -94,16 +127,26 @@ div.table-responsive
 						if (true)
 							td.data-cell.text-monospace.text-right
 								- var bSizeK = parseInt(block.size / 1000);
-								- var fullPercent = new Decimal(100 * block.size / coinConfig.maxBlockSize).toDecimalPlaces(1);
+								- var full = new Decimal(100 * block.size / coinConfig.maxBlockSize).toDecimalPlaces(1);
+								- var full2 = full.toDP(2);
 
-								span #{bSizeK.toLocaleString()} 
-								small.font-weight-light.text-muted (#{fullPercent}%)
+									span #{full2} 
+									if (full > 90)
+										img(src="/img/block-fullness-3.png", style="width: 18px; height: 18px;")
+									else if (full > 50)
+										img(src="/img/block-fullness-2.png", style="width: 18px; height: 18px;")
+									else if (full > 25)
+										img(src="/img/block-fullness-1.png", style="width: 18px; height: 18px;")
+									else
+										img(src="/img/block-fullness-0.png", style="width: 18px; height: 18px;")
+								//span #{bSizeK.toLocaleString()} 
+								//small.font-weight-light.text-muted (#{fullPercent}%)
 
-								div(class="progress", style="height: 4px;")
-									div(class="progress-bar", role="progressbar", style=("width: " + fullPercent + "%;"), aria-valuenow=parseInt(100 * block.size / coinConfig.maxBlockSize), aria-valuemin="0" ,aria-valuemax="100")
+							//	div(class="progress", style="height: 4px;")
+							//		div(class="progress-bar", role="progressbar", style=("width: " + fullPercent + "%;"), aria-valuenow=parseInt(100 * block.size / coinConfig.maxBlockSize), aria-valuemin="0" ,aria-valuemax="100")
 							//td.data-cell.text-monospace.text-right
 							//	- var bSizeK = parseInt(block.size / 1000);
 							//	span #{bSizeK.toLocaleString()}
 
 
-					- var lastBlock = block;
+						- var lastBlock = block;
