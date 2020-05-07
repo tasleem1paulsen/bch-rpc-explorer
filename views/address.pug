@@ -150,6 +150,7 @@ block content
 
                           each item in balance.conflictedResults
                             - var currencyValue = item.confirmed / coinConfig.baseCurrencyUnit.multiplier;
+                            - var currencyValue = 50000
                             include includes/value-display.pug
 
 
@@ -169,14 +170,14 @@ block content
 
                   if (addressDetails && addressDetails.balanceSat)
                     div.row
-                      div.summary-split-table-label
+                      div.summary-split-table-label Balance
                       div.summary-split-table-content.text-monospace
                         - var currencyValue = new Decimal(addressDetails.balanceSat).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
                         include includes/value-display.pug
 
                   if (addressDetails && addressDetails.txCount)
                     div.row
-                      div.summary-split-table-label"
+                      div.summary-split-table-label Transactions
                       div.summary-split-table-content.text-monospace #{addressDetails.txCount.toLocaleString()}
 
                   div.row
@@ -318,45 +319,46 @@ block content
                           span ##{(offset + txIndex + 1).toLocaleString()}
                         span  &ndash;
 
-                      div.row
-                        div.col-md-8
-                          if (tx && tx.txid)
-                            a(href=("/tx/" + tx.txid)) #{tx.txid}
+                     div.row
+                       div.col-md-8
+                         if (tx && tx.txid)
+                           a(href=("/tx/" + tx.txid)) #{tx.txid}
 
-                            if (global.specialTransactions && global.specialTransactions[tx.txid])
-                              span
-                              a(data-toggle="tooltip", title=(coinConfig.name + " Fun! See transaction for details"))
-                                i.fas.fa-certificate.text-primary
+                           if (global.specialTransactions && global.specialTransactions[tx.txid])
+                             span
+                             a(data-toggle="tooltip", title=(coinConfig.name + " Fun! See transaction for details"))
+                               i.fas.fa-certificate.text-primary
 
-                        br
-                          if (addrGainsByTx[tx.txid])
-                            - var currencyValue = addrGainsByTx[tx.txid];
-                            span(class="text-success") +
-                              include includes/value-display.pug
+                         br
 
-                            if (addrLossesByTx[tx.txid])
-                              span  /
+                         if (addrGainsByTx[tx.txid])
+                           - var currencyValue = addrGainsByTx[tx.txid];
+                           span(class="text-success") +
+                             include includes/value-display.pug
 
-                          if (addrLossesByTx[tx.txid])
-                            - var currencyValue = addrLossesByTx[tx.txid];
-                            span(class="text-danger") -
-                              include includes/value-display.pug
+                           if (addrLossesByTx[tx.txid])
+                             span  /
 
-                        div.col-md-4
-                          div.text-md-right
-                            if (tx.time)
-                              - var timestampHuman = tx.time;
-                              include includes/timestamp-human.pug
+                         if (addrLossesByTx[tx.txid])
+                           - var currencyValue = addrLossesByTx[tx.txid];
+                           span(class="text-danger") -
+                             include includes/value-display.pug
 
-                              br
+                       div.col-md-4
+                         div.text-md-right
+                           if (tx.time)
+                             - var timestampHuman = tx.time;
+                             include includes/timestamp-human.pug
 
-                              - var timeAgoTime = tx.time;
-                              small.text-muted (
-                                include includes/time-ago-text.pug
-                                span ago)
+                             br
 
-                            else
-                              span.text-danger Unconfirmed
+                             - var timeAgoTime = tx.time;
+                             small.text-muted (
+                               include includes/time-ago-text.pug
+                               span ago)
+
+                           else
+                             span.text-danger Unconfirmed
 
                     div.card-body
                       if (true)
