@@ -66,6 +66,7 @@ module.exports = {
   difficultyAdjustmentBlockCount: 1,
   maxSupply: new Decimal(20999817.31308491), // ref: https://bitcoin.stackexchange.com/a/38998
   targetBlockTimeSeconds: 600,
+  targetBlockTimeMinutes: 10,
   currencyUnits:currencyUnits,
   currencyUnitsByName:{"BCH":currencyUnits[0], "mBCH":currencyUnits[1], "bits":currencyUnits[2], "sat":currencyUnits[3]},
   baseCurrencyUnit:currencyUnits[3],
