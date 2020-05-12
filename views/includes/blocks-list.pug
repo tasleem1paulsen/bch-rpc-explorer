@@ -122,7 +122,7 @@ div.table-responsive
 							include ./value-display.pug
 
 						td.data-cell.text-monospace.text-right
-							- var currencyValue = new Decimal(block.totalFees).toDecimalPlaces(2);
+							- var currencyValue = new Decimal(block.totalFees).toDecimalPlaces(9);
 							- var currencyValueDecimals = 2;
 							include ./value-display.pug
 							
