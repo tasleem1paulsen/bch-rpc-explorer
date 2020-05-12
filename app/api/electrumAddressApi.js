@@ -1,5 +1,5 @@
 var debug = require("debug");
-var debugLog = debug("btcexp:electrumx");
+var debugLog = debug("bchexp:electrumx");
 
 var config = require("./../config.js");
 var coins = require("../coins.js");

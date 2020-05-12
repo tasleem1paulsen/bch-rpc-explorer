@@ -10,7 +10,8 @@ div.mb-2
 
 	if (result.getblock.nextblockhash)
 		a.btn.btn-sm.btn-primary.mb-1(href=("/block/" + result.getblock.nextblockhash)) Next Block: 
-			span.text-monospace ##{(result.getblock.height + 1).toLocaleString()} &raquo; 
+			span.text-monospace ##{(result.getblock.height + 1).toLocaleString()}
+			span  &raquo;
 	else
 		a.btn.btn-sm.btn-secondary.disabled.mb-1 Next Block: N/A 
 			small (latest block)
@@ -24,12 +25,12 @@ ul.nav.nav-tabs.mb-3
 - var txCount = result.getblock.tx.length;
 
 div.tab-content
-	div(id="tab-details", class="tab-pane active", role="tabpanel")
+	div.tab-pane.active(id="tab-details", role="tabpanel")
 		if (global.specialBlocks && global.specialBlocks[result.getblock.hash])
-			div(class="alert alert-primary shadow-sm", style="padding-bottom: 0;")
-				div(class="float-left", style="width: 55px; height: 55px; font-size: 18px;")
-					i(class="fas fa-certificate fa-2x", style="margin-top: 10px;")
-				h4(class="alert-heading h6 font-weight-bold") #{coinConfig.name} Fun
+			div.alert.alert-primary.shadow-sm.pb-0
+				div.float-left(style="width: 55px; height: 55px; font-size: 18px;")
+					i.fas.fa-certificate.fa-2x(style="margin-top: 10px;")
+				h4.alert-heading.h6.font-weight-bold #{coinConfig.name} Fun
 
 				// special transaction info
 				- var sbInfo = global.specialBlocks[result.getblock.hash];
@@ -70,17 +71,21 @@ div.tab-content
 									- var timeAgoTime = result.getblock.time;
 									span.text-muted.ml-2 (
 										include ./time-ago-text.pug
-										span )
+										span ago)
 
 
 							if (result.blockstats)
 								div.row
 									div(class=sumTableLabelClass)
-										span.border-dotted(title="Total value of all transaction outputs (excluding the coinbase transaction)", data-toggle="tooltip")
+										span.border-dotted(title="Total value of all transaction outputs", data-toggle="tooltip")
 											span Total Output
 									div.text-monospace(class=sumTableValueClass)
-										- var currencyValue = new Decimal(result.blockstats.total_out).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
-										include ./value-display.pug
+										if (result.blockstats.total_out)
+											- var currencyValue = new Decimal(result.blockstats.total_out).plus(new Decimal(result.blockstats.totalfee)).plus(new Decimal(result.blockstats.subsidy));
+											- currencyValue = currencyValue.dividedBy(coinConfig.baseCurrencyUnit.multiplier);
+											include ./value-display.pug
+										else
+											span 0
 
 							if (result.blockstats)
 								div.row
@@ -90,9 +95,17 @@ div.tab-content
 											span.text-muted.font-weight-normal.mx-1 /
 											span Out #
 									div.text-monospace(class=sumTableValueClass)
-										span #{result.blockstats.ins.toLocaleString()}
+										if (result.blockstats.ins)
+											span #{result.blockstats.ins.toLocaleString()}
+										else
+											span 0
+										
 										span.text-muted.mx-1 /
-										span #{result.blockstats.outs.toLocaleString()}
+
+										if (result.blockstats.total_out)
+											span #{result.blockstats.outs.toLocaleString()}
+										else
+											span 1
 
 							if (result.blockstats)
 								div.row
@@ -103,18 +116,32 @@ div.tab-content
 										- var sizePlusMinus = (result.blockstats.utxo_size_inc > 0) ? "+" : "-";
 										- var sizeDeltaData = utils.formatLargeNumber(Math.abs(result.blockstats.utxo_size_inc), 1);
 										- var plusMinus = (result.blockstats.utxo_increase > 0) ? "+" : "";
-										span #{plusMinus}#{result.blockstats.utxo_increase.toLocaleString()} 
-											span.text-muted (#{sizePlusMinus}#{sizeDeltaData[0]} #{sizeDeltaData[1].abbreviation}B)
+										if (result.blockstats.utxo_increase)
+											span #{plusMinus}#{result.blockstats.utxo_increase.toLocaleString()} 
+												span.text-muted (#{sizePlusMinus}#{sizeDeltaData[0]}
+													small #{sizeDeltaData[1].abbreviation}B)
+													span )
+										else
+											span 0
 
-							if (result.blockstats)
+							if (result.blockstats && result.blockstats.maxtxsize)
 								div.row
-									div(class=sumTableLabelClass) Min - Max Tx Size
+									div(class=sumTableLabelClass) Min, Max Tx Size
 									div.text-monospace(class=sumTableValueClass)
-										span #{result.blockstats.mintxsize.toLocaleString()}
-										span.text-muted.mx-1 -
-										span #{result.blockstats.maxtxsize.toLocaleString()} B
+										if (result.blockstats.mintxsize)
+											span #{result.blockstats.mintxsize.toLocaleString()}
+										else
+											span 0
 
-							- var blockRewardMax = coinConfig.blockRewardFunction(result.getblock.height, global.activeBlockchain);
+										span.text-muted.mx-1 -
+
+										if (result.blockstats.maxtxsize)
+											span #{result.blockstats.maxtxsize.toLocaleString()} 
+											small B
+										else
+											span 0
+
+							- var blockRewardMax = coinConfig.blockRewardFunction(result.getblock.height, activeBlockchain);
 							- var coinbaseTxTotalOutputValue = new Decimal(0);
 							each vout in result.getblock.coinbaseTx.vout
 								- coinbaseTxTotalOutputValue = coinbaseTxTotalOutputValue.plus(new Decimal(vout.value));
@@ -122,7 +149,7 @@ div.tab-content
 							if (parseFloat(coinbaseTxTotalOutputValue) < blockRewardMax)
 								div.row
 									div(class=sumTableLabelClass)
-										span.border-dotted(data-toggle="tooltip" title="The miner of this block failed to collect this value. As a result, it is lost.") Fees Destroyed
+										span.border-dotted(data-toggle="tooltip" title="The miner of this block failed to collect this value. As a result, it is permanently lost.") Fees Destroyed
 									div.text-monospace.text-danger(class=sumTableValueClass)
 										- var currencyValue = new Decimal(blockRewardMax).minus(coinbaseTxTotalOutputValue);
 										include ./value-display.pug
@@ -131,23 +158,35 @@ div.tab-content
 								div.row
 									div(class=sumTableLabelClass) Weight
 									div.text-monospace(class=sumTableValueClass)
-										span(style="") #{result.getblock.weight.toLocaleString()} wu 
+										span(style="") #{result.getblock.weight.toLocaleString()}
+											small wu 
 
 										span.text-muted  (#{new Decimal(100 * result.getblock.weight / coinConfig.maxBlockWeight).toDecimalPlaces(2)}% full)
 										
 
 								div(class=sumTableLabelClass) Size
-								div.text-monospace(class=sumTableValueClass) #{result.getblock.size.toLocaleString()} bytes
+								div.text-monospace(class=sumTableValueClass) #{result.getblock.size.toLocaleString()} 
+									small B
+
+							if (result.getblock.miner)
+								div.row
+									div.summary-split-table-label Miner
+									div.summary-split-table-content.text-monospace.mb-0
+										if (result.getblock.miner.identifiedBy)
+											small.data-tag.bg-primary(data-toggle="tooltip", title=("Identified by: " + result.getblock.miner.identifiedBy)) #{result.getblock.miner.name}
+
+										else
+											small.data-tag.bg-primary #{result.getblock.miner.name}
 
 							div.row
 								div(class=sumTableLabelClass) Confirmations
 								div.text-monospace(class=sumTableValueClass)
 									if (result.getblock.confirmations < 6)
-										span(class="font-weight-bold text-warning") #{result.getblock.confirmations.toLocaleString()} 
+										span.font-weight-bold.text-warning #{result.getblock.confirmations.toLocaleString()} 
 											a(data-toggle="tooltip", title="Fewer than 6 confirmations is generally considered 'unsettled' for high-value transactions. The applicability of this guidance may vary.")
-												i(class="fas fa-unlock-alt")
+												i.fas.fa-unlock-alt
 									else
-										span(class="font-weight-bold text-success font-weight-bold") #{result.getblock.confirmations.toLocaleString()} 
+										span.font-weight-bold.text-success #{result.getblock.confirmations.toLocaleString()} 
 											a(data-toggle="tooltip", title="6 confirmations is generally considered 'settled'. High-value transactions may require more; low-value transactions may require less.")
 												i.fas.fa-lock
 
@@ -162,8 +201,13 @@ div.tab-content
 								div.row
 									div.summary-split-table-label Total
 									div.summary-split-table-content.text-monospace
+										if (result.blockstats.totalfee)
+											- var currencyValue = new Decimal(result.blockstats.totalfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
+											include ./value-display.pug
+
+										else
 										- var currencyValue = new Decimal(result.getblock.totalFees);
-										include ./value-display.pug
+											include ./value-display.pug
 
 								if (result.blockstats)
 									div.row
@@ -183,47 +227,91 @@ div.tab-content
 									div.row
 										div.summary-split-table-label Average Rate
 										div.summary-split-table-content.text-monospace
-											- var currencyValue = new Decimal(result.getblock.totalFees).dividedBy(result.getblock.size).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1);
-											span #{currencyValue} sat/B
-											br
-											span.text-muted (
-												- var currencyValue = new Decimal(result.getblock.totalFees).dividedBy(result.getblock.tx.length);
+											if (result.blockstats.totalfee)
+												- var currencyValue = new Decimal(result.blockstats.totalfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
 												include ./value-display.pug
-												span )
 
-								if (result.blockstats)
-									div.row
-										div.summary-split-table-label Median Rate
-										div.summary-split-table-content.text-monospace
-											- var medianFeeRate = new Decimal(result.blockstats.feerate_percentiles[2]).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1).toLocaleString();
-											span #{medianFeeRate} sat/B
+											else
+												- var currencyValue = new Decimal(result.getblock.totalFees);
+												include ./value-display.pug
 
-								if (result.blockstats)
-									div.row
-										div.summary-split-table-label Min, Max Rate
-										div.summary-split-table-content.text-monospace
-											- var currencyValue = new Decimal(result.blockstats.minfeerate).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1).toLocaleString();
-											span #{currencyValue}
-											
-											span.text-muted.mx-1 -
+									if (result.blockstats)
+										div.row
+											div.summary-split-table-label Rate Percentiles
+												br
+												small.font-weight-normal (sat/B)
+											div.summary-split-table-content.text-monospace
+												div.clearfix
+													each item, itemIndex in [10, 25, 50, 75, 90]
+														div.float-left.mr-3
+															span.font-weight-bold #{item}%
+															br
 
-											- var currencyValue = new Decimal(result.blockstats.maxfeerate).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1).toLocaleString();
-											span #{currencyValue}
+															if (result.blockstats.feerate_percentiles)
+																span #{JSON.stringify(result.blockstats.feerate_percentiles[itemIndex])}
+															else
+																span -
 
-											small.ml-1 sat/B
+									if (result.getblock.totalFees > 0)
+										div.row
+											div.summary-split-table-label
+												span.border-dotted(title="These are the fee rates (fee per tx weight) for transactions in this block - min, avg, and max.", data-toggle="tooltip") Fee Rates
+												br
+												small (min, avg, max)
+												
+											div.summary-split-table-content.text-monospace
+												if (result.blockstats.minfeerate)
+													span #{result.blockstats.minfeerate.toLocaleString()}
+													small.ml-1 sat/B
+												else
+													span ?
 
-								if (result.blockstats)
-								div.row
-										div.summary-split-table-label
-											span.border-dotted(title="These are the min and max fees for individual transactions included in this block.", data-toggle="tooltip") Min, Max Fee
-										div.summary-split-table-content.text-monospace
-											- var currencyValue = new Decimal(result.blockstats.minfee);
-											include ./value-display.pug
-											
-											br
+												br
 
-											- var currencyValue = new Decimal(result.blockstats.maxfee);
-											include ./value-display.pug
+												if (result.blockstats.avgfeerate)
+													span #{result.blockstats.avgfeerate.toLocaleString()}
+													small.ml-1 sat/B
+
+												else
+												- var currencyValue = new Decimal(result.getblock.totalFees).dividedBy(result.getblock.size).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1);
+												span #{currencyValue} 
+
+												br
+
+												if (result.blockstats.maxfeerate)
+													span #{result.blockstats.maxfeerate.toLocaleString()}
+													small.ml-1 sat/B
+												else
+													span ?
+
+									if (result.blockstats)
+										div.row
+											div.summary-split-table-label
+												span.border-dotted(title="These are the overall fee values (min, avg, max) for transactions included in this block. The min and max values correspond to specific transactions in this block; the avg is an estimate.", data-toggle="tooltip") Fee Values
+												br
+												small (min, avg, max)
+											div.summary-split-table-content.text-monospace
+												if (result.blockstats.minfee)
+													- var currencyValue = new Decimal(result.blockstats.minfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
+													include ./value-display.pug
+												else
+													span 0
+
+												br
+
+												if (result.blockstats.avgfee)
+													- var currencyValue = new Decimal(result.blockstats.avgfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
+													include ./value-display.pug
+												else
+													span 0
+												
+												br
+
+												if (result.blockstats.maxfee)
+													- var currencyValue = new Decimal(result.blockstats.maxfee);
+													include ./value-display.pug
+												else
+													span 0
 
 		div.card.shadow-sm.mb-3
 			div.card-body.px-2.px-md-3
@@ -276,36 +364,25 @@ div.tab-content
 									span #{chainworkData[0]}
 									span  x 10
 									sup #{chainworkData[1].exponent}
-									span  hashes
+									small hashes
 									
 									span.text-muted  (#{result.getblock.chainwork.replace(/^0+/, '')})
-
-							if (result.getblock.miner)
-								div.row
-									div.summary-split-table-label Miner
-									div.summary-split-table-content.text-monospace.mb-0
-										if (result.getblock.miner)
-											if (result.getblock.miner.identifiedBy)
-												small.data-tag.bg-primary(data-toggle="tooltip", title=("Identified by: " + result.getblock.miner.identifiedBy)) #{result.getblock.miner.name}
-
-											else
-												small.data-tag.bg-primary #{result.getblock.miner.name}
-											span ? 
-											span(data-toggle="tooltip", title="Unable to identify miner")
-												i.fas.fa-info-circle
+									
 
 		div.card.shadow-sm.mb-3
 			div.card-body.px-2.px-md-3
 				div.row
 					div.col-md-4
-						h2.h6.mb-0 #{txCount.toLocaleString()} 
+						h2.h6.mb-0.d-inline-block #{txCount.toLocaleString()} 
 							if (txCount == 1)
 								span Transaction
 							else
 								span Transactions
 
+						a.ml-2.border-dotted(href=`/block-analysis/${result.getblock.hash}`, title="See a summary analysis of all transactions in this block.", data-toggle="tooltip") See Block Analysis &raquo;
+
 					if (false || (!config.demoSite && !crawlerBot && txCount > 20))
-						div(class="col-md-8 text-right")
+						div.col-md-8.text-right
 							small.mr-1.text-muted Show
 							div.btn-group(role="group")
 								a.btn.btn-sm.btn-primary.px-2.py-0(href=(paginationBaseUrl + "?limit=20"), class=((limit == 20 && txCount > limit) ? "active" : false)) 20
@@ -330,7 +407,7 @@ div.tab-content
 						div.card.shadow-sm(class=(" " + ((txIndex < (result.transactions.length - 1) || txCount > limit) ? "mb-3" : "")))
 							div.card-header.text-monospace
 								if (tx && tx.txid)
-									span ##{(txIndex + offset + 1).toLocaleString()}
+									span(title=`Index in Block: #${(txIndex + offset).toLocaleString()}`, data-toggle="tooltip") ##{(txIndex + offset).toLocaleString()}
 									span  &ndash; 
 									a(href=("/tx/" + tx.txid)) #{tx.txid}
 
@@ -365,7 +442,7 @@ div.tab-content
 
 						include ./pagination.pug
 					
-	div(id="tab-json", class="tab-pane", role="tabpanel")
+	div.tab-pane(id="tab-json", role="tabpanel")
 		- var blockDetails = JSON.parse(JSON.stringify(result.getblock));
 		- blockDetails.tx = "See 'Transaction IDs'";
 
@@ -381,15 +458,33 @@ div.tab-content
 
 		div.tab-content
 			div.tab-pane.active(id="tab-json-block-summary", role="tabpanel")
-				pre
-					code.json.bg-light #{JSON.stringify(blockDetails, null, 4)}
+				div.card.shadow-sm.mb-3
+					div.card-body
+						h4.h6.mb-0 Block Summary
+						hr
+
+						div.highlight
+							pre
+								code.json.bg-light #{JSON.stringify(blockDetails, null, 4)}
 
 			div.tab-pane(id="tab-json-tx-ids", role="tabpanel")
-				pre
-					code.json.bg-light #{JSON.stringify(result.getblock.tx, null, 4)}
+				div.card.shadow-sm.mb-3
+					div.card-body
+						h4.h6.mb-0 Transaction IDs
+						hr
+
+						div.highlight
+							pre
+								code.json.bg-light #{JSON.stringify(result.getblock.tx, null, 4)}
 
 			if (result.blockstats)
 				div.tab-pane(id="tab-json-blockstats", role="tabpanel")
-					pre
-						code.json.bg-light #{JSON.stringify(result.blockstats, null, 4)}
+					div.card.shadow-sm.mb-3
+						div.card-body
+							h4.h6.mb-0 Block Stats
+							hr
+
+							div.highlight
+								pre
+									code.json.bg-light #{JSON.stringify(result.blockstats, null, 4)}
 

@@ -1,6 +1,6 @@
-- var colClass = "col-lg-6 px-3";
-if (exchangeRates)
-	- colClass = "col-lg-4 px-3";
+- var colClass = "col-lg-6 px-2";
+if (exchangeRates || networkVolume)
+	- colClass = "col-lg-4 px-2";
 
 - var utxoCalculatingDesc = "At startup the app pulls a summary of the UTXO set. Until this summary is retrieved this data can't be displayed. Wait for the summary request to your node to return, then refresh this page.";
 
@@ -12,7 +12,7 @@ div.row.index-summary
 		- var hashrate7dayData0 = utils.formatLargeNumber(hashrate7d, 0);
 		- var hashrate1dayData1 = utils.formatLargeNumber(hashrate1d, 1);
 		- var hashrate7dayData1 = utils.formatLargeNumber(hashrate7d, 1);
-		table.table.table-borderless.table-sm.table-hover
+		table.table.table-borderless.table-sm.table-hover.mb-lg-0
 			tbody
 				tr
 					th.px-2.px-lg-0.px-xl-2
@@ -50,7 +50,7 @@ div.row.index-summary
 
 				tr
 					th.px-2.px-lg-0.px-xl-2
-						i.fas.fa-unlock-alt.mr-1.summary-icon
+						i.fas.fa-unlock.mr-1.summary-icon
 						span Unconfirmed Txns
 					td.text-right.text-monospace
 						- var colorClass = "text-success";
@@ -61,11 +61,59 @@ div.row.index-summary
 
 						span(class=colorClass) #{mempoolInfo.size.toLocaleString()}
 
+				//tr
+				//	th.px-2.px-lg-0.px-xl-2
+				//		i.fas.fa-bullseye.mr-1.summary-icon
+				//		span.border-dotted(title="Current fee estimates (using 'estimatesmartfee') for getting a transaction included in 1 block, 6 blocks (1 hr), 144 blocks (1 day), or 1,008 blocks (1 week).", data-toggle="tooltip") Fee Targets
+				//		if (false)
+				//			small.ml-1 (1/h/d/w)
+				//	td.text-right.text-monospace #{smartFeeEstimates[1]}
+				//		small.d-md-none  
+				//		small.text-muted /
+				//		span #{smartFeeEstimates[6]}
+				//		small.text-muted /
+				//		span #{smartFeeEstimates[144]}
+				//		small.text-muted /
+				//		span #{smartFeeEstimates[1008]}
+				//		small  sat/vB
+
+				// estimate time for next block given current difficulty and
+				// current Hp (estimate via chainwork between blocks).
+				// that said this does not make sense for BCH since we recalculate
+				// difficulty and target for every new block.
+				// https://gitlab.com/bitcoin-cash-node/bchn-sw/bitcoincash-upgrade-specifications/-/blob/master/spec/nov-13-hardfork-spec.md#difficulty-adjustment-algorithm-description
+				// comment it out until we figure out to put something out there that makes sense for BCH
+
+				//tr
+				//	th.px-2.px-lg-0.px-xl-2
+				//		i.fas.fa-clock.mr-1.summary-icon
+				//		span.border-dotted(title=`Average block time for blocks in the current difficulty epoch (#${difficultyPeriod}). The difference between the target (${coinConfig.targetBlockTimeMinutes}min) and this time indicates how the difficulty will adjust for the next epoch.`, data-toggle="tooltip") Block Time
+				//		small.ml-1 (e#{difficultyPeriod.toLocaleString()})
+				//	td.text-right.text-monospace
+				//		- var firstBlockHeader = difficultyPeriodFirstBlockHeader;
+				//		- var currentBlock = latestBlocks[0];
+				//		- var heightDiff = currentBlock.height - firstBlockHeader.height;
+				//		- var timeDiff = currentBlock.mediantime - firstBlockHeader.mediantime;
+				//		- var timePerBlock = timeDiff / heightDiff;
+				//		- var timePerBlockDuration = moment.duration(timePerBlock * 1000);
+
+				//		if (timePerBlock > 600)
+				//			- var diffAdjPercent = new Decimal(timeDiff / heightDiff / 600).times(100).minus(100);
+				//			- var diffAdjText = `Prediction for next difficulty adjustment (in ${blocksUntilDifficultyAdjustment} block${blocksUntilDifficultyAdjustment == 1 ? "" : "s"}): -${diffAdjPercent.toDP(1)}%`;
+				//			- var diffAdjSign = "-";
+				//		else
+				//			- var diffAdjPercent = new Decimal(100).minus(new Decimal(timeDiff / heightDiff / 600).times(100));
+				//			- var diffAdjText = `Prediction for next difficulty adjustment (in ${blocksUntilDifficultyAdjustment} block${blocksUntilDifficultyAdjustment == 1 ? "" : "s"}): +${diffAdjPercent.toDP(1)}%`;
+				//			- var diffAdjSign = "+";
+
+				//		span.border-dotted(title=diffAdjText, data-toggle="tooltip") #{timePerBlockDuration.format()}
+				//			small.text-muted.ml-1 (#{diffAdjSign}#{diffAdjPercent.toDP(1)}%)
+								
 
 	div(class=colClass)
 		h5.h6 Blockchain
 
-		table.table.table-borderless.table-sm.table-hover
+		table.table.table-borderless.table-sm.table-hover.mb-lg-0
 			tbody
 				tr
 					th.px-2.px-lg-0.px-xl-2
@@ -73,8 +121,10 @@ div.row.index-summary
 						//span Total Transactions
 						span Total Txs
 					td.text-right.text-monospace
-						- var totalTxData = utils.formatLargeNumber(txStats.totalTxCount, 2);
-						span.border-dotted(title=`${txStats.totalTxCount.toLocaleString()}`, data-toggle="tooltip") #{totalTxData[0]} #{totalTxData[1].abbreviation}
+						if (txStats && txStats.totalTxCount)
+							span #{txStats.totalTxCount.toLocaleString()}
+						else
+							span ???
 
 				if (getblockchaininfo.size_on_disk)
 					- var sizeData = utils.formatLargeNumber(getblockchaininfo.size_on_disk, 2);
@@ -131,56 +181,72 @@ div.row.index-summary
 							span Total Supply
 						td.text-right.text-monospace
 							if (utxoSetSummary)
-								span.border-dotted(title=`${new Decimal(utxoSetSummary.total_amount).dividedBy(coinConfig.maxSupply).times(100).toDP(4)}% produced`, data-toggle="tooltip") #{parseFloat(utxoSetSummary.total_amount).toLocaleString()}
+								- var maxSupply = coinConfig.maxSupplyByNetwork[activeBlockchain];
+
+								span.border-dotted(title=`${new Decimal(utxoSetSummary.total_amount).dividedBy(maxSupply).times(100).toDP(4)}% produced`, data-toggle="tooltip") #{parseFloat(utxoSetSummary.total_amount).toLocaleString()}
 							else
 								small.text-muted.border-dotted(title=utxoCalculatingDesc, data-toggle="tooltip") calculating...
 
 
-	if (exchangeRates)
+	if (networkVolume || exchangeRates)
 		div(class=colClass)
 			h5.h6 Financials
 
-			table.table.table-borderless.table-sm.table-hover
+			table.table.table-borderless.table-sm.table-hover.mb-lg-0
 				tbody
-					tr
-						th.px-2.px-lg-0.px-xl-2
-							i.fas.fa-money-bill-wave-alt.mr-1.summary-icon
-							span.border-dotted(data-toggle="tooltip", title=("Exchange-rate data from: " + coinConfig.exchangeRateData.jsonUrl)) Exchange Rate
-						td.text-right.text-monospace
-							span #{utils.formatValueInActiveCurrency(1.0)}
-
-					tr
-						th.px-2.px-lg-0.px-xl-2
-							i.fab.fa-btc.mr-1.summary-icon
-							span Sats Rate
-						td.text-right.text-monospace
-							- var satsRateData = utils.satoshisPerUnitOfActiveCurrency();
-							span #{satsRateData.amt}
-								small  #{satsRateData.unit}
-
-					if (utxoSetSummary || utxoSetSummaryPending)
+					if (exchangeRates)
 						tr
 							th.px-2.px-lg-0.px-xl-2
-								i.fas.fa-globe.mr-1.summary-icon
-								span Market Cap
+								i.fas.fa-money-bill-wave-alt.mr-1.summary-icon
+								span.border-dotted(data-toggle="tooltip", title=("Exchange-rate data from: " + coinConfig.exchangeRateData.jsonUrl)) Exchange Rate
 							td.text-right.text-monospace
-								if (utxoSetSummary)
-									- var activeCurrency = global.currencyFormatType.length > 0 ? global.currencyFormatType : "usd";
-									- var xxx = utils.formatLargeNumber(parseFloat(utxoSetSummary.total_amount) * exchangeRates[activeCurrency], 1);
+								span #{utils.formatValueInActiveCurrency(1.0)}
 
-									if (activeCurrency == "eur")
-										span €
+					if (exchangeRates)
+						tr
+							th.px-2.px-lg-0.px-xl-2
+								i.fab.fa-btc.mr-1.summary-icon
+								span Sats Rate
+							td.text-right.text-monospace
+								- var satsRateData = utils.satoshisPerUnitOfActiveCurrency();
+								span #{satsRateData.amt}
+									small  #{satsRateData.unit}
+
+					if (exchangeRates)
+						if (utxoSetSummary || utxoSetSummaryPending)
+							tr
+								th.px-2.px-lg-0.px-xl-2
+									i.fas.fa-globe.mr-1.summary-icon
+									span Market Cap
+								td.text-right.text-monospace
+									if (utxoSetSummary)
+										- var activeCurrency = global.currencyFormatType.length > 0 ? global.currencyFormatType : "usd";
+										- var xxx = utils.formatLargeNumber(parseFloat(utxoSetSummary.total_amount) * exchangeRates[activeCurrency], 1);
+
+										if (activeCurrency == "eur")
+											span €
+										else
+											span $
+
+										span #{xxx[0]}
+										if (xxx[1].textDesc)
+											span  #{xxx[1].textDesc}
+										else
+											span  x 10
+											sup #{xxx[1].exponent}
+										// ["154.9",{"val":1000000000,"name":"giga","abbreviation":"G","exponent":"9"}]
+
 									else
-										span $
+										small.text-muted.border-dotted(title=utxoCalculatingDesc, data-toggle="tooltip") calculating...
 
-									span #{xxx[0]}
-									if (xxx[1].textDesc)
-										span  #{xxx[1].textDesc}
-									else
-										span  x 10
-										sup #{xxx[1].exponent}
-									// ["154.9",{"val":1000000000,"name":"giga","abbreviation":"G","exponent":"9"}]
+					if (networkVolume)
+						tr
+							th.px-2.px-lg-0.px-xl-2
+								i.fas.fa-history.mr-1.summary-icon
+								span.border-dotted(title=`Total output of all transactions over the last 24 hrs (blocks: [#${networkVolume.d1.endBlock.toLocaleString()} - #${networkVolume.d1.startBlock.toLocaleString()}]).`, data-toggle="tooltip") Volume
+								small.ml-1 (24h)
+							td.text-right.text-monospace
+								- var currencyValue = parseInt(networkVolume.d1.amt);
+								- var currencyValueDecimals = 0;
+								include ./value-display.pug
 
-								else
-									small.text-muted.border-dotted(title=utxoCalculatingDesc, data-toggle="tooltip") calculating...
-								

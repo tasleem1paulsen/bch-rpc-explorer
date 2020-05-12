@@ -22,8 +22,7 @@ div.row.text-monospace
 					- var vout = null;
 					if (txInputs && txInputs[txVinIndex])
 						- var txInput = txInputs[txVinIndex];
-						if (txInput.vout && txInput.vout[txVin.vout])
-							- var vout = txInput.vout[txVin.vout];
+						- var vout = txInput;
 
 				if (txVin.coinbase || vout)
 					div.clearfix
@@ -31,7 +30,12 @@ div.row.text-monospace
 							a(data-toggle="tooltip", title=("Input #" + txVinIndex.toLocaleString()), style="white-space: nowrap;")
 								span.font-weight-bold &gt; 
 								small.d-inline.d-md-none Input 
-								span ##{txVinIndex.toLocaleString()}
+								
+								if (tx.vin.length > 999)
+									small.word-wrap ##{txVinIndex}
+								else
+									span ##{txVinIndex.toLocaleString()}
+									
 								if (tx.vin.length > 0)
 									small.d-inline.d-md-none.font-weight-light.text-muted  / #{(tx.vin.length - 1).toLocaleString()}
 
@@ -39,11 +43,26 @@ div.row.text-monospace
 							div.clearfix
 								div.tx-io-desc
 									if (txVin.coinbase)
-										small.data-tag.bg-primary.mr-2 coinbase
-										span Newly minted coins
+										small.data-tag.bg-success.mr-2(title="Coinbase transactions are special transactions created by the miner of a block. They distribute the block reward (subsidy) as the miner chooses, along with all of the fees paid by transactions included in the block.", data-toggle="tooltip") coinbase
+										
+										div.pt-1
+											small.font-weight-bold(tistle="ASCII encoded", data-toggle="tooltip") data
+											small (ascii) - 
+											small #{utils.hex2ascii(txVin.coinbase)}
+											br
+											small
+												a(href="javascript:void(0)" onclick="$('#coinbase-data-hex').show(); $(this).hide(); return false;") show raw
+
+										div(id="coinbase-data-hex", style="display: none;")
+											small.font-weight-bold data
+											small (hex) - 
+											small.word-wrap #{txVin.coinbase}
+
+
 									else
 										div.word-wrap
-											small.data-tag.bg-dark.mr-2 txo
+											small.data-tag.bg-dark.mr-2
+												span(title=`Input Type: ${utils.outputTypeName(vout.scriptPubKey.type)}`, data-toggle="tooltip") #{utils.outputTypeAbbreviation(vout.scriptPubKey.type)}
 											a(href=("/tx/" + txInput.txid + "#output-" + txVin.vout)) #{utils.ellipsize(txInput.txid, 26)}
 												span  ##{txVin.vout}
 
@@ -74,7 +93,7 @@ div.row.text-monospace
 
 								div.tx-io-value
 									if (txVin.coinbase)
-										- var currencyValue = coinConfig.blockRewardFunction(blockHeight, global.activeBlockchain);
+										- var currencyValue = coinConfig.blockRewardFunction(blockHeight, activeBlockchain);
 										include ./value-display.pug
 									else
 										if (vout && vout.value)
@@ -143,7 +162,12 @@ div.row.text-monospace
 						a(data-toggle="tooltip", title=("Output #" + voutIndex.toLocaleString()), style="white-space: nowrap;")
 							span.font-weight-bold &lt; 
 							small.d-inline.d-md-none Output 
-							span ##{voutIndex.toLocaleString()}
+							
+							if (tx.vout.length > 999)
+								small.word-wrap ##{voutIndex}
+							else
+								span ##{voutIndex.toLocaleString()}
+							
 							if (tx.vout.length > 0)
 								small.d-inline.d-md-none.font-weight-light.text-muted  / #{(tx.vout.length - 1).toLocaleString()}
 
@@ -155,18 +179,7 @@ div.row.text-monospace
 										if (true)
 											div.mb-tiny
 												small.data-tag.bg-dark
-													if (vout.scriptPubKey.type == "pubkey")
-														span(title="Output Type: Pay to Public Key", data-toggle="tooltip") p2pk
-													else if (vout.scriptPubKey.type == "pubkeyhash")
-														span(title="Output Type: Pay to Public Key Hash", data-toggle="tooltip") p2pkh
-													else if (vout.scriptPubKey.type == "scripthash")
-														span(title="Output Type: Pay to Script Hash", data-toggle="tooltip") p2sh
-													else if (vout.scriptPubKey.type == "witness_v0_keyhash")
-														span(title="Output Type: Witness, v0 Key Hash", data-toggle="tooltip") v0_p2wpkh
-													else if (vout.scriptPubKey.type == "witness_v0_scripthash")
-														span(title="Output Type: Witness, v0 Script Hash", data-toggle="tooltip") v0_p2wsh
-													else
-														span ???
+													span(title=`Output Type: ${utils.outputTypeName(vout.scriptPubKey.type)}`, data-toggle="tooltip") #{utils.outputTypeAbbreviation(vout.scriptPubKey.type)}
 
 										each addr in vout.scriptPubKey.addresses
 											a(id=("output-" + voutIndex), href=("/address/" + addr))
@@ -184,39 +197,54 @@ div.row.text-monospace
 									else if (vout.scriptPubKey.hex && vout.scriptPubKey.hex.startsWith('6a24aa21a9ed'))
 										div.mb-tiny
 											small.data-tag.bg-primary OP_RETURN
-											
-										small.text-muted (SegWit committment - 
-											a(href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#commitment-structure", data-toggle="tooltip", title="View developer docs", target="_blank") about
-											span )
+										
+										div
+											small.text-muted (SegWit committment - 
+												a(href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#commitment-structure", data-toggle="tooltip", title="View developer docs", target="_blank") about
+												span )
+
+											br
+											small
+												a(href="javascript:void(0)" onclick=`$('#op-return-hex-${tx.txid}-${vout.n}').show(); $(this).hide(); return false;`) show raw
+
+										div(id=`op-return-hex-${tx.txid}-${vout.n}`, style="display: none;")
+											small.font-weight-bold data
+											small (hex) - 
+											small.word-wrap #{vout.scriptPubKey.asm}
 
 									else if (vout.scriptPubKey.asm && vout.scriptPubKey.asm.startsWith('OP_RETURN '))
 										div.mb-tiny
 											small.data-tag.bg-primary OP_RETURN
 										
-										small #{utils.hex2ascii(vout.scriptPubKey.asm.substring("OP_RETURN ".length))}
+										div
+											small.font-weight-bold data
+											small (ascii) - 
+											small #{utils.hex2ascii(vout.scriptPubKey.asm.substring("OP_RETURN ".length))}
+											br
+											small
+												a(href="javascript:void(0)" onclick=`$('#op-return-hex-${tx.txid}-${vout.n}').show(); $(this).hide(); return false;`) show raw
+
+										div(id=`op-return-hex-${tx.txid}-${vout.n}`, style="display: none;")
+											small.font-weight-bold data
+											small (hex) -  
+											small.word-wrap #{vout.scriptPubKey.asm}
+
+
 
 									else
 										div.mb-tiny
 											small.data-tag.bg-dark
-												if (vout.scriptPubKey.type == "pubkey")
-													span(title="Output Type: Pay to Public Key", data-toggle="tooltip") p2pk
-												else if (vout.scriptPubKey.type == "pubkeyhash")
-													span(title="Output Type: Pay to Public Key Hash", data-toggle="tooltip") p2pkh
-												else if (vout.scriptPubKey.type == "scripthash")
-													span(title="Output Type: Pay to Script Hash", data-toggle="tooltip") p2sh
-												else if (vout.scriptPubKey.type == "witness_v0_keyhash")
-													span(title="Output Type: Witness, v0 Key Hash", data-toggle="tooltip") v0_p2wpkh
-												else if (vout.scriptPubKey.type == "witness_v0_scripthash")
-													span(title="Output Type: Witness, v0 Script Hash", data-toggle="tooltip") v0_p2wsh
-												else
-													span ???
+												span(title=`Output Type: ${utils.outputTypeName(vout.scriptPubKey.type)}`, data-toggle="tooltip") #{utils.outputTypeAbbreviation(vout.scriptPubKey.type)}
 
-										span
-											small.font-weight-bold asm: 
-											small #{vout.scriptPubKey.asm}
+										div
+											small.font-weight-bold asm
 											br
-											small.font-weight-bold hex: 
-											small #{vout.scriptPubKey.hex}
+											small.word-wrap #{vout.scriptPubKey.asm}
+										
+										div
+											small.font-weight-bold hex
+											br
+											small.word-wrap #{vout.scriptPubKey.hex}
 
 							div.tx-io-value
 								if (utxos)

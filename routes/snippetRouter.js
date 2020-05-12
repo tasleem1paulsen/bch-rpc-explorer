@@ -26,21 +26,13 @@ const forceCsrf = csurf({ ignoreMethods: [] });
 
 
 
-router.get("/blocks-by-height/:blockHeights", function(req, res, next) {
-	var blockHeightStrs = req.params.blockHeights.split(",");
-	
-	var blockHeights = [];
-	for (var i = 0; i < blockHeightStrs.length; i++) {
-		blockHeights.push(parseInt(blockHeightStrs[i]));
-	}
+router.get("/formatCurrencyAmount/:amt", function(req, res, next) {
+	res.locals.currencyValue = req.params.amt;
 
-	coreApi.getBlocksByHeight(blockHeights).then(function(result) {
-		res.json(result);
+	res.render("includes/value-display");
 
-		next();
-	});
+	next();
 });
-
 
 
 module.exports = router;

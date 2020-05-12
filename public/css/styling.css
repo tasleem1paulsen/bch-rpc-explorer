@@ -20,20 +20,16 @@ code, .text-monospace {
 	font-family: "Source Code Pro", monospace !important;
 }
 
+strong {
+	font-weight: 700 !important;
+}
+
+h6, .h6 {
+	margin-bottom: 0 !important;
+}
+
 .text-small {
 	font-size: 80%;
-}
-
-.details-table td {
-	border-top: none;
-	padding: 0.4em;
-	padding-right: 0.6em;
-}
-
-.properties-header {
-	width: 160px;
-	text-align: right;
-	font-weight: bold;
 }
 
 .popover {
@@ -54,6 +50,15 @@ code, .text-monospace {
 	margin-bottom: 3px;
 }
 
+.mb-huge {
+	margin-bottom: 200px;
+}
+
+.user-message-markdown p {
+	margin-bottom: 0 !important;
+}
+
+
 
 .nav-tabs .nav-link.active {
 	background-color: transparent;
@@ -66,6 +71,7 @@ pre {
 	white-space: -pre-wrap;
 	white-space: -o-pre-wrap;
 	word-wrap: break-word;
+	margin-bottom: 0;
 }
 
 dd {
@@ -219,20 +225,20 @@ strong {
 	}
 
 	.summary-table-label {
-		max-width: 11%;
+		max-width: 13%;
 		text-align: right;
 	}
 	.summary-table-content {
-		max-width: 89%;
+		max-width: 87%;
 		margin-bottom: 5px;
 	}
 
 	.summary-split-table-label {
-		max-width: 22%;
+		max-width: 24%;
 		text-align: right;
 	}
 	.summary-split-table-content {
-		max-width: 78%;
+		max-width: 76%;
 		margin-bottom: 5px;
 	}
 

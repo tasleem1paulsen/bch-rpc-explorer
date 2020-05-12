@@ -29,38 +29,49 @@ var exponentScales = [
 ];
 
 var ipMemoryCache = {};
+
+var ipRedisCache = null;
+if (redisCache.active) {
+	var onRedisCacheEvent = function(cacheType, eventType, cacheKey) {
+		global.cacheStats.redis[eventType]++;
+		//debugLog(`cache.${cacheType}.${eventType}: ${cacheKey}`);
+	}
+
+	ipRedisCache = redisCache.createCache("v0", onRedisCacheEvent);
+}
+
 var ipCache = {
-  get:function(key) {
-    return new Promise(function(resolve, reject) {
-      if (ipMemoryCache[key] != null) {
-        resolve({key:key, value:ipMemoryCache[key]});
+	get:function(key) {
+		return new Promise(function(resolve, reject) {
+			if (ipMemoryCache[key] != null) {
+				resolve({key:key, value:ipMemoryCache[key]});
 
-        return;
-      }
+				return;
+			}
 
-      if (redisCache.active) {
-        redisCache.get("ip-" + key).then(function(redisResult) {
-          if (redisResult != null) {
-            resolve({key:key, value:redisResult});
+			if (ipRedisCache != null) {
+				ipRedisCache.get("ip-" + key).then(function(redisResult) {
+					if (redisResult != null) {
+						resolve({key:key, value:redisResult});
 
-            return;
-          }
+						return;
+					}
 
-          resolve({key:key, value:null});
-        });
+					resolve({key:key, value:null});
+				});
 
-      } else {
-        resolve({key:key, value:null});
-      }
-    });
-  },
-  set:function(key, value, expirationMillis) {
-    ipMemoryCache[key] = value;
+			} else {
+				resolve({key:key, value:null});
+			}
+		});
+	},
+	set:function(key, value, expirationMillis) {
+		ipMemoryCache[key] = value;
 
-    if (redisCache.active) {
-      redisCache.set("ip-" + key, value, expirationMillis);
-    }
-  }
+		if (ipRedisCache != null) {
+			ipRedisCache.set("ip-" + key, value, expirationMillis);
+		}
+	}
 };
 
 
@@ -93,6 +104,24 @@ function splitArrayIntoChunks(array, chunkSize) {
 
   for (var i = 0; i < j; i += chunkSize) {
     chunks.push(array.slice(i, i + chunkSize));
+  }
+
+  return chunks;
+}
+
+function splitArrayIntoChunksByChunkCount(array, chunkCount) {
+  var bigChunkSize = Math.ceil(array.length / chunkCount);
+  var bigChunkCount = chunkCount - (chunkCount * bigChunkSize - array.length);
+
+  var chunks = [];
+
+  var chunkStart = 0;
+  for (var chunk = 0; chunk < chunkCount; chunk++) {
+    var chunkSize = (chunk < bigChunkCount ? bigChunkSize : (bigChunkSize - 1));
+
+    chunks.push(array.slice(chunkStart, chunkStart + chunkSize));
+
+    chunkStart += chunkSize;
   }
 
   return chunks;
@@ -166,36 +195,36 @@ function formatCurrencyAmountWithForcedDecimalPlaces(amount, formatType, forcedD
     if (formatInfo.type == "native") {
       dec = dec.times(formatInfo.multiplier);
 
-			if (forcedDecimalPlaces >= 0) {
-				// toFixed will keep trailing zeroes
-				var baseStr = addThousandsSeparators(dec.toFixed(decimalPlaces));
+      if (forcedDecimalPlaces >= 0) {
+        // toFixed will keep trailing zeroes
+        var baseStr = addThousandsSeparators(dec.toFixed(decimalPlaces));
 
-				return {val:baseStr, currencyUnit:formatInfo.name, simpleVal:baseStr};
+        return {val:baseStr, currencyUnit:formatInfo.name, simpleVal:baseStr};
 
-			} else {
-				// toDP will strip trailing zeroes
-				var baseStr = addThousandsSeparators(dec.toDP(decimalPlaces));
+      } else {
+        // toDP will strip trailing zeroes
+        var baseStr = addThousandsSeparators(dec.toDP(decimalPlaces));
 
-				var returnVal = {currencyUnit:formatInfo.name, simpleVal:baseStr};
+        var returnVal = {currencyUnit:formatInfo.name, simpleVal:baseStr};
 
-				// max digits in "val"
-				var maxValDigits = config.site.valueDisplayMaxLargeDigits;
+        // max digits in "val"
+        var maxValDigits = config.site.valueDisplayMaxLargeDigits;
 
-				if (baseStr.indexOf(".") == -1) {
-					returnVal.val = baseStr;
+        if (baseStr.indexOf(".") == -1) {
+          returnVal.val = baseStr;
 
-				} else {
-					if (baseStr.length - baseStr.indexOf(".") - 1 > maxValDigits) {
-						returnVal.val = baseStr.substring(0, baseStr.indexOf(".") + maxValDigits + 1);
-						returnVal.lessSignificantDigits = baseStr.substring(baseStr.indexOf(".") + maxValDigits + 1);
+        } else {
+          if (baseStr.length - baseStr.indexOf(".") - 1 > maxValDigits) {
+            returnVal.val = baseStr.substring(0, baseStr.indexOf(".") + maxValDigits + 1);
+            returnVal.lessSignificantDigits = baseStr.substring(baseStr.indexOf(".") + maxValDigits + 1);
 
-					} else {
-						returnVal.val = baseStr;
-					}
-				}
+          } else {
+            returnVal.val = baseStr;
+          }
+        }
 
-				return returnVal;
-			}
+        return returnVal;
+      }
 
     } else if (formatInfo.type == "exchanged") {
       if (global.exchangeRates != null && global.exchangeRates[formatInfo.multiplier] != null) {
@@ -309,34 +338,34 @@ function seededRandomIntBetween(seed, min, max) {
 }
 
 function ellipsize(str, length, ending="…") {
-	if (str.length <= length) {
-		return str;
+  if (str.length <= length) {
+    return str;
 
-	} else {
-		return str.substring(0, length - ending.length) + ending;
-	}
+  } else {
+    return str.substring(0, length - ending.length) + ending;
+  }
 }
 
 function shortenTimeDiff(str) {
-	str = str.replace(" years", "y");
-	str = str.replace(" year", "y");
+  str = str.replace(" years", "y");
+  str = str.replace(" year", "y");
 
-	str = str.replace(" months", "m");
-	str = str.replace(" month", "m");
+  str = str.replace(" months", "mo");
+  str = str.replace(" month", "mo");
 
-	str = str.replace(" weeks", "w");
-	str = str.replace(" week", "w");
+  str = str.replace(" weeks", "w");
+  str = str.replace(" week", "w");
 
-	str = str.replace(" days", "d");
-	str = str.replace(" day", "d");
+  str = str.replace(" days", "d");
+  str = str.replace(" day", "d");
 
-	str = str.replace(" hours", "hr");
-	str = str.replace(" hour", "hr");
+  str = str.replace(" hours", "hr");
+  str = str.replace(" hour", "hr");
 
-	str = str.replace(" minutes", "min");
-	str = str.replace(" minute", "min");
+  str = str.replace(" minutes", "min");
+  str = str.replace(" minute", "min");
 
-	return str;
+  return str;
 }
 
 function logMemoryUsage() {
@@ -381,6 +410,15 @@ function getMinerFromCoinbaseTx(tx) {
           }
         }
       }
+
+      for (var blockHash in miningPoolsConfig.block_hashes) {
+        if (blockHash == tx.blockhash) {
+          var minerInfo = miningPoolsConfig.block_hashes[blockHash];
+          minerInfo.identifiedBy = "known block hash '" + blockHash + "'";
+
+          return minerInfo;
+        }
+      }
     }
   }
 
@@ -401,7 +439,7 @@ function getTxTotalInputOutputValues(tx, txInputs, blockHeight) {
 
         if (txInput) {
           try {
-            var vout = txInput.vout[tx.vin[i].vout];
+            var vout = txInput;
             if (vout.value) {
               totalInputValue = totalInputValue.plus(new Decimal(vout.value));
             }
@@ -598,10 +636,22 @@ function colorHexToHsl(hex) {
 const reflectPromise = p => p.then(v => ({v, status: "resolved" }),
                             e => ({e, status: "rejected" }));
 
+global.errorStats = {};
+
 function logError(errorId, err, optionalUserData = null) {
   if (!global.errorLog) {
     global.errorLog = [];
   }
+
+  if (!global.errorStats[errorId]) {
+    global.errorStats[errorId] = {
+      count: 0,
+      firstSeen: new Date().getTime()
+    };
+  }
+
+  global.errorStats[errorId].count++;
+  global.errorStats[errorId].lastSeen = new Date().getTime();
 
   global.errorLog.push({errorId:errorId, error:err, userData:optionalUserData, date:new Date()});
   while (global.errorLog.length > 100) {
@@ -665,12 +715,51 @@ function buildQrCodeUrl(str, results) {
   });
 }
 
+function outputTypeAbbreviation(outputType) {
+  var map = {
+    "pubkey": "p2pk",
+    "pubkeyhash": "p2pkh",
+    "scripthash": "p2sh",
+    "witness_v0_keyhash": "v0_p2wpkh",
+    "witness_v0_scripthash": "v0_p2wsh",
+    "nonstandard": "nonstandard",
+    "nulldata": "nulldata"
+  };
+
+  if (map[outputType]) {
+    return map[outputType];
+
+  } else {
+    return "???";
+  }
+}
+
+function outputTypeName(outputType) {
+  var map = {
+    "pubkey": "Pay to Public Key",
+    "pubkeyhash": "Pay to Public Key Hash",
+    "scripthash": "Pay to Script Hash",
+    "witness_v0_keyhash": "Witness, v0 Key Hash",
+    "witness_v0_scripthash": "Witness, v0 Script Hash",
+    "nonstandard": "Non-Standard",
+    "nulldata": "Null Data"
+  };
+
+  if (map[outputType]) {
+    return map[outputType];
+
+  } else {
+    return "???";
+  }
+}
+
 
 module.exports = {
   reflectPromise: reflectPromise,
   redirectToConnectPageIfNeeded: redirectToConnectPageIfNeeded,
   hex2ascii: hex2ascii,
   splitArrayIntoChunks: splitArrayIntoChunks,
+  splitArrayIntoChunksByChunkCount: splitArrayIntoChunksByChunkCount,
   getRandomString: getRandomString,
   getCurrencyFormatInfo: getCurrencyFormatInfo,
   formatCurrencyAmount: formatCurrencyAmount,
@@ -696,5 +785,7 @@ module.exports = {
   logError: logError,
   buildQrCodeUrls: buildQrCodeUrls,
   ellipsize: ellipsize,
-  shortenTimeDiff: shortenTimeDiff
+  shortenTimeDiff: shortenTimeDiff,
+  outputTypeAbbreviation: outputTypeAbbreviation,
+  outputTypeName: outputTypeName
 };
