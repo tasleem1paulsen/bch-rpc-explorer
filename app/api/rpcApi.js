@@ -189,6 +189,10 @@ function getBlockHeaderByHeight(blockHeight) {
 	});
 }
 
+function getBlockHeaderByHeightBU(blockheight) {
+	return getRpcDataWithParams({method:"getblockheader", parameters:[blockheight]});
+}
+
 function getBlockByHash(blockHash) {
 	debugLog("getBlockByHash: %s", blockHash);
 
@@ -502,6 +506,7 @@ module.exports = {
 	getBlockStatsByHeight: getBlockStatsByHeight,
 	getBlockHeaderByHash: getBlockHeaderByHash,
 	getBlockHeaderByHeight: getBlockHeaderByHeight,
+	getBlockHeaderByHeightBU: getBlockHeaderByHeightBU,
 
 	minRpcVersions: minRpcVersions
 };

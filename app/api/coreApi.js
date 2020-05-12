@@ -490,7 +490,7 @@ function getBlocksByHeight(blockHeights) {
 
 function getBlockHeaderByHeight(blockHeight) {
 	return tryCacheThenRpcApi(blockCache, "getBlockHeaderByHeight-" + blockHeight, ONE_HR, function() {
-		return rpcApi.getBlockHeaderByHeight(blockHeight);
+		return rpcApi.getBlockHeaderByHeightBU(blockHeight);
 	});
 }
 
