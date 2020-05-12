@@ -17,7 +17,7 @@ block headContent
 		#map { height: 700px; }
 
 block content
-	h1.h3 #{peerSummary.getpeerinfo.length}
+	h1.h3 #{peerSummary.getpeerinfo.length} 
 		if (peerSummary.getpeerinfo.length == 1)
 			span Peer
 		else
@@ -44,9 +44,8 @@ block content
 						div.card-body
 							h3.h6.mb-0 Top Versions
 							hr
-							hr
 
-								table.table.table-striped.table-responsive-sm
+							table.table.table-striped.table-responsive-sm
 								thead
 									tr
 										th
@@ -91,7 +90,7 @@ block content
 
 					hr
 
-						table.table.table-striped.table-responsive-sm.data-table.mt-4¶
+					table.table.table-striped.table-responsive-sm.data-table.mt-4
 						thead
 							tr
 								th
@@ -141,7 +140,7 @@ block content
 			each item, index in peerSummary.getpeerinfo
 				div.border-bottom.p-1
 					a(href="javascript:void(0)" onclick=("javascript:var peer = document.getElementById('peerinfo_" + index + "'); peer.style.display = peer.style.display === 'none' ? '' : 'none';"))
-+						i.fas.fa-plus-circle
+						i.fas.fa-plus-circle
 
 					span.text-monospace  #{item.addr}
 
