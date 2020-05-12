@@ -65,7 +65,7 @@ router.get("/", function(req, res, next) {
 	promises.push(coreApi.getMempoolInfo());
 	promises.push(coreApi.getMiningInfo());
 
-	// This is a placeholder for fee estimate inca we wouldned it in the future
+	// This is a placeholder for fee estimate in case we would need it in the future
 	promises.push(0);
 
 	promises.push(coreApi.getNetworkHashrate(144));
