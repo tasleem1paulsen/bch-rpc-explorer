@@ -1,6 +1,6 @@
 var debug = require("debug");
 
-var debugLog = debug("btcexp:core");
+var debugLog = debug("bchexp:core");
 
 var LRU = require("lru-cache");
 var fs = require('fs');

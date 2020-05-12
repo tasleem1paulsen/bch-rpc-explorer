@@ -1,5 +1,5 @@
 var debug = require("debug");
-var debugLog = debug("btcexp:router");
+var debugLog = debug("bchexp:router");
 
 var express = require('express');
 var csurf = require('csurf');
