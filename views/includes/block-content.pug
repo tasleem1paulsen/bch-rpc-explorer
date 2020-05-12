@@ -239,7 +239,7 @@ div.tab-content
 										div.row
 											div.summary-split-table-label Rate Percentiles
 												br
-												small.font-weight-normal (sat/vB)
+												small.font-weight-normal (sat/B)
 											div.summary-split-table-content.text-monospace
 												div.clearfix
 													each item, itemIndex in [10, 25, 50, 75, 90]
@@ -262,7 +262,7 @@ div.tab-content
 											div.summary-split-table-content.text-monospace
 												if (result.blockstats.minfeerate)
 													span #{result.blockstats.minfeerate.toLocaleString()}
-													small.ml-1 sat/vB
+													small.ml-1 sat/B
 												else
 													span ?
 
@@ -270,7 +270,7 @@ div.tab-content
 
 												if (result.blockstats.avgfeerate)
 													span #{result.blockstats.avgfeerate.toLocaleString()}
-													small.ml-1 sat/vB
+													small.ml-1 sat/B
 
 												else
 												- var currencyValue = new Decimal(result.getblock.totalFees).dividedBy(result.getblock.size).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1);
@@ -280,7 +280,7 @@ div.tab-content
 
 												if (result.blockstats.maxfeerate)
 													span #{result.blockstats.maxfeerate.toLocaleString()}
-													small.ml-1 sat/vB
+													small.ml-1 sat/B
 												else
 													span ?
 
