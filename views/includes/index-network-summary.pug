@@ -77,30 +77,37 @@ div.row.index-summary
 				//		span #{smartFeeEstimates[1008]}
 				//		small  sat/vB
 
-				tr
-					th.px-2.px-lg-0.px-xl-2
-						i.fas.fa-clock.mr-1.summary-icon
-						span.border-dotted(title=`Average block time for blocks in the current difficulty epoch (#${difficultyPeriod}). The difference between the target (${coinConfig.targetBlockTimeMinutes}min) and this time indicates how the difficulty will adjust for the next epoch.`, data-toggle="tooltip") Block Time
-						small.ml-1 (e#{difficultyPeriod.toLocaleString()})
-					td.text-right.text-monospace
-						- var firstBlockHeader = difficultyPeriodFirstBlockHeader;
-						- var currentBlock = latestBlocks[0];
-						- var heightDiff = currentBlock.height - firstBlockHeader.height;
-						- var timeDiff = currentBlock.mediantime - firstBlockHeader.mediantime;
-						- var timePerBlock = timeDiff / heightDiff;
-						- var timePerBlockDuration = moment.duration(timePerBlock * 1000);
+				// estimate time for next block given current difficulty and
+				// current Hp (estimate via chainwork between blocks).
+				// that said this does not make sense for BCH since we recalculate
+				// difficulty and target for every new block.
+				// https://gitlab.com/bitcoin-cash-node/bchn-sw/bitcoincash-upgrade-specifications/-/blob/master/spec/nov-13-hardfork-spec.md#difficulty-adjustment-algorithm-description
+				// comment it out until we figure out to put something out there that makes sense for BCH
 
-						if (timePerBlock > 600)
-							- var diffAdjPercent = new Decimal(timeDiff / heightDiff / 600).times(100).minus(100);
-							- var diffAdjText = `Prediction for next difficulty adjustment (in ${blocksUntilDifficultyAdjustment} block${blocksUntilDifficultyAdjustment == 1 ? "" : "s"}): -${diffAdjPercent.toDP(1)}%`;
-							- var diffAdjSign = "-";
-						else
-							- var diffAdjPercent = new Decimal(100).minus(new Decimal(timeDiff / heightDiff / 600).times(100));
-							- var diffAdjText = `Prediction for next difficulty adjustment (in ${blocksUntilDifficultyAdjustment} block${blocksUntilDifficultyAdjustment == 1 ? "" : "s"}): +${diffAdjPercent.toDP(1)}%`;
-							- var diffAdjSign = "+";
+				//tr
+				//	th.px-2.px-lg-0.px-xl-2
+				//		i.fas.fa-clock.mr-1.summary-icon
+				//		span.border-dotted(title=`Average block time for blocks in the current difficulty epoch (#${difficultyPeriod}). The difference between the target (${coinConfig.targetBlockTimeMinutes}min) and this time indicates how the difficulty will adjust for the next epoch.`, data-toggle="tooltip") Block Time
+				//		small.ml-1 (e#{difficultyPeriod.toLocaleString()})
+				//	td.text-right.text-monospace
+				//		- var firstBlockHeader = difficultyPeriodFirstBlockHeader;
+				//		- var currentBlock = latestBlocks[0];
+				//		- var heightDiff = currentBlock.height - firstBlockHeader.height;
+				//		- var timeDiff = currentBlock.mediantime - firstBlockHeader.mediantime;
+				//		- var timePerBlock = timeDiff / heightDiff;
+				//		- var timePerBlockDuration = moment.duration(timePerBlock * 1000);
 
-						span.border-dotted(title=diffAdjText, data-toggle="tooltip") #{timePerBlockDuration.format()}
-							small.text-muted.ml-1 (#{diffAdjSign}#{diffAdjPercent.toDP(1)}%)
+				//		if (timePerBlock > 600)
+				//			- var diffAdjPercent = new Decimal(timeDiff / heightDiff / 600).times(100).minus(100);
+				//			- var diffAdjText = `Prediction for next difficulty adjustment (in ${blocksUntilDifficultyAdjustment} block${blocksUntilDifficultyAdjustment == 1 ? "" : "s"}): -${diffAdjPercent.toDP(1)}%`;
+				//			- var diffAdjSign = "-";
+				//		else
+				//			- var diffAdjPercent = new Decimal(100).minus(new Decimal(timeDiff / heightDiff / 600).times(100));
+				//			- var diffAdjText = `Prediction for next difficulty adjustment (in ${blocksUntilDifficultyAdjustment} block${blocksUntilDifficultyAdjustment == 1 ? "" : "s"}): +${diffAdjPercent.toDP(1)}%`;
+				//			- var diffAdjSign = "+";
+
+				//		span.border-dotted(title=diffAdjText, data-toggle="tooltip") #{timePerBlockDuration.format()}
+				//			small.text-muted.ml-1 (#{diffAdjSign}#{diffAdjPercent.toDP(1)}%)
 								
 
 	div(class=colClass)
