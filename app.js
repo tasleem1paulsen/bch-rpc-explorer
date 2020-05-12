@@ -349,12 +349,12 @@ function refreshNetworkVolumes() {
 					}
 				}
 
-				volume1d = volume1d.dividedBy(coinConfig.baseCurrencyUnit.multiplier);
-				volume7d = volume7d.dividedBy(coinConfig.baseCurrencyUnit.multiplier);
+				debugLog("Volume 1d", volume1d);
+				debugLog("Volume 7d", volume7d);
 
 				global.networkVolume = {d1:{amt:volume1d, blocks:blocks1d, startBlock:startBlock, endBlock:endBlock1d, startTime:results[0].time, endTime:endBlockTime1d}};
 
-				debug(`Network volume: ${JSON.stringify(global.networkVolume)}`);
+				debugLog(`Network volume: ${JSON.stringify(global.networkVolume)}`);
 
 			} else {
 				debugLog("Unable to load network volume, likely due to bitcoind version older than 0.17.0 (the first version to support getblockstats).");
