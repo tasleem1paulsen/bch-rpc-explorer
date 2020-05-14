@@ -33,8 +33,6 @@ block content
 									small.ml-2 (~3d)
 								a.btn.btn-outline-primary.block-count-btn(href="javascript:void(0)", data-blockCount="1008") 1,008
 									small.ml-2 (~7d)
-								a.btn.btn-outline-primary.block-count-btn(href="javascript:void(0)", data-blockCount="4320") 4,320
-									small.ml-2 (~30d)
 
 					div.float-left.mr-4
 						div(id="block-selections-buttons")
@@ -46,7 +44,8 @@ block content
 									a.dropdown-item(href="javascript:void(0)", data-blocks="0-199") First 200 Blocks
 									a.dropdown-item(href="javascript:void(0)", data-blocks="209900-210100") First Halving ±100
 									a.dropdown-item(href="javascript:void(0)", data-blocks="419900-420100") Second Halving ±100
-									a.dropdown-item(href="javascript:void(0)", data-blocks="481724-481924") SegWit Activation ±100
+									a.dropdown-item(href="javascript:void(0)", data-blocks="478459-478659") BCH/BTC fork ±100
+									a.dropdown-item(href="javascript:void(0)", data-blocks="629900-630100") Third Halving ±100
 
 					div.float-left
 						div(id="time-range-buttons")
@@ -54,8 +53,8 @@ block content
 
 							form.form-inline.mr-3(id="custom-range-form")
 								div.input-group
-									input.form-control(type="text", id="custom-range-start", placeholder="min height", style="width: 125px;")
-									input.form-control(type="text", id="custom-range-end", placeholder="max height", style="width: 125px;")
+									input.form-control(type="number", id="custom-range-start", min="0", max=currentBlockHeight, placeholder="min height", style="width: 125px;")
+									input.form-control(type="number", id="custom-range-end", min="0", max=currentBlockHeight, placeholder="max height", style="width: 125px;")
 									div.input-group-append
 										button.btn.btn-primary(type="submit") Go
 
@@ -148,6 +147,10 @@ block endOfBody
 				
 				var bStart = parseInt($("#custom-range-start").val());
 				var bEnd = parseInt($("#custom-range-end").val());
+				if ((bEnd - bStart) > 1008) {
+					alert("Max allowed range has to be smaller than 1008 blocks");
+					return false;
+				}
 
 				$("#data-progress").css("width", "0%");
 				$("#block-progress-text").text("");
