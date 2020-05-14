@@ -357,7 +357,7 @@ function refreshNetworkVolumes() {
 				debugLog(`Network volume: ${JSON.stringify(global.networkVolume)}`);
 
 			} else {
-				debugLog("Unable to load network volume, likely due to bitcoind version older than 0.17.0 (the first version to support getblockstats).");
+				debugLog("Unable to load network volume, likely due to bitcoind version older than BCH Unlimited 1.8.0 (the first version to support getblockstats).");
 			}
 		});
 	});
