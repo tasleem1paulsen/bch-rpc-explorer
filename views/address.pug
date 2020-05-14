@@ -28,14 +28,14 @@ block content
 						span This looks like a miner payout address for  
 						span.font-weight-bold #{payoutAddressForMiner.name}
 						if (coinConfig.miningPoolsConfigUrls.length > 1)
-							span	(see the configurations:
+							span (see the configurations:
 							each item, index in coinConfig.miningPoolsConfigUrls
 								if (index > 0)
 									span ,
 								a(href=item) config ##{index + 1}
 							span )
 						else
-							span	(see the configuration
+							span (see the configuration
 							a(href=coinConfig.miningPoolsConfigUrls[0]) here
 							span )
 
@@ -82,7 +82,7 @@ block content
 					if (false && config.electrumXServers && config.electrumXServers.length > 0)
 						if (session.hideElectrumTrustWarnings != "true")
 							div(class="alert alert-primary alert-dismissible clearfix shadow-sm", role="alert")
-								span	this explorer is database-free, it doesn't natively support address balances and transaction histories. In order to provide this functionality, address balances and transaction history can be requested from a configurable set of ElectrumX servers. If multiple ElectrumX servers are configured, the results are cross-referenced and conflicts noted. For the transaction history displayed below, only the transaction identifiers from ElectrumX are used; the transaction details are requested via RPC from this app's primary node, as usual.
+								span this explorer is database-free, it doesn't natively support address balances and transaction histories. In order to provide this functionality, address balances and transaction history can be requested from a configurable set of ElectrumX servers. If multiple ElectrumX servers are configured, the results are cross-referenced and conflicts noted. For the transaction history displayed below, only the transaction identifiers from ElectrumX are used; the transaction details are requested via RPC from this app's primary node, as usual.
 
 								a.close(href="/changeSetting?name=hideElectrumTrustWarnings&value=true", aria-label="Close", style="text-decoration: none;")
 									span(aria-hidden="true") &times;
@@ -267,9 +267,9 @@ block content
 													i.fa.fa-check 
 												span  Oldest First
 
-							else if (txids && txids.length > 1 && addressApiSupport.sortDesc && !addressApiSupport.sortAsc)
-								div.float-right
-									span.text-muted Newest First
+								else if (txids && txids.length > 1 && addressApiSupport.sortDesc && !addressApiSupport.sortAsc)
+									div.float-right
+										span.text-muted Newest First
 
 							hr
 
@@ -287,7 +287,7 @@ block content
 								if (addressApiError && addressApiError.error && addressApiError.error.code && addressApiError.error.code == -32600)
 									span Failed to retrieve transaction history from ElectrumX. See
 									a(href="https://github.com/sickpig/bch-rpc-explorer/issues/67") Issue #67
-									span	for more information.
+									span for more information.
 
 
 								else if (addressApiError && addressApiError.userText)
@@ -298,12 +298,12 @@ block content
 										if (err.e && err.e.error && err.e.error.message == "history too large")
 											span Failed to retrieve transaction history from ElectrumX. See
 											a(href="https://github.com/sickpig/bch-rpc-explorer/issues/67") Issue #67
-											span	for more information.
+											span for more information.
 
 										else if (err == "No address API configured")
 											span No address API is configured. See
 											a(href="https://github.com/sickpig/bch-rpc-explorer/blob/master/.env-sample") the example configuration file
-											span	for help setting up an address API if desired.
+											span for help setting up an address API if desired.
 
 								else if (transactions.length == 0)
 									span No transactions found
@@ -313,53 +313,53 @@ block content
 									//	code.json.bg-light #{JSON.stringify(tx, null, 4)}
 									div.card.shadow-sm(class=((txIndex < (transactions.length - 1) || txids.length > limit) ? "mb-3" : ""))
 										div.card-header.text-monospace.clearfix
-										 div.float-left.mr-0
+											div.float-left.mr-0
 												if (sort == "desc")
 													span ##{(addressDetails.txCount - offset - txIndex).toLocaleString()}
 												else
 													span ##{(offset + txIndex + 1).toLocaleString()}
-												span	&ndash;
+												span &ndash;
 
-										 div.row
-											 div.col-md-8
-												 if (tx && tx.txid)
-													 a(href=("/tx/" + tx.txid)) #{tx.txid}
+											div.row
+												div.col-md-8
+													if (tx && tx.txid)
+														a(href=("/tx/" + tx.txid)) #{tx.txid}
 
-													 if (global.specialTransactions && global.specialTransactions[tx.txid])
-														 span
-														 a(data-toggle="tooltip", title=(coinConfig.name + " Fun! See transaction for details"))
-															 i.fas.fa-certificate.text-primary
+														if (global.specialTransactions && global.specialTransactions[tx.txid])
+															span
+															a(data-toggle="tooltip", title=(coinConfig.name + " Fun! See transaction for details"))
+																i.fas.fa-certificate.text-primary
 
-												 br
+													br
 
 													if (addrGainsByTx[tx.txid])
 														- var currencyValue = addrGainsByTx[tx.txid];
 														span.text-success +
 															include includes/value-display.pug
 
-													 if (addrLossesByTx[tx.txid])
-														 span  /
+														if (addrLossesByTx[tx.txid])
+															span  /
 
 													if (addrLossesByTx[tx.txid])
 														- var currencyValue = addrLossesByTx[tx.txid];
 														span.text-danger -
 															include includes/value-display.pug
 
-											 div.col-md-4
-												 div.text-md-right
-													 if (tx.time)
-														 - var timestampHuman = tx.time;
-														 include includes/timestamp-human.pug
+												div.col-md-4
+													div.text-md-right
+														if (tx.time)
+															- var timestampHuman = tx.time;
+															include includes/timestamp-human.pug
 
-														 br
+															br
 
-														 - var timeAgoTime = tx.time;
-														 small.text-muted (
-															 include includes/time-ago-text.pug
-															 span ago)
+															- var timeAgoTime = tx.time;
+															small.text-muted (
+																include includes/time-ago-text.pug
+																span ago)
 
-													 else
-														 span.text-danger Unconfirmed
+														else
+															span.text-danger Unconfirmed
 
 										div.card-body
 											if (true)
