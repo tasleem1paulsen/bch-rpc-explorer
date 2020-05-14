@@ -211,7 +211,7 @@ module.exports = {
 			"minfeerate": 0,
 			"mintxsize": 0,
 			"outs": 1,
-			"subsidy": 5000000000,
+			"subsidy": 50,
 			"swtotal_size": 0,
 			"swtotal_weight": 0,
 			"swtxs": 0,
