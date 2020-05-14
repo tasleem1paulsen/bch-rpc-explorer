@@ -53,8 +53,8 @@ block content
 
 							form.form-inline.mr-3(id="custom-range-form")
 								div.input-group
-									input.form-control(type="text", id="custom-range-start", placeholder="min height", style="width: 125px;")
-									input.form-control(type="text", id="custom-range-end", placeholder="max height", style="width: 125px;")
+									input.form-control(type="number", id="custom-range-start", min="0", max=currentBlockHeight, placeholder="min height", style="width: 125px;")
+									input.form-control(type="number", id="custom-range-end", min="0", max=currentBlockHeight, placeholder="max height", style="width: 125px;")
 									div.input-group-append
 										button.btn.btn-primary(type="submit") Go
 
