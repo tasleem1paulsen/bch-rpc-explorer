@@ -101,7 +101,7 @@ block content
 								if (peerIpSummary && peerIpSummary.ips)
 									th.data-header Location
 
-								th.data-header Last Send / Receive
+								th.data-header Last Send / Receive (m:s)
 
 						tbody
 							each item, index in peerSummary.getpeerinfo
@@ -132,7 +132,7 @@ block content
 
 											- var ipAddr = null;
 
-									td.ata-cell text-monospace #{lastSendAgo} / #{lastRecvAgo}
+									td.ata-cell.text-monospace #{lastSendAgo} / #{lastRecvAgo}
 
 
 
