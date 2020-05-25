@@ -189,7 +189,7 @@ function getBlockHeaderByHeight(blockHeight) {
 			});
 		});
 	} else {
-		return getRpcDataWithParams({method:"getblockheader", parameters:[blockheight]});
+		return getRpcDataWithParams({method:"getblockheader", parameters:[blockHeight]});
 	}
 }
 
