@@ -175,22 +175,22 @@ function getBlockHeaderByHash(blockhash) {
 }
 
 function getBlockHeaderByHeight(blockHeight) {
-	return new Promise(function(resolve, reject) {
-		getRpcDataWithParams({method:"getblockhash", parameters:[blockHeight]}).then(function(blockhash) {
-			getBlockHeaderByHash(blockhash).then(function(blockHeader) {
-				resolve(blockHeader);
+	if (!config.headerByHeightSupport) {
+		return new Promise(function(resolve, reject) {
+			getRpcDataWithParams({method:"getblockhash", parameters:[blockHeight]}).then(function(blockhash) {
+				getBlockHeaderByHash(blockhash).then(function(blockHeader) {
+					resolve(blockHeader);
 
+				}).catch(function(err) {
+					reject(err);
+				});
 			}).catch(function(err) {
 				reject(err);
 			});
-		}).catch(function(err) {
-			reject(err);
 		});
-	});
-}
-
-function getBlockHeaderByHeightBU(blockheight) {
-	return getRpcDataWithParams({method:"getblockheader", parameters:[blockheight]});
+	} else {
+		return getRpcDataWithParams({method:"getblockheader", parameters:[blockheight]});
+	}
 }
 
 function getBlockByHash(blockHash) {
@@ -506,7 +506,6 @@ module.exports = {
 	getBlockStatsByHeight: getBlockStatsByHeight,
 	getBlockHeaderByHash: getBlockHeaderByHash,
 	getBlockHeaderByHeight: getBlockHeaderByHeight,
-	getBlockHeaderByHeightBU: getBlockHeaderByHeightBU,
 
 	minRpcVersions: minRpcVersions
 };
