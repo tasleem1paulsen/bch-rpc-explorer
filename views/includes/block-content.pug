@@ -209,19 +209,6 @@ div.tab-content
 										- var currencyValue = new Decimal(result.getblock.totalFees);
 											include ./value-display.pug
 
-								if (result.blockstats)
-									div.row
-										div.summary-split-table-label Percentiles
-											br
-											small.font-weight-normal (sat/B)
-										div.summary-split-table-content.text-monospace
-											div.clearfix
-												each item, itemIndex in [10, 25, 50, 75, 90]
-													div.float-left.mr-3
-														span.font-weight-bold #{item}%
-														- var p = new Decimal(result.blockstats.feerate_percentiles[itemIndex]).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1).toLocaleString();
-														br
-														span #{p}
 
 								if (result.getblock.totalFees > 0)
 									div.row
