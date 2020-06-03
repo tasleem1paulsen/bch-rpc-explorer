@@ -302,6 +302,33 @@ module.exports = {
 			referenceUrl: "https://twitter.com/btcfork/status/892449023893831680"
 		},
 		{
+			type: "blockheight",
+			date: "2012-11-28",
+			chain: "main",
+			blockHeight: 210000,
+			blockHash: "000000000000048b95347e83192f69cf0366076336c639f9b7228e9ba171342e",
+			summary: "First block of subsidy era #2 (25 BTC).",
+			referenceUrl: "https://github.com/BitcoinUnlimited/BitcoinUnlimited/blob/dev/src/validation/validation.cpp#L1258"
+		},
+		{
+			type: "blockheight",
+			date: "2016-07-09",
+			chain: "main",
+			blockHeight: 420000,
+			blockHash: "000000000000000002cce816c0ab2c5c269cb081896b7dcb34b8422d6b74ffa1",
+			summary: "First block of subsidy era #3 (12.5 BTC).",
+			referenceUrl: "https://github.com/BitcoinUnlimited/BitcoinUnlimited/blob/dev/src/validation/validation.cpp#L1258"
+		},
+		{
+			type: "blockheight",
+			date: "2020-04-08",
+			chain: "main",
+			blockHeight: 630000,
+			blockHash: "00000000000000000169a496bfafa84ad8d3ef8039fc9e391a8eada67996b9c8",
+			summary: "First block of subsidy era #4 (6.25 BTC).",
+			referenceUrl: "https://github.com/BitcoinUnlimited/BitcoinUnlimited/blob/dev/src/validation/validation.cpp#L1258"
+		},
+		{
 			type: "tx",
 			date: "2014-06-16",
 			chain: "main",
@@ -315,7 +342,7 @@ module.exports = {
 			chain: "main",
 			txid: "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
 			summary: "The 'Bitcoin Pizza' transaction.",
-			alertBodyHtml: "This is the famous 'Bitcoin Pizza' transaction.",
+			alertBodyHtml: "This is the famous 'Bitcoin Pizza' transaction, one of the earliest 'real-world' transactions, in which 10,000 BTC was paid for 2 large pizzas worth ~41 USD (at an effective exchange rate of ~$0.04/BTC).",
 			referenceUrl: "https://bitcointalk.org/index.php?topic=137.0"
 		},
 		{
