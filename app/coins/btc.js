@@ -302,6 +302,33 @@ module.exports = {
 			referenceUrl: "https://twitter.com/btcfork/status/892449023893831680"
 		},
 		{
+			type: "blockheight",
+			date: "2012-11-28",
+			chain: "main",
+			blockHeight: 210000,
+			blockHash: "000000000000048b95347e83192f69cf0366076336c639f9b7228e9ba171342e",
+			summary: "First block of subsidy era #2 (25 BTC).",
+			referenceUrl: "https://github.com/BitcoinUnlimited/BitcoinUnlimited/blob/dev/src/validation/validation.cpp#L1258"
+		},
+		{
+			type: "blockheight",
+			date: "2016-07-09",
+			chain: "main",
+			blockHeight: 420000,
+			blockHash: "000000000000000002cce816c0ab2c5c269cb081896b7dcb34b8422d6b74ffa1",
+			summary: "First block of subsidy era #3 (12.5 BTC).",
+			referenceUrl: "https://github.com/BitcoinUnlimited/BitcoinUnlimited/blob/dev/src/validation/validation.cpp#L1258"
+		},
+		{
+			type: "blockheight",
+			date: "2020-04-08",
+			chain: "main",
+			blockHeight: 630000,
+			blockHash: "00000000000000000169a496bfafa84ad8d3ef8039fc9e391a8eada67996b9c8",
+			summary: "First block of subsidy era #4 (6.25 BTC).",
+			referenceUrl: "https://github.com/BitcoinUnlimited/BitcoinUnlimited/blob/dev/src/validation/validation.cpp#L1258"
+		},
+		{
 			type: "tx",
 			date: "2014-06-16",
 			chain: "main",
