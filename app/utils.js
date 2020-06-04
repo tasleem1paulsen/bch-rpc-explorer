@@ -753,6 +753,21 @@ function outputTypeName(outputType) {
 	}
 }
 
+function serviceBitsToName (services) {
+	var serviceBits = [];
+	if (services & 1) { serviceBits.push('NODE_NETWORK'); }
+	if (services & 2) { serviceBits.push('NODE_GETUTXO'); }
+	if (services & 4) { serviceBits.push('NODE_BLOOM'); }
+	if (services & 8) { serviceBits.push('NODE_WITNESS'); }
+	if (services & 16) { serviceBits.push('NODE_XTHIN'); }
+	if (services & 32) { serviceBits.push('NODE_CASH'); }
+	if (services & 64) { serviceBits.push('NODE_GRAPHENE'); }
+	if (services & 128) { serviceBits.push('NODE_WEAKBLOCKS'); }
+	if (services & 256) { serviceBits.push('NODE_CF'); }
+	if (services & 1024) { serviceBits.push('NODE_NETWORK_LIMITED'); }
+	return serviceBits;
+}
+
 module.exports = {
 	reflectPromise: reflectPromise,
 	redirectToConnectPageIfNeeded: redirectToConnectPageIfNeeded,
@@ -786,5 +801,6 @@ module.exports = {
 	ellipsize: ellipsize,
 	shortenTimeDiff: shortenTimeDiff,
 	outputTypeAbbreviation: outputTypeAbbreviation,
-	outputTypeName: outputTypeName
+	outputTypeName: outputTypeName,
+	serviceBitsToName: serviceBitsToName
 };
