@@ -62,9 +62,6 @@ const envify = k => k.replace(/([A-Z])/g, '_$1').toUpperCase();
 var defaultTrueWithoutNoPrefixVars = [ "SLOW_DEVICE_MODE" ];
 
 Object.keys(args).filter(k => k.length > 1).forEach(k => {
-  if (args[k] === false) process.env[`BTCEXP_NO_${envify(k)}`] = true;
-  else process.env[`BTCEXP_${envify(k)}`] = args[k];
-})
   if (args[k] === false) {
     if (defaultTrueWithoutNoPrefixVars.includes(envify(k))) {
       process.env[`BTCEXP_${envify(k)}`] = false;
