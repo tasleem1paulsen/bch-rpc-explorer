@@ -291,13 +291,18 @@ block content
 
 								else if (addressApiError && addressApiError.userText)
 									div.text-danger Error: #{addressApiError.userText}
-
 								else if (addressDetailsErrors && addressDetailsErrors.length > 0)
-									each err in addressDetailsErrors
+									// Electrs return the same kind of error for get_history and get_balance
+									- var set = new Set(addressDetailsErrors.map(item => JSON.stringify(item)));
+									- var uniqueAddressDetailsErrors = [...set].map(item => JSON.parse(item));
+									each err in uniqueAddressDetailsErrors
 										if (err.e && err.e.error && err.e.error.message == "history too large")
 											span Failed to retrieve transaction history from ElectrumX. See
 											a(href="https://github.com/sickpig/bch-rpc-explorer/issues/67") Issue #67
 											span for more information.
+
+										else if (err.e && err.e.error && err.e.error.message == "failed to get confirmed status")
+											span Failed to retrieve transaction history from ElectrsCash server. As a workaround, consider starting ElectrsCash server with a custom --txid-limit argument, to support longer transaction histories.
 
 										else if (err == "No address API configured")
 											span No address API is configured. See

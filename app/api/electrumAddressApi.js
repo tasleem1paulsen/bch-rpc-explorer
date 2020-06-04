@@ -101,7 +101,7 @@ function getAddressDetails(address, scriptPubkey, sort, limit, offset) {
 
 		var txidData = null;
 		var balanceData = null;
-
+		// TODO exit early in case getAddressTxids or getAddressBalance fails
 		promises.push(new Promise(function(resolve2, reject2) {
 			getAddressTxids(addrScripthash).then(function(result) {
 				txidData = result.result;
