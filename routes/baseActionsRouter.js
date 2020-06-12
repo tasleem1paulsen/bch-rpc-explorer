@@ -488,6 +488,83 @@ router.get("/block-stats", function(req, res, next) {
 	});
 });
 
+router.get("/decoder", function(req, res, next) {
+	res.locals.decodedScript = "";
+	res.locals.tx = undefined;
+	res.locals.type = "script";
+	res.render("decoder");
+	next();
+});
+
+allSettled = function(promiseList) {
+    let results = new Array(promiseList.length);
+
+    return new Promise((ok, rej) => {
+
+        let fillAndCheck = function(i) {
+            return function(ret) {
+                results[i] = ret;
+                for(let j = 0; j < results.length; j++) {
+                    if (results[j] == null) return;
+                }
+                ok(results);
+            }
+        };
+
+        for(let i=0;i<promiseList.length;i++) {
+            promiseList[i].then(fillAndCheck(i), fillAndCheck(i));
+        }
+    });
+}
+
+router.post("/decoder", function(req, res, next) {
+	if (!req.body.query) {
+	req.session.userMessage = "Enter a hex-encoded transaction or script";
+	res.redirect("/decoder");
+	return;
+	}
+
+	var promises = [];
+	// Clean up the input in a variety of ways that a cut-paste might have
+	var input = req.body.query.trim();
+	while (input[0] == '"' || input[0] == "'") {
+		input = input.slice(1);
+	}
+	while ((input.length > 0) && ( input[input.length-1] == '"' || input[input.length-1] == "'")) {
+		input = input.slice(0,input.length-1);
+	}
+	if (input.slice(0,2) == "0x") input = input.slice(2);
+	promises.push(coreApi.decodeScript(input));
+	promises.push(coreApi.decodeRawTransaction(input));
+
+	allSettled(promises).then(function(promiseResults) {
+		decodedScript = promiseResults[0];
+		decodedTx = promiseResults[1];
+		res.locals.decodedScript = "";
+		res.locals.tx = " ";
+		if ("txid" in decodedTx) {
+			res.locals.type = "tx";
+			res.locals.userMessage = "";
+			res.locals.tx = decodedTx;
+			res.locals.decodedJson = decodedTx;  // If tx decodes, assume its a tx because tx hex can be decoded as bad scripts
+		} else if ("asm" in decodedScript) {
+			res.locals.type = "script";
+			res.locals.userMessage = "";
+			// FIXME we are mixing routing with view here. What script does
+			// should be done in the views/decoder.pug
+			res.locals.decodedDetails = utils.prettyScript(decodedScript.asm, '\t');
+			res.locals.decodedJson = decodedScript;
+		} else {
+			res.locals.type = "unknown";
+			res.locals.userMessage = "Decode failed";
+			res.locals.tx = {};
+			res.locals.decodedJson = {};
+		}
+		res.render("decoder");
+		next();
+	});
+});
+
 router.get("/search", function(req, res, next) {
 	res.render("search");
 

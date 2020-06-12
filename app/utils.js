@@ -728,10 +728,33 @@ function outputTypeAbbreviation(outputType) {
 
 	if (map[outputType]) {
 		return map[outputType];
-
 	} else {
 		return "???";
 	}
+}
+
+function prettyScript(inScript, indentChar) {
+	var indenter=["OP_IF", "OP_ELSE"]
+	var outdenter=["OP_ENDIF", "OP_ELSE"]
+
+	s = inScript.split(" ");
+	var shiftAmt=0;
+	var i;
+	var indenting = '';
+
+	for (i = 0; i < s.length; i++) {
+		var item=s[i];
+		if (s[i].slice(0,2) == "OP")
+		{
+			s[i] = "<span class='opcode'>" + s[i] + "</span>";
+		}
+		if (outdenter.includes(item)) shiftAmt -= 1;
+		if (shiftAmt < 0) shiftAmt = 0;
+		indenting = Array(shiftAmt).join(indentChar);
+		s[i] = "<div style='text-indent: " + indenting  + "em'>" + s[i] + "</div>";
+		if (indenter.includes(item)) shiftAmt += 1;
+	}
+	return s.join("\n");
 }
 
 function outputTypeName(outputType) {
@@ -747,7 +770,6 @@ function outputTypeName(outputType) {
 
 	if (map[outputType]) {
 		return map[outputType];
-
 	} else {
 		return "???";
 	}
@@ -800,6 +822,7 @@ module.exports = {
 	buildQrCodeUrls: buildQrCodeUrls,
 	ellipsize: ellipsize,
 	shortenTimeDiff: shortenTimeDiff,
+	prettyScript: prettyScript,
 	outputTypeAbbreviation: outputTypeAbbreviation,
 	outputTypeName: outputTypeName,
 	serviceBitsToName: serviceBitsToName
