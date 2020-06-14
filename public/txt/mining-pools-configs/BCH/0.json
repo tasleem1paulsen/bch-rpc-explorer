@@ -1,5 +1,9 @@
 {
     "coinbase_tags" : {
+        "HASHPIPE": {
+            "name": "HashPipe",
+            "link": "https://hashpipe.net"
+        },
         "pool.binance.com": {
             "name": "pool.binance.com",
             "link": "https://pool.binance.com"
