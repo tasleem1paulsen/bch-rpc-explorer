@@ -383,6 +383,7 @@ function getMinerFromCoinbaseTx(tx) {
 		return null;
 	}
 
+	var minerInfo = [];
 	if (global.miningPoolsConfigs) {
 		for (var i = 0; i < global.miningPoolsConfigs.length; i++) {
 			var miningPoolsConfig = global.miningPoolsConfigs[i];
@@ -393,6 +394,7 @@ function getMinerFromCoinbaseTx(tx) {
 						if (tx.vout[0].scriptPubKey.addresses[0] == payoutAddress) {
 							var minerInfo = miningPoolsConfig.payout_addresses[payoutAddress];
 							minerInfo.identifiedBy = "payout address " + payoutAddress;
+							minerInfo.coinbaseAscii = hex2ascii(tx.vin[0].coinbase);
 
 							return minerInfo;
 						}
@@ -407,6 +409,7 @@ function getMinerFromCoinbaseTx(tx) {
 					if (coinbase.toLowerCase().indexOf(coinbase_tag) != -1) {
 						var minerInfo = miningPoolsConfig.coinbase_tags[coinbaseTag];
 						minerInfo.identifiedBy = "coinbase tag '" + coinbaseTag + "'";
+						minerInfo.coinbaseAscii = hex2ascii(tx.vin[0].coinbase);
 
 						return minerInfo;
 					}
@@ -423,8 +426,8 @@ function getMinerFromCoinbaseTx(tx) {
 			}
 		}
 	}
-
-	return null;
+	minerInfo.coinbaseAscii=hex2ascii(tx.vin[0].coinbase);
+	return minerInfo;
 }
 
 function getTxTotalInputOutputValues(tx, txInputs, blockHeight) {
