@@ -99,9 +99,9 @@ div.table-responsive
 						
 						td.data-cell.text-monospace.text-right
 							if (block.miner && block.miner.name)
-								small.rounded.bg-primary.text-white.px-2.py-1(data-toggle="tooltip", title=("Identified by: " + block.miner.identifiedBy)) #{utils.ellipsize(block.miner.name, 10)}
+								small.rounded.bg-primary.text-white.px-2.py-1(data-toggle="tooltip", title=(block.miner.coinbaseAscii)) #{utils.ellipsize(block.miner.name, 10)}
 							else
-								span ?
+								small.rounded.bg-secondary.text-white.px-2.py-1(data-toggle="tooltip", title=(block.miner.coinbaseAscii)) ?
 
 						
 						td.data-cell.text-monospace.text-right #{block.tx.length.toLocaleString()}
