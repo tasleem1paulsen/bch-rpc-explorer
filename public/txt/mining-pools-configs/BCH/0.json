@@ -4,8 +4,8 @@
             "name": "HashPipe",
             "link": "https://hashpipe.net"
         },
-        "pool.binance.com": {
-            "name": "pool.binance.com",
+        "binance": {
+            "name": "Binance",
             "link": "https://pool.binance.com"
         },
         "solomining.io": {
