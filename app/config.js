@@ -33,7 +33,7 @@ for (var i = 0; i < electrumXServerUriStrings.length; i++) {
   electrumXServers.push({protocol:uri.protocol.substring(0, uri.protocol.length - 1), host:uri.hostname, port:parseInt(uri.port)});
 }
 
-["BTCEXP_DEMO", "BTCEXP_PRIVACY_MODE", "BTCEXP_NO_INMEMORY_RPC_CACHE", "BTCEXP_UI_SHOW_RPC", "BTCEXP_HEADER_BY_HEIGHT_SUPPORT"].forEach(function(item) {
+["BTCEXP_DEMO", "BTCEXP_PRIVACY_MODE", "BTCEXP_NO_INMEMORY_RPC_CACHE", "BTCEXP_UI_SHOW_RPC", "BTCEXP_HEADER_BY_HEIGHT_SUPPORT", "BTCEXP_BLOCK_BY_HEIGHT_SUPPORT"].forEach(function(item) {
   if (process.env[item] === undefined) {
     process.env[item] = "false";
   }
@@ -79,6 +79,7 @@ module.exports = {
   queryExchangeRates: (process.env.BTCEXP_NO_RATES.toLowerCase() != "true"),
   noInmemoryRpcCache: (process.env.BTCEXP_NO_INMEMORY_RPC_CACHE.toLowerCase() == "true"),
   headerByHeightSupport: (process.env.BTCEXP_HEADER_BY_HEIGHT_SUPPORT.toLowerCase() == "true"),
+  blockByHeightSupport: (process.env.BTCEXP_BLOCK_BY_HEIGHT_SUPPORT.toLowerCase() == "true"),
 
   rpcConcurrency: (process.env.BTCEXP_RPC_CONCURRENCY || 10),
 
