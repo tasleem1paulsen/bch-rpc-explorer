@@ -179,20 +179,10 @@ function getBlockByHeight(blockHeight) {
 			});
 		});
 	} else {
-		return getRpcDataWithParams({method:"getblock", parameters:[blockHeight]});
-	}
-}
-
-function getBlockHeaderByHash(blockhash) {
-	return getRpcDataWithParams({method:"getblockheader", parameters:[blockhash]});
-}
-
-function getBlockHeaderByHeight(blockHeight) {
-	if (!config.headerByHeightSupport) {
 		return new Promise(function(resolve, reject) {
-			getRpcDataWithParams({method:"getblockhash", parameters:[blockHeight]}).then(function(blockhash) {
-				getBlockHeaderByHash(blockhash).then(function(blockHeader) {
-					resolve(blockHeader);
+			getRpcDataWithParams({method:"getblock", parameters:[blockHeight]}).then(function(block) {
+				getBlockByHeightReal(blockHeight).then(function(block) {
+					resolve(block);
 
 				}).catch(function(err) {
 					reject(err);
@@ -201,8 +191,6 @@ function getBlockHeaderByHeight(blockHeight) {
 				reject(err);
 			});
 		});
-	} else {
-		return getRpcDataWithParams({method:"getblockheader", parameters:[blockHeight]});
 	}
 }
 
@@ -228,6 +216,50 @@ function getBlockByHash(blockHash) {
 	});
 }
 
+function getBlockByHeightReal(blockHeight) {
+	debugLog("getBlockByHeightReal: %s", blockHeight);
+
+	return new Promise(function(resolve, reject) {
+		getRpcDataWithParams({method:"getblock", parameters:[blockHeight]}).then(function(block) {
+			getRawTransaction(block.tx[0]).then(function(tx) {
+				block.coinbaseTx = tx;
+				block.totalFees = utils.getBlockTotalFeesFromCoinbaseTxAndBlockHeight(tx, block.height);
+				block.subsidy = coinConfig.blockRewardFunction(block.height, global.activeBlockchain);
+				block.miner = utils.getMinerFromCoinbaseTx(tx);
+
+				resolve(block);
+
+			}).catch(function(err) {
+				reject(err);
+			});
+		}).catch(function(err) {
+			reject(err);
+		});
+	});
+}
+
+function getBlockHeaderByHash(blockhash) {
+	return getRpcDataWithParams({method:"getblockheader", parameters:[blockhash]});
+}
+
+function getBlockHeaderByHeight(blockHeight) {
+	if (!config.headerByHeightSupport) {
+		return new Promise(function(resolve, reject) {
+			getRpcDataWithParams({method:"getblockhash", parameters:[blockHeight]}).then(function(blockhash) {
+				getBlockHeaderByHash(blockhash).then(function(blockHeader) {
+					resolve(blockHeader);
+
+				}).catch(function(err) {
+					reject(err);
+				});
+			}).catch(function(err) {
+				reject(err);
+			});
+		});
+	} else {
+		return getRpcDataWithParams({method:"getblockheader", parameters:[blockHeight]});
+	}
+}
 function getAddress(address) {
 	return getRpcDataWithParams({method:"validateaddress", parameters:[address]});
 }
