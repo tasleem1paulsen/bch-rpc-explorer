@@ -1,5 +1,9 @@
 {
     "coinbase_tags" : {
+        "Project BTCPool": {
+            "name": "BTCPool",
+            "link": "https://btcpool.in"
+        },
         "HASHPIPE": {
             "name": "HashPipe",
             "link": "https://hashpipe.net"
