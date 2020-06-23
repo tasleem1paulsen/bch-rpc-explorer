@@ -165,18 +165,22 @@ function getChainTxStats(blockCount) {
 }
 
 function getBlockByHeight(blockHeight) {
-	return new Promise(function(resolve, reject) {
-		getRpcDataWithParams({method:"getblockhash", parameters:[blockHeight]}).then(function(blockhash) {
-			getBlockByHash(blockhash).then(function(block) {
-				resolve(block);
+	if (!config.blockByHeightSupport) {
+		return new Promise(function(resolve, reject) {
+			getRpcDataWithParams({method:"getblockhash", parameters:[blockHeight]}).then(function(blockhash) {
+				getBlockByHash(blockhash).then(function(block) {
+					resolve(block);
 
+				}).catch(function(err) {
+					reject(err);
+				});
 			}).catch(function(err) {
 				reject(err);
 			});
-		}).catch(function(err) {
-			reject(err);
 		});
-	});
+	} else {
+		return getRpcDataWithParams({method:"getblock", parameters:[blockHeight]});
+	}
 }
 
 function getBlockHeaderByHash(blockhash) {
