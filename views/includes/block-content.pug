@@ -205,25 +205,23 @@ div.tab-content
 									div.summary-split-table-label Total
 									div.summary-split-table-content.text-monospace
 										if (result.blockstats.totalfee)
-											- var currencyValue = new Decimal(result.blockstats.totalfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
+											- var currencyValue = new Decimal(result.blockstats.totalfee)
 											include ./value-display.pug
 
 										else
-										- var currencyValue = new Decimal(result.getblock.totalFees);
+											- var currencyValue = new Decimal(result.getblock.totalFees);
 											include ./value-display.pug
 
 
 								if (result.getblock.totalFees > 0)
 									div.row
-										div.summary-split-table-label Average Rate
+										div.summary-split-table-label Avg Fee Rate
 										div.summary-split-table-content.text-monospace
 											if (result.blockstats.totalfee)
-												- var currencyValue = new Decimal(result.blockstats.totalfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
-												include ./value-display.pug
-
+												- var currencyValue = new Decimal(result.blockstats.avgfeerate);
 											else
-												- var currencyValue = new Decimal(result.getblock.totalFees);
-												include ./value-display.pug
+												- var currencyValue = new Decimal(result.getblock.totalFees).dividedBy(result.getblock.size);
+											include ./value-display.pug
 
 									if (result.blockstats)
 										div.row
@@ -238,7 +236,7 @@ div.tab-content
 															br
 
 															if (result.blockstats.feerate_percentiles)
-																span #{JSON.stringify(result.blockstats.feerate_percentiles[itemIndex])}
+																span #{JSON.stringify(result.blockstats.feerate_percentiles[itemIndex] * 100000000)}
 															else
 																span -
 
@@ -251,7 +249,7 @@ div.tab-content
 												
 											div.summary-split-table-content.text-monospace
 												if (result.blockstats.minfeerate)
-													span #{result.blockstats.minfeerate.toLocaleString()}
+													span #{(result.blockstats.minfeerate * 100000000).toLocaleString()}
 													small.ml-1 sat/B
 												else
 													span ?
@@ -259,17 +257,13 @@ div.tab-content
 												br
 
 												if (result.blockstats.avgfeerate)
-													span #{result.blockstats.avgfeerate.toLocaleString()}
+													span #{(result.blockstats.avgfeerate * 10000000).toLocaleString()}
 													small.ml-1 sat/B
-
-												else
-												- var currencyValue = new Decimal(result.getblock.totalFees).dividedBy(result.getblock.size).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1);
-												span #{currencyValue} 
 
 												br
 
 												if (result.blockstats.maxfeerate)
-													span #{result.blockstats.maxfeerate.toLocaleString()}
+													span #{(result.blockstats.maxfeerate * 10000000).toLocaleString()}
 													small.ml-1 sat/B
 												else
 													span ?
