@@ -1,6 +1,10 @@
 {
     "coinbase_tags" : {
-        "Project BTCPool": {
+        "Hath": {
+            "name": "Hath",
+            "link": "Unknown"
+        },
+        "BTCPool": {
             "name": "BTCPool",
             "link": "https://btcpool.in"
         },
@@ -534,6 +538,10 @@
         }
     },
     "payout_addresses" : {
+        "bitcoincash:qrz7nferavt263h8v2nrm9zssnfrz34d8spzpd3axa": {
+            "name": "Hath",
+            "link": "Unknown"
+        },
         "bitcoincash:qzhpwjj64m5v2mmq45j5n0z48jhv5ngkjg2qh950dy": {
             "name" : "Unknown2",
             "link" : "Unknown"
