@@ -637,6 +637,10 @@ router.post("/search", function(req, res, next) {
 			req.session.userMessage = "No results found for query: " + query;
 
 			res.redirect("/");
+		}).catch(function (err) {
+			req.session.userMessage = "No results found for query: " + query;
+
+			res.redirect("/");
 		});
 	} else {
 		coreApi.getAddress(rawCaseQuery).then(function(validateaddress) {
