@@ -891,10 +891,6 @@
       "resolved": "https://registry.npmjs.org/ee-first/-/ee-first-1.1.1.tgz",
       "integrity": "sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0="
     },
-    "electrum-client": {
-      "version": "github:chaintools/node-electrum-client#43a999036f9c5457030d4d2dc5ec56fa8d94aa99",
-      "from": "github:chaintools/node-electrum-client#43a999036f9c5"
-    },
     "elliptic": {
       "version": "6.5.2",
       "resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.2.tgz",
@@ -2532,6 +2528,10 @@
         "hash-base": "^3.0.0",
         "inherits": "^2.0.1"
       }
+    },
+    "rn-electrum-client": {
+      "version": "github:janoside/rn-electrum-client#d98e929028d2b05c88a41fe37652737912bead79",
+      "from": "github:janoside/rn-electrum-client"
     },
     "rndm": {
       "version": "1.2.0",

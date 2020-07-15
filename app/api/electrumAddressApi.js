@@ -9,7 +9,10 @@ var hexEnc = require("crypto-js/enc-hex");
 
 var coinConfig = coins[config.coin];
 
-const ElectrumClient = require('electrum-client');
+global.net = require('net');
+global.tls = require('tls');
+
+const ElectrumClient = require('rn-electrum-client');
 
 var electrumClients = [];
 
@@ -42,7 +45,7 @@ function connectToServer(host, port, protocol) {
 
 		var electrumClient = new ElectrumClient(port, host, protocol || defaultProtocol);
 		// TODO: turn app name and version in a configuration parameter
-		electrumClient.initElectrum({client:"bch-rpc-explorer-v0.0.1", version:"1.4"}).then(function(res) {
+		electrumClient.initElectrum({client:"bch-rpc-explorer-v0.0.3", version:"1.4"}).then(function(res) {
 			debugLog("Connected to ElectrumX Server: " + host + ":" + port + ", versions: " + JSON.stringify(res));
 
 			electrumClients.push(electrumClient);
@@ -61,12 +64,8 @@ function connectToServer(host, port, protocol) {
 function runOnServer(electrumClient, f) {
 	return new Promise(function(resolve, reject) {
 		f(electrumClient).then(function(result) {
-			if (result.success) {
-				resolve({result:result.response, server:electrumClient.host});
+			resolve({result:result, server:electrumClient.host});
 
-			} else {
-				reject({error:result.error, server:electrumClient.host});
-			}
 		}).catch(function(err) {
 			utils.logError("dif0e21qdh", err, {host:electrumClient.host, port:electrumClient.port});
 
