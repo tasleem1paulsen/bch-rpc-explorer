@@ -175,16 +175,13 @@ router.get("/", function(req, res, next) {
 				}
 
 				res.render("index");
-
-				next();
+				utils.perfMeasure(req);
 			});
 		});
 	}).catch(function(err) {
 		res.locals.userMessage = "Error loading recent blocks: " + err;
 
 		res.render("index");
-
-		next();
 	});
 });
 
@@ -202,36 +199,32 @@ router.get("/node-status", function(req, res, next) {
 					res.locals.getnettotals = getnettotals;
 
 					res.render("node-status");
+				utils.perfMeasure(req);
 
-					next();
 
 				}).catch(function(err) {
 					res.locals.userMessage = "Error getting node status: (id=0), err=" + err;
 
 					res.render("node-status");
 
-					next();
 				});
 			}).catch(function(err) {
 				res.locals.userMessage = "Error getting node status: (id=1), err=" + err;
 
 				res.render("node-status");
 
-				next();
 			});
 		}).catch(function(err) {
 			res.locals.userMessage = "Error getting node status: (id=2), err=" + err;
 
 			res.render("node-status");
 
-			next();
 		});
 	}).catch(function(err) {
 		res.locals.userMessage = "Error getting node status: (id=3), err=" + err;
 
 		res.render("node-status");
 
-		next();
 	});
 });
 
@@ -258,8 +251,8 @@ router.get("/mempool-summary", function(req, res, next) {
 			
 
 			res.render("mempool-summary");
+			utils.perfMeasure(req);
 
-			next();
 		});
 
 	}).catch(function(err) {
@@ -267,7 +260,6 @@ router.get("/mempool-summary", function(req, res, next) {
 
 		res.render("mempool-summary");
 
-		next();
 	});
 });
 
@@ -291,20 +283,18 @@ router.get("/peers", function(req, res, next) {
 				res.locals.peerIpSummary = results;
 
 				res.render("peers");
+				utils.perfMeasure(req);
 
-				next();
 			});
 		} else {
 			res.render("peers");
 
-			next();
 		}
 	}).catch(function(err) {
 		res.locals.userMessage = "Error: " + err;
 
 		res.render("peers");
 
-		next();
 	});
 });
 
@@ -431,8 +421,7 @@ router.get("/blocks", function(req, res, next) {
 			}
 
 			res.render("blocks");
-
-			next();
+			utils.perfMeasure(req);
 
 		}).catch(function(err) {
 			res.locals.pageErrors.push(utils.logError("32974hrbfbvc", err));
@@ -456,7 +445,7 @@ router.get("/mining-summary", function(req, res, next) {
 
 		res.render("mining-summary");
 
-		next();
+		utils.perfMeasure(req);
 
 	}).catch(function(err) {
 		res.locals.userMessage = "Error: " + err;
@@ -476,8 +465,8 @@ router.get("/block-stats", function(req, res, next) {
 		res.locals.currentBlockHeight = getblockchaininfo.blocks;
 
 		res.render("block-stats");
+		utils.perfMeasure(req);
 
-		next();
 
 	}).catch(function(err) {
 		res.locals.userMessage = "Error: " + err;
@@ -493,7 +482,8 @@ router.get("/decoder", function(req, res, next) {
 	res.locals.tx = undefined;
 	res.locals.type = "script";
 	res.render("decoder");
-	next();
+
+	utils.perfMeasure(req);
 });
 
 allSettled = function(promiseList) {
@@ -561,14 +551,13 @@ router.post("/decoder", function(req, res, next) {
 			res.locals.decodedJson = {};
 		}
 		res.render("decoder");
-		next();
+		utils.perfMeasure(req);
 	});
 });
 
 router.get("/search", function(req, res, next) {
 	res.render("search");
 
-	next();
 });
 
 router.post("/search", function(req, res, next) {
@@ -728,14 +717,13 @@ router.get("/block-height/:blockHeight", function(req, res, next) {
 		Promise.all(promises).then(function() {
 			res.render("block");
 
-			next();
+			utils.perfMeasure(req);
 
 		}).catch(function(err) {
 			res.locals.userMessageMarkdown = `Failed loading block: height=**${blockHeight}**`;
 
 			res.render("block");
 
-			next();
 		});
 	}).catch(function(err) {
 		res.locals.userMessageMarkdown = `Failed loading block: height=**${blockHeight}**`;
@@ -744,7 +732,6 @@ router.get("/block-height/:blockHeight", function(req, res, next) {
 
 		res.render("block");
 
-		next();
 	});
 });
 
@@ -809,15 +796,13 @@ router.get("/block/:blockHash", function(req, res, next) {
 
 	Promise.all(promises).then(function() {
 		res.render("block");
-
-		next();
+		utils.perfMeasure(req);
 
 	}).catch(function(err) {
 		res.locals.userMessageMarkdown = `Failed to load block: **${blockHash}**`;
 
 		res.render("block");
 
-		next();
 	});
 });
 
@@ -841,15 +826,14 @@ router.get("/block-analysis/:blockHashOrHeight", function(req, res, next) {
 			res.locals.result.getblock = block;
 
 			res.render("block-analysis");
+			utils.perfMeasure(req);
 
-			next();
 
 		}).catch(function(err) {
 			res.locals.pageErrors.push(utils.logError("943h84ehedr", err));
 
 			res.render("block-analysis");
 
-			next();
 		});
 	};
 
@@ -865,7 +849,7 @@ router.get("/block-analysis/:blockHashOrHeight", function(req, res, next) {
 router.get("/block-analysis", function(req, res, next) {
 	res.render("block-analysis-search");
 
-	next();
+	utils.perfMeasure(req);
 });
 
 router.get("/tx/:transactionId", function(req, res, next) {
@@ -927,8 +911,8 @@ router.get("/tx/:transactionId", function(req, res, next) {
 
 		Promise.all(promises).then(function() {
 			res.render("transaction");
+			utils.perfMeasure(req);
 
-			next();
 
 		});
 
@@ -940,7 +924,6 @@ router.get("/tx/:transactionId", function(req, res, next) {
 
 		res.render("transaction");
 
-		next();
 	});
 });
 
@@ -1211,15 +1194,13 @@ router.get("/address/:address", function(req, res, next) {
 
 		Promise.all(promises.map(utils.reflectPromise)).then(function() {
 			res.render("address");
-
-			next();
+			utils.perfMeasure(req);
 
 		}).catch(function(err) {
 			res.locals.pageErrors.push(utils.logError("32197rgh327g2", err));
 
 			res.render("address");
 
-			next();
 		});
 
 	}).catch(function(err) {
@@ -1229,7 +1210,6 @@ router.get("/address/:address", function(req, res, next) {
 
 		res.render("address");
 
-		next();
 	});
 });
 
@@ -1237,21 +1217,22 @@ router.get("/rpc-terminal", function(req, res, next) {
 	if (!config.demoSite && !req.authenticated) {
 		res.send("RPC Terminal / Browser require authentication. Set an authentication password via the 'BTCEXP_BASIC_AUTH_PASSWORD' environment variable (see .env-sample file for more info).");
 
-		next();
+//		next();
 
 		return;
 	}
 
 	res.render("terminal");
+	utils.perfMeasure(req);
 
-	next();
+//	next();
 });
 
 router.post("/rpc-terminal", function(req, res, next) {
 	if (!config.demoSite && !req.authenticated) {
 		res.send("RPC Terminal / Browser require authentication. Set an authentication password via the 'BTCEXP_BASIC_AUTH_PASSWORD' environment variable (see .env-sample file for more info).");
 
-		next();
+		utils.perfMeasure(req);
 
 		return;
 	}
@@ -1274,7 +1255,7 @@ router.post("/rpc-terminal", function(req, res, next) {
 			res.end();
 		});
 
-		next();
+		utils.perfMeasure(req);
 
 		return;
 	}
@@ -1291,21 +1272,16 @@ router.post("/rpc-terminal", function(req, res, next) {
 				res.end();
 			});
 
-			next();
-
 		} else if (result) {
 			res.write(JSON.stringify(result, null, 4), function() {
 				res.end();
 			});
-
-			next();
 
 		} else {
 			res.write(JSON.stringify({"Error":"No response from node"}, null, 4), function() {
 				res.end();
 			});
 
-			next();
 		}
 	});
 });
@@ -1314,7 +1290,7 @@ router.get("/rpc-browser", function(req, res, next) {
 	if (!config.demoSite && !req.authenticated) {
 		res.send("RPC Terminal / Browser require authentication. Set an authentication password via the 'BTCEXP_BASIC_AUTH_PASSWORD' environment variable (see .env-sample file for more info).");
 
-		next();
+		utils.perfMeasure(req);
 
 		return;
 	}
@@ -1381,8 +1357,7 @@ router.get("/rpc-browser", function(req, res, next) {
 						res.locals.methodResult = "Sorry, that RPC command is blacklisted. If this is your server, you may allow this command by removing it from the 'rpcBlacklist' setting in config.js.";
 
 						res.render("browser");
-
-						next();
+						utils.perfMeasure(req);
 
 						return;
 					}
@@ -1414,35 +1389,35 @@ router.get("/rpc-browser", function(req, res, next) {
 							}
 
 							res.render("browser");
+							utils.perfMeasure(req);
 
-							next();
 						});
 					});
 				} else {
 					res.render("browser");
+					utils.perfMeasure(req);
 
-					next();
 				}
 			}).catch(function(err) {
 				res.locals.userMessage = "Error loading help content for method " + req.query.method + ": " + err;
 
 				res.render("browser");
+				utils.perfMeasure(req);
 
-				next();
 			});
 
 		} else {
 			res.render("browser");
+			utils.perfMeasure(req);
 
-			next();
 		}
 
 	}).catch(function(err) {
 		res.locals.userMessage = "Error loading help content: " + err;
 
 		res.render("browser");
+		utils.perfMeasure(req);
 
-		next();
 	});
 });
 
@@ -1472,15 +1447,14 @@ router.get("/unconfirmed-tx", function(req, res, next) {
 		res.locals.mempoolDetails = mempoolDetails;
 
 		res.render("unconfirmed-transactions");
-
-		next();
+		utils.perfMeasure(req);
 
 	}).catch(function(err) {
 		res.locals.userMessage = "Error: " + err;
 
 		res.render("unconfirmed-transactions");
+		utils.perfMeasure(req);
 
-		next();
 	});
 });
 
@@ -1512,7 +1486,7 @@ router.get("/tx-stats", function(req, res, next) {
 
 					res.render("tx-stats");
 
-					next();
+					utils.perfMeasure(req);
 				});
 			});
 		});
@@ -1524,28 +1498,27 @@ router.get("/difficulty-history", function(req, res, next) {
 		res.locals.blockCount = getblockchaininfo.blocks;
 
 		res.render("difficulty-history");
-
-		next();
+		utils.perfMeasure(req);
 
 	}).catch(function(err) {
 		res.locals.userMessage = "Error: " + err;
 
 		res.render("difficulty-history");
+		utils.perfMeasure(req);
 
-		next();
 	});
 });
 
 router.get("/about", function(req, res, next) {
 	res.render("about");
+	utils.perfMeasure(req);
 
-	next();
 });
 
 router.get("/tools", function(req, res, next) {
 	res.render("tools");
+	utils.perfMeasure(req);
 
-	next();
 });
 
 router.get("/admin", function(req, res, next) {
@@ -1560,8 +1533,7 @@ router.get("/admin", function(req, res, next) {
 	res.locals.errorStats = global.errorStats;
 
 	res.render("admin");
-
-	next();
+	utils.perfMeasure(req);
 });
 
 
@@ -1570,7 +1542,7 @@ router.get("/changelog", function(req, res, next) {
 
 	res.render("changelog");
 
-	next();
+	utils.perfMeasure(req);
 });
 
 router.get("/fun", function(req, res, next) {
@@ -1591,7 +1563,7 @@ router.get("/fun", function(req, res, next) {
 
 	res.render("fun");
 
-	next();
+	utils.perfMeasure(req);
 });
 
 module.exports = router;
