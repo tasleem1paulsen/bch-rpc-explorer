@@ -1,5 +1,9 @@
 {
     "coinbase_tags" : {
+        "Minerium": {
+            "name": "Minerium",
+            "link": "https://minerium.com"
+        },
         "Hath": {
             "name": "Hath",
             "link": "Unknown"
