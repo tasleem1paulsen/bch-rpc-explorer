@@ -234,7 +234,8 @@ block endOfBody
 					var minerSummary = summary.summariesByMiner[minerName];
 
 					var row = $("#miner-summary-prototype").clone();
-					row.attr("id", null);
+					if (!minerName) {minerName = "Not Known";}
+					row.attr("id", minerName);
 					row.addClass("miner-summary-row");
 					
 					row.find(".miner-name").text(minerName);
