@@ -138,7 +138,7 @@ block content
 									span Total Upload: #{upData[0]} #{upData[1].abbreviation}B
 									span.text-muted  (avg #{upRateData[0]} #{upRateData[1].abbreviation}B/s)
 
-							if (getnetworkinfo.networks)
+							if ((getnetworkinfo.networks) && (!config.hideIp))
 								div.row
 									div.summary-table-label Interfaces
 									div.summary-table-content.text-monospace
@@ -154,14 +154,14 @@ block content
 												if (item.proxy)
 													span.text-muted.ml-3 (proxy: #{item.proxy})
 
-							if (getnetworkinfo.localaddresses)
+							if ((getnetworkinfo.localaddresses) && (!config.hideIp))
 								div.row
 									div.summary-table-label Local Addresses
 									div.summary-table-content.text-monospace
 										each item, index in getnetworkinfo.localaddresses
 											div #{item.address}:#{item.port}
 												span.text-muted.ml-3 (score: #{item.score.toLocaleString()})
-							
+
 
 			div.tab-pane(id="tab-json", role="tabpanel")
 

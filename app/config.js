@@ -39,7 +39,7 @@ for (var i = 0; i < electrumXServerUriStrings.length; i++) {
   }
 });
 
-["BTCEXP_NO_RATES", "BTCEXP_UI_SHOW_TOOLS_SUBHEADER", "BTCEXP_SLOW_DEVICE_MODE"].forEach(function(item) {
+["BTCEXP_NO_RATES", "BTCEXP_UI_SHOW_TOOLS_SUBHEADER", "BTCEXP_SLOW_DEVICE_MODE", "BTCEXP_HIDE_IP"].forEach(function(item) {
   if (process.env[item] === undefined) {
     process.env[item] = "true";
   }
@@ -80,6 +80,7 @@ module.exports = {
   noInmemoryRpcCache: (process.env.BTCEXP_NO_INMEMORY_RPC_CACHE.toLowerCase() == "true"),
   headerByHeightSupport: (process.env.BTCEXP_HEADER_BY_HEIGHT_SUPPORT.toLowerCase() == "true"),
   blockByHeightSupport: (process.env.BTCEXP_BLOCK_BY_HEIGHT_SUPPORT.toLowerCase() == "true"),
+  hideIp: (process.env.BTCEXP_HIDE_IP.toLowerCase() == "true"),
 
   rpcConcurrency: (process.env.BTCEXP_RPC_CONCURRENCY || 10),
 
