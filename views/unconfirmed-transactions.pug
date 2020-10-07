@@ -29,7 +29,7 @@ block content
             div.card-header.text-monospace
               if (tx && tx.txid)
                 span ##{(txIndex + offset).toLocaleString()}
-                span  &ndash;
+                span  &ndash; 
                 a(href=("/tx/" + tx.txid)) #{tx.txid}
 
             div.card-body
