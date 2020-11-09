@@ -177,9 +177,11 @@ div.tab-content
 									div.summary-split-table-content.text-monospace.mb-0
 										if (result.getblock.miner.identifiedBy)
 											small.data-tag.bg-primary(data-toggle="tooltip", title=("Identified by: " + result.getblock.miner.identifiedBy)) #{result.getblock.miner.name}
-											if (result.getblock.miner.noIFP > 0)
-												small.bg-white.text-white.px-0.py-0 
-												small.data-tag.bg-success NO IFP
+										else
+											small.data-tag.bg-primary(data-toggle="tooltip", title=(result.getblock.miner.coinbaseAscii)) ?
+										if (result.getblock.miner.noIFP > 0)
+											small.bg-white.text-white.px-0.py-0 
+											small.data-tag.bg-success NO IFP
 
 										else
 											small.data-tag.bg-primary #{result.getblock.miner.name}
