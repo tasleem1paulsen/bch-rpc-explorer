@@ -389,7 +389,11 @@ function getMinerFromCoinbaseTx(tx) {
 		return null;
 	}
 
-	var minerInfo = {};
+	var minerInfo = {
+		coinbaseAscii: hex2ascii(tx.vin[0].coinbase)
+	};
+	minerInfo.noIFP = minerInfo.coinbaseAscii.search(/bchn/i)
+
 	if (global.miningPoolsConfigs) {
 		poolLoop:
 		for (var i = 0; i < global.miningPoolsConfigs.length; i++) {
@@ -399,7 +403,7 @@ function getMinerFromCoinbaseTx(tx) {
 				if (miningPoolsConfig.payout_addresses.hasOwnProperty(payoutAddress)) {
 					if (tx.vout && tx.vout.length > 0 && tx.vout[0].scriptPubKey && tx.vout[0].scriptPubKey.addresses && tx.vout[0].scriptPubKey.addresses.length > 0) {
 						if (tx.vout[0].scriptPubKey.addresses[0] == payoutAddress) {
-							minerInfo = miningPoolsConfig.payout_addresses[payoutAddress];
+							Object.assign(minerInfo, miningPoolsConfig.payout_addresses[payoutAddress]);
 							minerInfo.identifiedBy = "payout address " + payoutAddress;
 							break poolLoop;
 						}
@@ -412,7 +416,7 @@ function getMinerFromCoinbaseTx(tx) {
 					var coinbase = hex2ascii(tx.vin[0].coinbase).toLowerCase();
 					var coinbase_tag= coinbaseTag.toLowerCase();
 					if (coinbase.toLowerCase().indexOf(coinbase_tag) != -1) {
-						minerInfo = miningPoolsConfig.coinbase_tags[coinbaseTag];
+						Object.assign(minerInfo, miningPoolsConfig.coinbase_tags[coinbaseTag]);
 						minerInfo.identifiedBy = "coinbase tag '" + coinbaseTag + "'";
 						break poolLoop;
 					}
@@ -421,15 +425,13 @@ function getMinerFromCoinbaseTx(tx) {
 
 			for (var blockHash in miningPoolsConfig.block_hashes) {
 				if (blockHash == tx.blockhash) {
-					var minerInfo = miningPoolsConfig.block_hashes[blockHash];
+					Object.assign(minerInfo, miningPoolsConfig.block_hashes[blockHash]);
 					minerInfo.identifiedBy = "known block hash '" + blockHash + "'";
 					break poolLoop;
 				}
 			}
 		}
 	}
-	minerInfo.coinbaseAscii = hex2ascii(tx.vin[0].coinbase);
-	minerInfo.noIFP=minerInfo.coinbaseAscii.search(/bchn/i);
 	return minerInfo;
 }
 
