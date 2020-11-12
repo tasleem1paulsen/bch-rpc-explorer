@@ -248,7 +248,7 @@ router.get("/mempool-summary", function(req, res, next) {
 			} else {
 				res.locals.mempooltxidChunks = utils.splitArrayIntoChunks(mempooltxids, 25);
 			}
-			
+
 
 			res.render("mempool-summary");
 			utils.perfMeasure(req);
@@ -780,7 +780,7 @@ router.get("/block/:blockHash", function(req, res, next) {
 
 		}).catch(function(err) {
 			res.locals.pageErrors.push(utils.logError("238h38sse", err));
-			
+
 			reject(err);
 		});
 	}));
@@ -793,7 +793,7 @@ router.get("/block/:blockHash", function(req, res, next) {
 
 		}).catch(function(err) {
 			res.locals.pageErrors.push(utils.logError("21983ue8hye", err));
-			
+
 			reject(err);
 		});
 	}));
@@ -856,6 +856,56 @@ router.get("/block-analysis", function(req, res, next) {
 	utils.perfMeasure(req);
 });
 
+/**
+ * Parse two-option-vote ballot from a transaction.
+ *
+ * This is best effort. This may fail or not be a valid vote.
+ */
+function parseTwoOptionVote(tx) {
+	let scriptSig = "";
+	try {
+		// We assume the vote is in the first input.
+		//
+		// Technically, it can be in any input, or multiple ballots in multiple
+		// inputs.
+		scriptSig = tx.vin[0].scriptSig.hex;
+	} catch (e) {
+		// API change?
+		return null;
+	}
+	const VOTE_REDEEM_SCRIPT = "5479a988547a5479ad557a5579557abb537901147f75537a"
+		+ "887b01147f77767b8778537a879b7c14beefffffffffffff"
+		+ "ffffffffffffffffffffffff879b";
+	if (!scriptSig.endsWith(VOTE_REDEEM_SCRIPT)) {
+		return null;
+	}
+
+	try {
+		// Parse the vote out of it.
+		scriptSig = Buffer.from(scriptSig, 'hex');
+		let pos = 0;
+
+		// skip vote signature
+		const msgSigSize = scriptSig[pos++];
+		pos += msgSigSize;
+
+		// Next is the vote itself. It should be 40 bytes.
+		// [20 bytes for the election ID] + [20 bytes for the vote]
+		//
+		// First, there should be a PUSH 40 opcode.
+		if (scriptSig[pos++] != 40) {
+			return null;
+		}
+		const electionID = scriptSig.slice(pos, pos + 20).toString('hex');
+		const vote = scriptSig.slice(pos + 20, pos + 40).toString('hex');
+		return [electionID, vote];
+
+	} catch (e) {
+		// Assume invalid vote script.
+		return null;
+	}
+}
+
 router.get("/tx/:transactionId", function(req, res, next) {
 	var txid = req.params.transactionId;
 
@@ -871,7 +921,7 @@ router.get("/tx/:transactionId", function(req, res, next) {
 
 	coreApi.getRawTransactionsWithInputs([txid]).then(function(rawTxResult) {
 		var tx = rawTxResult.transactions[0];
-
+		res.locals.result.ballot = parseTwoOptionVote(tx);
 		res.locals.result.getrawtransaction = tx;
 		res.locals.result.txInputs = rawTxResult.txInputsByTransaction[txid]
 
