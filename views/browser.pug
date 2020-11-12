@@ -1,7 +1,7 @@
 extends layout
 
 block headContent
-	title RPC Browser #{(method ? (" - " + method) : false)}
+	+title(`RPC Browser ${(method ? (" - " + method) : false)}`)
 
 	style.
 		pre {

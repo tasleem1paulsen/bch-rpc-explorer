@@ -103,7 +103,7 @@ div.table-responsive
 							else
 								small.rounded.bg-secondary.text-white.px-2.py-1(data-toggle="tooltip", title=(block.miner.coinbaseAscii)) ?
 							if (block.miner.noIFP > 0)
-								small.bg-white.text-white.px-0.py-0 
+								span.font-weight-light.text-muted  
 								small.rounded.bg-success.text-white.px-1.py-1 NO IFP
 
 						
@@ -132,11 +132,14 @@ div.table-responsive
 							
 						
 						td.data-cell.text-monospace.text-right
-							- var bSizeK = parseInt(block.size / 1000);
-							- var full = new Decimal(100 * block.size / coinConfig.maxBlockSizeByNetwork[activeBlockchain]).toDecimalPlaces(1);
-							- var full2 = full.toDP(2);
+							- var data = utils.formatLargeNumber(block.size, 1);
+							- var fullRatio = block.size / coinConfig.maxBlockSizeByNetwork[activeBlockchain];
+							- var full = new Decimal(100 * fullRatio).toDecimalPlaces(1);
+							- var abbr = data[1].abbreviation || "";
+							- var toolTip = `${data[0]} ${abbr}B`;
 
-								span #{full2} 
+								span.border-dotted(title=toolTip, data-toggle="tooltip") #{full}%
+								span  
 								if (full > 90)
 									img(src="/img/block-fullness-3.png", style="width: 18px; height: 18px;")
 								else if (full > 50)
@@ -145,14 +148,5 @@ div.table-responsive
 									img(src="/img/block-fullness-1.png", style="width: 18px; height: 18px;")
 								else
 									img(src="/img/block-fullness-0.png", style="width: 18px; height: 18px;")
-
-								//span #{bSizeK.toLocaleString()} 
-								//small.font-weight-light.text-muted (#{full} %)
-
-							//	div(class="progress", style="height: 4px;")
-							//		div(class="progress-bar", role="progressbar", style=("width: " + fullPercent + "%;"), aria-valuenow=parseInt(100 * block.size / coinConfig.maxBlockSize), aria-valuemin="0" ,aria-valuemax="100")
-							//td.data-cell.text-monospace.text-right
-							//	- var bSizeK = parseInt(block.size / 1000);
-							//	span #{bSizeK.toLocaleString()}
 
 						- var lastBlock = block;
