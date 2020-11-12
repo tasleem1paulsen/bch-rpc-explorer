@@ -121,7 +121,7 @@ block content
 								div.summary-table-content.text-monospace
 									if (result.getrawtransaction.locktime < 500000000)
 										// the following is not a traling space
-										span Spendable in block 
+										span Spendable in block
 										a(href=("/block-height/" + result.getrawtransaction.locktime)) ##{result.getrawtransaction.locktime.toLocaleString()}
 										span  or later
 										a(href="https://bitcoin.org/en/developer-guide#locktime-and-sequence-number", data-toggle="tooltip", title="More info about locktime", target="_blank")
@@ -136,7 +136,7 @@ block content
 								div.summary-table-label Confirmations
 								div.summary-table-content.text-monospace
 									if (result.getrawtransaction.confirmations < 6)
-										span.font-weight-bold.text-warning #{result.getrawtransaction.confirmations.toLocaleString()} 
+										span.font-weight-bold.text-warning #{result.getrawtransaction.confirmations.toLocaleString()}
 											a(data-toggle="tooltip", title="Fewer than 6 confirmations is generally considered 'unsettled' for high-value transactions. The applicability of this guidance may vary.")
 												i.fas.fa-unlock-alt
 									else
@@ -169,7 +169,7 @@ block content
 										if (minerInfo.identifiedBy)
 											small.data-tag.bg-primary(data-toggle="tooltip", title=("Identified by: " + minerInfo.identifiedBy)) #{minerInfo.name}
 											if (minerInfo.noIFP > 0)
-												small.bg-white.text-white.px-0.py-0 
+												small.bg-white.text-white.px-0.py-0
 												small.data-tag.bg-success NO IFP
 										else
 											small.data-tag.bg-primary ?
@@ -202,7 +202,7 @@ block content
 								- var vout = null;
 								if (result.txInputs && result.txInputs[xInputIndex])
 									- var vout = result.txInputs[xInputIndex];
-									
+
 									if (vout.utxoTime)
 										- var dt = result.getrawtransaction.time - vout.utxoTime;
 										- var dtDays = dt / 60 / 60 / 24;
@@ -215,6 +215,15 @@ block content
 									div.summary-table-content.text-monospace
 										span #{utils.addThousandsSeparators(daysDestroyed.toDP(daysDestroyed > 1 ? 0 : 1))}
 											small.ml-1.border-dotted(title=`${coinConfig.name} Days`, data-toggle="tooltip") #{coinConfig.ticker.toLowerCase().substring(0, 1)}d
+							if (result.ballot != null)
+								div.summary-table-label Election ballot
+								div.summary-table-content.text-monospace
+									p This is a vote for #{result.ballot[1]} in election #{result.ballot[0]}.
+
+									p To learn more about on-chain elections see&nbsp;
+										a(href=("https://voter.cash")) voter.cash
+											i.fas.fa-file-signature
+
 
 
 				if (result.getrawtransaction.vin[0].coinbase)
@@ -234,7 +243,7 @@ block content
 				div.card.shadow-sm.mb-3
 					div.card-body.px-2.px-md-3
 						h2.h6.mb-0
-							span #{result.getrawtransaction.vin.length.toLocaleString()} 
+							span #{result.getrawtransaction.vin.length.toLocaleString()}
 							if (result.getrawtransaction.vin.length == 1)
 								span Input
 							else
@@ -242,7 +251,7 @@ block content
 
 							span.mx-2.text-muted.text-small /
 
-							span #{result.getrawtransaction.vout.length.toLocaleString()} 
+							span #{result.getrawtransaction.vout.length.toLocaleString()}
 							if (result.getrawtransaction.vout.length == 1)
 								span Output
 							else
@@ -263,7 +272,7 @@ block content
 							div.card-body.px-2.px-md-3
 								h3.h6.mb-0
 									// the below is not trailing spaces, it is actually needed
-									span #{mempoolDetails.ancestors.length.toLocaleString()} 
+									span #{mempoolDetails.ancestors.length.toLocaleString()}
 
 									if (mempoolDetails.ancestors.length == 1)
 										span Ancestor
@@ -282,7 +291,7 @@ block content
 							div.card-body.px-2.px-md-3
 								h3.h6.mb-0
 									// the below is not trailing spaces, it is actually needed
-									span #{mempoolDetails.descendants.length.toLocaleString()} 
+									span #{mempoolDetails.descendants.length.toLocaleString()}
 									if (mempoolDetails.descendants.length == 1)
 										span Descendant
 									else
