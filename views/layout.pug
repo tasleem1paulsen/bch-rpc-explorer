@@ -56,10 +56,8 @@ html(lang="en")
 										span About
 
 							if (activeBlockchain != "main")
-								- var chainName = activeBlockchain == "test" ? "testnet" : activeBlockchain
-
 								li.nav-item
-									a.nav-link.text-warning(title=`Current node's chain: ${activeBlockchain}` data-toggle="tooltip") [#{chainName}]
+									a.nav-link.text-warning(title=`Current node's chain: ${activeBlockchain}` data-toggle="tooltip") [#{activeBlockchain}net]
 
 							if (config.siteTools)
 								li.nav-item.dropdown
