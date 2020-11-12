@@ -62,7 +62,12 @@ module.exports = {
 		"https://raw.githubusercontent.com/btccom/Blockchain-Known-Pools/master/pools.json",
 		"https://raw.githubusercontent.com/blockchain/Blockchain-Known-Pools/master/pools.json"
 	],
-	maxBlockSize: 32000000,
+	maxBlockSizeByNetwork: {
+		"main":   32000000,
+		"test":   32000000,
+		"test4":   2000000,
+		"scale": 256000000
+	},
 	difficultyAdjustmentBlockOffset: 1008,
 	difficultyAdjustmentBlockCount: 4,
 	maxSupplyByNetwork: {

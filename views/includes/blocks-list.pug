@@ -133,7 +133,7 @@ div.table-responsive
 						
 						td.data-cell.text-monospace.text-right
 							- var bSizeK = parseInt(block.size / 1000);
-							- var full = new Decimal(100 * block.size / coinConfig.maxBlockSize).toDecimalPlaces(1);
+							- var full = new Decimal(100 * block.size / coinConfig.maxBlockSizeByNetwork[activeBlockchain]).toDecimalPlaces(1);
 							- var full2 = full.toDP(2);
 
 								span #{full2} 
