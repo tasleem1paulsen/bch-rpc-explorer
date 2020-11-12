@@ -1,3 +1,14 @@
+#### v0.0.5
+##### 2020-11-12
+
+- Initial support for [BUIP 129](https://gitlab.com/bitcoinunlimited/BUIP/-/blob/master/129.md) (@Dagurval)
+- Add block time to the home page
+- Use a more performant  bitcoin-core fork library (@EchterAgo)
+- Add some proto support fort testnet4 and scalenet genesis (@EchterAgo)
+- Display "NO IFP" tag next blocks that signal for it
+- Fix miner info overwrite caused modifying the same object (@EchterAgo)
+- Fix a redis cache issue (@EchterAgo)
+
 #### v0.0.4
 ##### 2020-09-07
 
