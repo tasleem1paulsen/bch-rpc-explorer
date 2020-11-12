@@ -50,7 +50,7 @@ router.get("/", function(req, res, next) {
 	res.locals.homepage = true;
 
 	// don't need timestamp on homepage "blocks-list", this flag disables
-	res.locals.hideTimestampColumn = true;
+	//res.locals.hideTimestampColumn = true;
 
 	// variables used by blocks-list.pug
 	res.locals.offset = 0;
