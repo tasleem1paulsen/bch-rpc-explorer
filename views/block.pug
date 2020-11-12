@@ -2,9 +2,9 @@ extends layout
 
 block headContent
 	if (result.getblock)
-		title Block ##{result.getblock.height.toLocaleString()}, #{result.getblock.hash}
+		+title(`Block #${result.getblock.height.toLocaleString()}, ${result.getblock.hash}`)
 	else
-		title Block: Error
+		+title('Block: Error')
 
 block content
 	if (result.getblock)

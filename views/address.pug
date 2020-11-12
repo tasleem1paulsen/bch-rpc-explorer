@@ -1,7 +1,7 @@
 extends layout
 
 block headContent
-	title Address #{address}
+	+title(`Address ${address}`)
 
 block content
 	if (result && result.validateaddress)

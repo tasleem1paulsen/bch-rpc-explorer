@@ -1,4 +1,9 @@
 doctype html
+mixin title(title)
+	if (activeBlockchain != "main")
+		title [#{activeBlockchain.toUpperCase()}] - #{title}
+	else
+		title #{title}
 html(lang="en")
 	head
 		meta(charset="utf-8")
@@ -22,7 +27,7 @@ html(lang="en")
 		include includes/debug-overrides.pug
 
 		block headContent
-			title Explorer
+			+title('Explorer')
 
 	body.bg-dark
 		nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
