@@ -1,10 +1,15 @@
-- var currencyFormatInfo = utils.getCurrencyFormatInfo(currencyFormatType);
+if (currencyFormatTypeOverride)
+	- var currencyFormatTypeInt = currencyFormatTypeOverride
+else
+	- var currencyFormatTypeInt = currencyFormatType;
+
+- var currencyFormatInfo = utils.getCurrencyFormatInfo(currencyFormatTypeInt);
 
 if (currencyValue > 0)
 	if (currencyValueDecimals)
-		- var parts = utils.formatCurrencyAmountWithForcedDecimalPlaces(currencyValue, currencyFormatType, currencyValueDecimals);
+		- var parts = utils.formatCurrencyAmountWithForcedDecimalPlaces(currencyValue, currencyFormatTypeInt, currencyValueDecimals);
 	else
-		- var parts = utils.formatCurrencyAmount(currencyValue, currencyFormatType);
+		- var parts = utils.formatCurrencyAmount(currencyValue, currencyFormatTypeInt);
 
 	//span #{JSON.stringify(currencyFormatInfo)}
 	span.text-monospace #{parts.val}#{(currencyValueDecimals && currencyFormatInfo.type == "native" && currencyFormatInfo.multiplier <= 1000) ? "…" : ""}
@@ -13,10 +18,10 @@ if (currencyValue > 0)
 
 	if (currencyFormatInfo.type == "native")
 		if (exchangeRates)
-			small.border-dotted.ml-1(data-toggle="tooltip", title=utils.formatExchangedCurrency(currencyValue, "usd")) #{parts.currencyUnit}
+			small.border-dotted.ml-1(data-toggle="tooltip", title=utils.formatExchangedCurrency(currencyValue, "usd")) #{parts.currencyUnit}#{currencyUnitSuffix}
 				
 		else
-			small.ml-1 #{parts.currencyUnit}
+			small.ml-1 #{parts.currencyUnit}#{currencyUnitSuffix}
 				
 	else if (currencyFormatInfo.type == "exchanged")
 		small.border-dotted.ml-1(data-toggle="tooltip", title=`${utils.formatCurrencyAmount(currencyValue, coinConfig.defaultCurrencyUnit.name).simpleVal} BCH`) #{parts.currencyUnit}

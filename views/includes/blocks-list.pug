@@ -121,9 +121,13 @@ div.table-responsive
 									span 0
 
 						td.data-cell.text-monospace.text-right
-							- var currencyValue = new Decimal(block.totalFees).dividedBy(block.size).toDecimalPlaces(9);
-							- var currencyValueDecimals = 7;
+							- var currencyValue = new Decimal(block.totalFees).dividedBy(block.size);
+							- var currencyValueDecimals = 2;
+							- currencyFormatTypeOverride = "sat";
+							- currencyUnitSuffix = "/b"
 							include ./value-display.pug
+							- currencyFormatTypeOverride = null
+							- currencyUnitSuffix = null
 
 						td.data-cell.text-monospace.text-right
 							- var currencyValue = new Decimal(block.totalFees).toDecimalPlaces(9);
