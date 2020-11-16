@@ -186,45 +186,25 @@ router.get("/", function(req, res, next) {
 });
 
 router.get("/node-status", function(req, res, next) {
-	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
-		res.locals.getblockchaininfo = getblockchaininfo;
+	var required = [
+		{ target: "getblockchaininfo", promise: coreApi.getBlockchainInfo() },
+		{ target: "getnetworkinfo", promise: coreApi.getNetworkInfo() },
+		{ target: "uptimeSeconds", promise: coreApi.getUptimeSeconds() },
+		{ target: "getnettotals", promise: coreApi.getNetTotals() },
+		{ target: "getmempoolinfo", promise: coreApi.getMempoolInfo() },
+	];
+	Promise.allSettled(required.map(r => r.promise)).then(function(promiseResults) {
+		var rejects = promiseResults.filter(r => r.status === "rejected");
+		if (rejects.length > 0)
+			res.locals.userMessage = "Error getting node status: err=" +
+				rejects.map(r => r.reason).join('\n');
 
-		coreApi.getNetworkInfo().then(function(getnetworkinfo) {
-			res.locals.getnetworkinfo = getnetworkinfo;
-
-			coreApi.getUptimeSeconds().then(function(uptimeSeconds) {
-				res.locals.uptimeSeconds = uptimeSeconds;
-
-				coreApi.getNetTotals().then(function(getnettotals) {
-					res.locals.getnettotals = getnettotals;
-
-					res.render("node-status");
-				utils.perfMeasure(req);
-
-
-				}).catch(function(err) {
-					res.locals.userMessage = "Error getting node status: (id=0), err=" + err;
-
-					res.render("node-status");
-
-				});
-			}).catch(function(err) {
-				res.locals.userMessage = "Error getting node status: (id=1), err=" + err;
-
-				res.render("node-status");
-
-			});
-		}).catch(function(err) {
-			res.locals.userMessage = "Error getting node status: (id=2), err=" + err;
-
-			res.render("node-status");
-
-		});
-	}).catch(function(err) {
-		res.locals.userMessage = "Error getting node status: (id=3), err=" + err;
+		promiseResults.map((r, i) => [r, i])
+			.filter(r => r[0].status === "fulfilled")
+			.forEach(r => res.locals[required[r[1]].target] = r[0].value);
 
 		res.render("node-status");
-
+		utils.perfMeasure(req);
 	});
 });
 
