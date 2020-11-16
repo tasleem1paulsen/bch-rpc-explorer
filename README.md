@@ -36,6 +36,7 @@ The below instructions are geared toward BCH, but can be adapted easily to other
 2. Synchronize your node with the Bitcoin network.
 3. "Recent" version of Node.js (8+ recommended).
 4. You could also run an [ElectrsCash](https://github.com/bitcoinunlimited/ElectrsCash) and configure the explorer to received data from it
+5. You need to use nodejs version 12.9 or higher due to the use of [Promise.allSettled()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled) method
 
 ## Instructions
 
