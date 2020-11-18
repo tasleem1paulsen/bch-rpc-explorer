@@ -22,7 +22,7 @@ html(lang="en")
 
 		link(rel='stylesheet', href='/css/styling.css')
 
-		link(rel="icon", type="image/x-icon", href=("/img/logo/" + config.coin.toLowerCase() + ".ico"))
+		link(rel="icon", type="image/x-icon", href=coinConfig.faviconUrl)
 
 		include includes/debug-overrides.pug
 
@@ -40,12 +40,15 @@ html(lang="en")
 							if (slogo.span)
 								span !{slogo.span}
 						else
-							img.header-image(src="/img/logo/bch.svg", alt="logo")
+							img.header-image(src=coinConfig.logoUrl, alt="logo")
 
 						if (coinConfig.siteTitlesByNetwork && coinConfig.siteTitlesByNetwork[activeBlockchain])
 							span #{coinConfig.siteTitlesByNetwork[activeBlockchain]}
 						else
-							span Bitcoin Cash Explorer
+							if (coinConfig.siteTitleHtml)
+								span !{coinConfig.siteTitleHtml}
+							else
+								span #{coinConfig.siteTitle}
 						
 				button.navbar-toggler.navbar-toggler-right(type="button", data-toggle="collapse", data-target="#navbarNav", aria-label="collapse navigation")
 					span.navbar-toggler-icon
