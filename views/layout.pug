@@ -34,8 +34,11 @@ html(lang="en")
 			div.container
 				a.navbar-brand(href="/")
 					span
-						if (coinConfig.logoUrlsByNetwork && coinConfig.logoUrlsByNetwork[activeBlockchain])
-							img.header-image(src=coinConfig.logoUrlsByNetwork[activeBlockchain], alt="logo")
+						if (coinConfig.specialLogo && coinConfig.specialLogo[activeBlockchain])
+							- var slogo = coinConfig.specialLogo[activeBlockchain];
+							img(src=slogo.url, width=slogo.width, height=slogo.height, alt=slogo.alt)
+							if (slogo.span)
+								span !{slogo.span}
 						else
 							img.header-image(src="/img/logo/bch.svg", alt="logo")
 
