@@ -8,6 +8,7 @@ var debugPerfLog = debug("bchexp:actionPerformace");
 var Decimal = require("decimal.js");
 var request = require("request");
 var qrcode = require("qrcode");
+var textdecoding = require("text-decoding");
 
 var config = require("./config.js");
 var coins = require("./coins.js");
@@ -102,6 +103,14 @@ function hex2ascii(hex) {
 	}
 
 	return str;
+}
+
+function hex2array(hex) {
+	return new Uint8Array(hex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+}
+
+function hex2string(hex, encoding = 'utf-8') {
+	return new textdecoding.TextDecoder(encoding).decode(hex2array(hex))
 }
 
 function splitArrayIntoChunks(array, chunkSize) {
@@ -390,9 +399,9 @@ function getMinerFromCoinbaseTx(tx) {
 	}
 
 	var minerInfo = {
-		coinbaseAscii: hex2ascii(tx.vin[0].coinbase)
+		coinbaseStr: hex2string(tx.vin[0].coinbase)
 	};
-	minerInfo.noIFP = minerInfo.coinbaseAscii.search(/bchn/i)
+	minerInfo.noIFP = minerInfo.coinbaseStr.search(/bchn/i)
 
 	if (global.miningPoolsConfigs) {
 		poolLoop:
@@ -413,9 +422,9 @@ function getMinerFromCoinbaseTx(tx) {
 
 			for (var coinbaseTag in miningPoolsConfig.coinbase_tags) {
 				if (miningPoolsConfig.coinbase_tags.hasOwnProperty(coinbaseTag)) {
-					var coinbase = hex2ascii(tx.vin[0].coinbase).toLowerCase();
-					var coinbase_tag= coinbaseTag.toLowerCase();
-					if (coinbase.toLowerCase().indexOf(coinbase_tag) != -1) {
+					var coinbaseLower = minerInfo.coinbaseStr.toLowerCase();
+					var coinbaseTagLower = coinbaseTag.toLowerCase();
+					if (coinbaseLower.indexOf(coinbaseTagLower) != -1) {
 						Object.assign(minerInfo, miningPoolsConfig.coinbase_tags[coinbaseTag]);
 						minerInfo.identifiedBy = "coinbase tag '" + coinbaseTag + "'";
 						break poolLoop;
@@ -804,6 +813,8 @@ module.exports = {
 	reflectPromise: reflectPromise,
 	redirectToConnectPageIfNeeded: redirectToConnectPageIfNeeded,
 	hex2ascii: hex2ascii,
+	hex2array: hex2array,
+	hex2string: hex2string,
 	splitArrayIntoChunks: splitArrayIntoChunks,
 	splitArrayIntoChunksByChunkCount: splitArrayIntoChunksByChunkCount,
 	getRandomString: getRandomString,
