@@ -355,7 +355,7 @@ block endOfBody
 				}
 
 				summariesByMiner[miner.name].blockCount++;
-				summariesByMiner[miner.name].transactionCount += block.tx.length;
+				summariesByMiner[miner.name].transactionCount += block.nTx;
 				summariesByMiner[miner.name].totalSubsidiesCollected = summariesByMiner[miner.name].totalSubsidiesCollected.add(new Decimal(block.subsidy));
 				summariesByMiner[miner.name].totalFeesCollected = summariesByMiner[miner.name].totalFeesCollected.add(new Decimal(block.totalFees));
 				summariesByMiner[miner.name].blockSizeTotal += block.size;
@@ -367,7 +367,7 @@ block endOfBody
 
 				overallSummary.blockCount++;
 				if (block.miner.noIFP > 0) {overallSummary.blockCountNoIFP++;}
-				overallSummary.transactionCount += block.tx.length;
+				overallSummary.transactionCount += block.nTx;
 				overallSummary.totalSubsidiesCollected = overallSummary.totalSubsidiesCollected.add(new Decimal(block.subsidy));
 				overallSummary.totalFeesCollected = overallSummary.totalFeesCollected.add(new Decimal(block.totalFees));
 				overallSummary.blockSizeTotal += block.size;
