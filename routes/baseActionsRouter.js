@@ -217,17 +217,23 @@ router.get("/mempool-summary", function(req, res, next) {
 		coreApi.getMempoolTxids().then(function(mempooltxids) {
 			var debugMaxCount = 0;
 
+			var inputChunkSize = 25;
+			if (mempooltxids.length > 1000)
+				inputChunkSize = 100;
+
 			if (debugMaxCount > 0) {
 				var debugtxids = [];
 				for (var i = 0; i < Math.min(debugMaxCount, mempooltxids.length); i++) {
 					debugtxids.push(mempooltxids[i]);
 				}
 
-				res.locals.mempooltxidChunks = utils.splitArrayIntoChunks(debugtxids, 25);
+				res.locals.mempooltxidChunks = utils.splitArrayIntoChunks(debugtxids, inputChunkSize);
 
 			} else {
-				res.locals.mempooltxidChunks = utils.splitArrayIntoChunks(mempooltxids, 25);
+				res.locals.mempooltxidChunks = utils.splitArrayIntoChunks(mempooltxids, inputChunkSize);
 			}
+
+			res.locals.inputChunkSize = inputChunkSize;
 
 
 			res.render("mempool-summary");

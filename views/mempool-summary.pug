@@ -88,9 +88,10 @@ block endOfBody
 	script.
 		var txidChunks = !{JSON.stringify(mempooltxidChunks)};
 		var satoshiPerByteBucketMaxima = !{JSON.stringify(satoshiPerByteBucketMaxima)};
+		var inputChunkSize = !{inputChunkSize};
 
 		$(document).ready(function() {
-			loadMempool(txidChunks, 25, txidChunks.length * 25);
+			loadMempool(txidChunks, inputChunkSize, txidChunks.length * inputChunkSize);
 		});
 
 		function loadMempool(txidChunks, chunkSize, count) {
