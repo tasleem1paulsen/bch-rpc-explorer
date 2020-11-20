@@ -1,4 +1,4 @@
-FROM node:lts-buster-slim as builder
+FROM node:buster-slim as builder
 WORKDIR /workspace
 RUN apt-get update -q && \
     apt-get install -qy build-essential git python
@@ -9,7 +9,7 @@ RUN npm install && \
     apt autoremove -y && \
     apt-get clean
 
-FROM node:lts-buster-slim
+FROM node:buster-slim
 RUN apt-get update -q && \
     apt-get install -qy libjemalloc2 && \
     rm -rf /var/lib/apt/lists/* && \
