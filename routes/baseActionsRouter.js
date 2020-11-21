@@ -1039,6 +1039,7 @@ router.get("/address/:address", function(req, res, next) {
 		for (var i = 0; i < global.miningPoolsConfigs.length; i++) {
 			if (global.miningPoolsConfigs[i].payout_addresses[address]) {
 				res.locals.payoutAddressForMiner = global.miningPoolsConfigs[i].payout_addresses[address];
+				break;
 			}
 		}
 	}
