@@ -178,7 +178,7 @@ div.tab-content
 										if (result.getblock.miner.identifiedBy)
 											small.data-tag.bg-primary(data-toggle="tooltip", title=("Identified by: " + result.getblock.miner.identifiedBy)) #{result.getblock.miner.name}
 										else
-											small.data-tag.bg-primary(data-toggle="tooltip", title=(result.getblock.miner.coinbaseAscii)) ?
+											small.data-tag.bg-primary(data-toggle="tooltip", title=(result.getblock.miner.coinbaseStr)) ?
 										if (result.getblock.miner.noIFP > 0)
 											span.font-weight-light.text-muted  
 											small.data-tag.bg-success NO IFP
