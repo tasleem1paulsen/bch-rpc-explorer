@@ -26,6 +26,19 @@ const forceCsrf = csurf({ ignoreMethods: [] });
 
 
 
+router.get("/mempoolinfo", function(req, res, next) {
+	coreApi.getMempoolInfo().then(function(info) {
+		["bytes", "usage", "maxmempool"].map(p => {
+			var data = utils.formatLargeNumber(info[p], 1);
+			var abbr = data[1].abbreviation || "";
+			return { k: p + "Human", v: `${data[0]} ${abbr}B` }
+		}).forEach(p => info[p.k] = p.v);
+		res.json(info);
+		utils.perfMeasure(req);
+	});
+});
+
+
 router.get("/blocks-by-height/:blockHeights", function(req, res, next) {
 	var blockHeightStrs = req.params.blockHeights.split(",");
 	
