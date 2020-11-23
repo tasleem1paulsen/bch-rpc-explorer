@@ -20,6 +20,10 @@
             "name": "Memphis",
             "link": "https://toom.im/"
         },
+        "nucleus.toom.im": {
+            "name": "Nucleus",
+            "link": "https://toom.im/"
+        },
         "jtoomim": {
             "name": "jtoomim",
             "link": "https://toom.im/"
@@ -32,6 +36,10 @@
             "name": "bitcoincash.network",
             "link": "https://bitcoincash.network/"
         },
+        "mined_by_STK": {
+            "name": "STK",
+            "link": ""
+        },
         "Imma firin mah lazors": {
             "name": "Lazors",
             "link": "https://bitcoincashnode.org/members/matricz"
@@ -43,6 +51,14 @@
         "FirinLazorsOnAnRPi": {
             "name": "Lazors",
             "link": "https://bitcoincashnode.org/members/matricz"
+        },
+        "Justaphf-BU": {
+            "name": "Justaphf",
+            "link": "https://gitlab.com/Justaphf"
+        },
+        "Andrew_BCHUnlimited": {
+            "name": "AndrewBU",
+            "link": "https://gitlab.com/gandrewstone"
         }
     },
     "payout_addresses" : {
@@ -52,11 +68,15 @@
         },
         "bchtest:qqjhhc9nmklpgxphwut3dfgqfx6cax4zl5kzuzs97u": {
             "name": "Loping.net",
-            "link": "http://tbch4.loping.net:3002/"
+            "link": "http://tbch4.loping.net/"
         },
         "bchtest:qzt0hqx73cwpevp2k4w87hgwyx4zhhnyass86z5j7p": {
             "name": "Loping.net",
-            "link": "http://sbch.loping.net:3003/"
+            "link": "http://sbch.loping.net/"
+        },
+        "bchtest:qz97l9e4mxl248hcwsqvmtuwm9slu58rm585nes0ra": {
+            "name": "AndrewBU",
+            "link": "https://gitlab.com/gandrewstone"
         }
     }
 }
