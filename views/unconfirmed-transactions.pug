@@ -7,10 +7,6 @@ block content
   h1.h3 Unconfirmed Transactions
   hr
 
-  if (false)
-    pre
-      code #{JSON.stringify(mempoolDetails.txCount, null, 4)}
-
   if (mempoolDetails)
     - var txCount = mempoolDetails.txCount;
 
