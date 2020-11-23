@@ -121,7 +121,7 @@ block content
 								div.summary-table-content.text-monospace
 									if (result.getrawtransaction.locktime < 500000000)
 										// the following is not a traling space
-										span Spendable in block
+										span Spendable in block 
 										a(href=("/block-height/" + result.getrawtransaction.locktime)) ##{result.getrawtransaction.locktime.toLocaleString()}
 										span  or later
 										a(href="https://bitcoin.org/en/developer-guide#locktime-and-sequence-number", data-toggle="tooltip", title="More info about locktime", target="_blank")
@@ -240,7 +240,7 @@ block content
 				div.card.shadow-sm.mb-3
 					div.card-body.px-2.px-md-3
 						h2.h6.mb-0
-							span #{result.getrawtransaction.vin.length.toLocaleString()}
+							span #{result.getrawtransaction.vin.length.toLocaleString()} 
 							if (result.getrawtransaction.vin.length == 1)
 								span Input
 							else
@@ -248,7 +248,7 @@ block content
 
 							span.mx-2.text-muted.text-small /
 
-							span #{result.getrawtransaction.vout.length.toLocaleString()}
+							span #{result.getrawtransaction.vout.length.toLocaleString()} 
 							if (result.getrawtransaction.vout.length == 1)
 								span Output
 							else
