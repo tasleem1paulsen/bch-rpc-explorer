@@ -59,10 +59,6 @@ block content
 										div.mb-3
 											h6 Arguments
 
-										if (false)
-											pre
-												code.json #{JSON.stringify(argValues, null, 4)}
-										
 										div.ml-3
 											each argX, index in methodhelp.args
 												div.form-group
@@ -73,13 +69,6 @@ block content
 																span  #{argX.properties.join(", ")}
 														if (argX.description)
 															span.text-muted Description: #{argX.description}
-														if (false && argX.detailsLines && argX.detailsLines.length > 0)
-															- var detailsLines = "";
-															each detailsLine in argX.detailsLines
-																- detailsLines = (detailsLines + "<br/>" + detailsLine);
-															i.fas.fa-info-circle(data-toggle="tooltip", title=detailsLines)
-																
-
 
 													- var valX = false;
 													if (argValues != null)

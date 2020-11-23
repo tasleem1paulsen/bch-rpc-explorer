@@ -85,21 +85,15 @@ div.table-responsive
 								span.font-weight-light(class=colorClass)
 									span #{timeDiff.format()}
 
-									if (false)
-										if (timeDiff.asMinutes() < 1)
-											span #{parseInt(timeDiff.asSeconds())}s
-										else
-											span #{parseInt(timeDiff.asMinutes())}m #{parseInt(timeDiff.asSeconds())}s
-
 							else
 								if (block.height == 0)
 									small.border-dotted.text-muted(title="Not applicable: genesis block has no previous block to compare to.", data-toggle="tooltip") N/A (genesis)
 								else
 									span.font-weight-light.text-muted -
-						
+
 						td.data-cell.text-monospace.text-right
 							include coinbase-display.pug
-						
+
 						td.data-cell.text-monospace.text-right #{block.nTx.toLocaleString()}
 
 						if (blockstatsByHeight)
