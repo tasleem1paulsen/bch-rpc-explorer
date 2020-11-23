@@ -122,28 +122,28 @@ block content
 						div.clearfix
 							div.row
 								div.summary-table-label TX count
-								div.summary-table-content.text-monospace #{getmempoolinfo.size}
+								div.summary-table-content.text-monospace(id="mempool-tx-count") #{getmempoolinfo.size}
 
 							div.row
 								- var data = utils.formatLargeNumber(getmempoolinfo.bytes, 1);
 								- var abbr = data[1].abbreviation || "";
 								- var text = `${data[0]} ${abbr}B`;
 								div.summary-table-label TX size
-								div.summary-table-content.text-monospace #{text}
+								div.summary-table-content.text-monospace(id="mempool-tx-size") #{text}
 
 							div.row
 								- var data = utils.formatLargeNumber(getmempoolinfo.usage, 1);
 								- var abbr = data[1].abbreviation || "";
 								- var text = `${data[0]} ${abbr}B`;
 								div.summary-table-label Memory size
-								div.summary-table-content.text-monospace #{text}
+								div.summary-table-content.text-monospace(id="mempool-mem-size") #{text}
 
 							div.row
 								- var data = utils.formatLargeNumber(getmempoolinfo.maxmempool, 1);
 								- var abbr = data[1].abbreviation || "";
 								- var text = `${data[0]} ${abbr}B`;
 								div.summary-table-label Max memory size
-								div.summary-table-content.text-monospace #{text}
+								div.summary-table-content.text-monospace(id="mempool-mem-limit") #{text}
 
 
 				div.card.shadow-sm.mb-3
@@ -247,3 +247,18 @@ block content
 								div.highlight
 									pre
 										code.json.bg-light(data-lang="json") #{JSON.stringify(getmempoolinfo, null, 4)}
+
+block endOfBody
+	script.
+		$(document).ready(function() {
+			setInterval(function() {
+				if (document.hidden)
+					return;
+				$.ajax({ url: "/api/mempoolinfo" }).done(function(mpi) {
+					$('#mempool-tx-count').text(mpi.size);
+					$('#mempool-tx-size').text(mpi.bytesHuman);
+					$('#mempool-mem-size').text(mpi.usageHuman);
+					$('#mempool-mem-limit').text(mpi.maxmempoolHuman);
+				});
+			}, 2500);
+		});
