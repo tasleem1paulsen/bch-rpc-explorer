@@ -1543,11 +1543,25 @@ router.get("/tx-stats", function(req, res, next) {
 
 router.get("/difficulty-history", function(req, res, next) {
 	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
-		res.locals.blockCount = getblockchaininfo.blocks;
+		var blockHeights = Array.from({length: global.coinConfig.difficultyAdjustmentBlockOffset}, (_, i) => getblockchaininfo.blocks - i);
+		coreApi.getBlockHeadersByHeight(blockHeights).then(function(blockHeaders) {
+			res.locals.data = blockHeaders.map((b, i) => {
+				return {
+					h: b.height,
+					d: b.difficulty,
+					dd: blockHeaders[i + 1] ? (b.difficulty / blockHeaders[i + 1].difficulty) - 1 : 0
+				}
+			});
 
-		res.render("difficulty-history");
-		utils.perfMeasure(req);
+			res.render("difficulty-history");
+			utils.perfMeasure(req);
+		}).catch(function(err) {
+			res.locals.userMessage = "Error: " + err;
 
+			res.render("difficulty-history");
+			utils.perfMeasure(req);
+
+		})
 	}).catch(function(err) {
 		res.locals.userMessage = "Error: " + err;
 
