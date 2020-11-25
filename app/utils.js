@@ -427,7 +427,7 @@ function getMinerFromCoinbaseTx(tx) {
 					var coinbaseTagLower = coinbaseTag.toLowerCase();
 					if (coinbaseLower.indexOf(coinbaseTagLower) != -1) {
 						Object.assign(minerInfo, miningPoolsConfig.coinbase_tags[coinbaseTag]);
-						minerInfo.identifiedBy = "coinbase tag '" + coinbaseTag + "'";
+						minerInfo.identifiedBy = "coinbase tag '" + coinbaseTag + "' in '" + minerInfo.coinbaseStr + "'";
 						break poolLoop;
 					}
 				}
