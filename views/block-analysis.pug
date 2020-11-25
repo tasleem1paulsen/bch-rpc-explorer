@@ -233,7 +233,7 @@ block endOfBody
 	- var txidChunkSize = 10;
 
 	script(src="/js/chart.bundle.min.js", integrity="sha384-qgOtiGNaHh9fVWUnRjyHlV39rfbDcvPPkEzL1RHvsHKbuqUqM6uybNuVnghY2z4/")
-	script(src='/js/decimal.js')
+	script(src='/js/decimal.min.js')
 	script.
 		var txidChunkSize = !{txidChunkSize};
 		var txidChunks = !{JSON.stringify(utils.splitArrayIntoChunks(result.getblock.tx, txidChunkSize))};
