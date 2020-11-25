@@ -1,3 +1,24 @@
+#### v0.0.6
+##### 2020-11-25
+
+- Auto reload of blocks list as soon as new block is detected
+- Removal of more SegWit related lingo in the UI
+- Fix various satoshi conversion in the UI
+- Better and fixed display of the coinbase and miner tagging
+- Improve difficulty history section
+- Improve block stats charts
+- Greatly speed up block detail page
+- Reduce redis ram usage by 30%
+- Automatic update of mempool info in the node status page
+- Significantly improve `getblock` caching
+- Use `getblcokheader` rather than `getblock` in the TX details page
+- Support UTF8 coinbase / OP_RETURN
+- Update DAA specification to reflect recent protocol upgrade (ASERTI3-2D)
+- Charts: Use index mode
+
+Many thanks to Axel Gembe (@EchterAgo) for all the work he has done to improve
+the performance of the explorer so that it could be used also for BCH scalenet.
+
 #### v0.0.5
 ##### 2020-11-12
 
