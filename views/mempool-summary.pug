@@ -480,12 +480,13 @@ block endOfBody
 				"sizeBucketLabels":sizeBucketLabels
 			};
 
+			var satsMultiplier = !{coinConfig.baseCurrencyUnit.multiplier};
 			for (var x = 0; x < rawdata.length; x++) {
 				var txMempoolInfo = rawdata[x].entry;
 				var fee = txMempoolInfo.modifiedfee;
 				var size = txMempoolInfo.vsize ? txMempoolInfo.vsize : txMempoolInfo.size;
 				var feePerByte = txMempoolInfo.modifiedfee / size;
-				var satoshiPerByte = feePerByte * 100000000; // TODO: magic number - replace with coinConfig.baseCurrencyUnit.multiplier
+				var satoshiPerByte = feePerByte * satsMultiplier;
 				var age = Date.now() / 1000 - txMempoolInfo.time;
 
 				var addedToBucket = false;

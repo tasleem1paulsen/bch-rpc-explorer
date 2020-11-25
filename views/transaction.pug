@@ -191,7 +191,7 @@ block content
 								div.row
 									div.summary-table-label Fee Rate
 									div.summary-table-content.text-monospace
-										span.text-muted (#{utils.addThousandsSeparators(new DecimalRounded(totalInputValue).minus(totalOutputValue).dividedBy(result.getrawtransaction.size).times(100000000))}
+										span.text-muted (#{utils.addThousandsSeparators(new DecimalRounded(totalInputValue).minus(totalOutputValue).dividedBy(result.getrawtransaction.size).times(coinConfig.baseCurrencyUnit.multiplier))}
 											small sat/B)
 
 							- var daysDestroyed = new Decimal(0);
