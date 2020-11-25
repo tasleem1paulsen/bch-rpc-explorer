@@ -546,7 +546,7 @@ function getBlockByHeight(blockHeight, full = false) {
 			});
 		});
 	} else {
-		return getBlockCached(blockHeight, full);
+		return getBlock(blockHeight, full);
 	}
 }
 
