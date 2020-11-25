@@ -154,15 +154,6 @@ div.tab-content
 										- var currencyValue = new Decimal(blockRewardMax).minus(coinbaseTxTotalOutputValue);
 										include ./value-display.pug
 
-							if (result.getblock.weight)
-								div.row
-									div(class=sumTableLabelClass) Weight
-									div.text-monospace(class=sumTableValueClass)
-										span(style="") #{result.getblock.weight.toLocaleString()}
-											small wu 
-
-										span.text-muted  (#{new Decimal(100 * result.getblock.weight / coinConfig.maxBlockWeight).toDecimalPlaces(2)}% full)
-										
 							if (result.getblock.size)
 								div.row
 									div(class=sumTableLabelClass) Size
