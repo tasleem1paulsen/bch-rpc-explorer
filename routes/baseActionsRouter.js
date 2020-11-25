@@ -368,6 +368,7 @@ router.get("/blocks", function(req, res, next) {
 	res.locals.paginationBaseUrl = "/blocks";
 
 	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
+		res.locals.getblockchaininfo = getblockchaininfo;
 		res.locals.blockCount = getblockchaininfo.blocks;
 		res.locals.blockOffset = offset;
 
