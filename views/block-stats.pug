@@ -230,32 +230,32 @@ block endOfBody
 				var green = "#28a745";
 				var blue = "#007bff";
 
-				createGraph("fee-rates", ["avg-fee-rate", "median-fee-rate", "min-fee-rate"], [summary.avgfeerate, summary.medianfeerate, summary.minfeerate], [blue, red, green]);
+				createGraph("fee-rates", ["avg-fee-rate", "median-fee-rate", "min-fee-rate"], [summary.avgfeerate, summary.medianfeerate, summary.minfeerate], [blue, red, green], "!{coinConfig.baseCurrencyUnit.name}/B");
 				
-				createGraph("max-fee-rates", ["max-fee-rate"], [summary.maxfeerate], [blue]);
+				createGraph("max-fee-rates", ["max-fee-rate"], [summary.maxfeerate], [blue], "!{coinConfig.baseCurrencyUnit.name}/B");
 
-				createGraph("total-fee", ["total-fee"], [summary.totalfee], [blue]);
+				createGraph("total-fee", ["total-fee"], [summary.totalfee], [blue], "!{coinConfig.defaultCurrencyUnit.name}");
 
-				createGraph("min-fees", ["min-fee"], [summary.minfee], [blue]);
-				createGraph("max-fees", ["max-fee"], [summary.maxfee], [blue]);
+				createGraph("min-fees", ["min-fee"], [summary.minfee], [blue], "!{coinConfig.baseCurrencyUnit.name}");
+				createGraph("max-fees", ["max-fee"], [summary.maxfee], [blue], "!{coinConfig.baseCurrencyUnit.name}");
 
-				createGraph("inputs-outputs", ["inputs", "outputs"], [summary.inputs, summary.outputs], [blue, green]);
+				createGraph("inputs-outputs", ["inputs", "outputs"], [summary.inputs, summary.outputs], [blue, green], "Count");
 
-				createGraph("tx-sizes", ["avg-tx-size", "median-tx-size", "min-tx-size"], [summary.avgtxsize, summary.mediantxsize, summary.mintxsize], [blue, red, green]);
+				createGraph("tx-sizes", ["avg-tx-size", "median-tx-size", "min-tx-size"], [summary.avgtxsize, summary.mediantxsize, summary.mintxsize], [blue, red, green], "Bytes");
 
-				createGraph("max-tx-sizes", ["max-tx-size"], [summary.maxtxsize], [blue]);
+				createGraph("max-tx-sizes", ["max-tx-size"], [summary.maxtxsize], [blue], "Bytes");
 
-				createGraph("volumes", ["volume"], [summary.totaloutput], [blue]);
+				createGraph("volumes", ["volume"], [summary.totaloutput], [blue], "!{coinConfig.defaultCurrencyUnit.name}");
 
-				createGraph("sizes", ["size"], [summary.size], [blue]);
+				createGraph("sizes", ["size"], [summary.size], [blue], "Bytes");
 
-				createGraph("subsidy", ["subsidy"], [summary.subsidy], [blue]);
+				createGraph("subsidy", ["subsidy"], [summary.subsidy], [blue], "!{coinConfig.defaultCurrencyUnit.name}");
 
-				createGraph("mediantime", ["mediantime"], [summary.mediantime], [blue]);
+				createGraph("mediantime", ["mediantime"], [summary.mediantime], [blue], "Epoch Time");
 
-				createGraph("txs", ["txs"], [summary.txs], [blue]);
+				createGraph("txs", ["txs"], [summary.txs], [blue], "Count");
 
-				createGraph("utxo_increase", ["utxo_increase"], [summary.utxo_increase], [blue]);
+				createGraph("utxo_increase", ["utxo_increase"], [summary.utxo_increase], [blue], "Count");
 
 				
 
@@ -366,9 +366,8 @@ block endOfBody
 		}
 
 		var graphsById = {};
-		function createGraph(chartid, names, datas, colors) {
+		function createGraph(chartid, names, datas, colors, yunit) {
 			var datasets = [];
-			var yaxes = [];
 
 			for (var i = 0; i < names.length; i++) {
 				datasets.push({
@@ -378,13 +377,6 @@ block endOfBody
 					borderColor: colors[i],
 					backgroundColor: 'rgba(0, 0, 0, 0)',
 					pointRadius: 1
-				});
-
-				yaxes.push({
-					scaleLabel: {
-						display: false,
-						//labelString: names[i]
-					}
 				});
 			}
 
@@ -419,6 +411,12 @@ block endOfBody
 									labelString: 'Block'
 								},
 							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: yunit
+								}
+							}]
 						}
 					}
 				});
