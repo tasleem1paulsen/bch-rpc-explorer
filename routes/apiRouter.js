@@ -91,6 +91,21 @@ router.get("/txids-by-block/:blockHash", function(req, res, next) {
 	});
 });
 
+router.get("/check-for-new-block/:maxH", function(req, res, next) {
+	var maxH = req.params.maxH;
+	coreApi.getBlockchainInfo().then(function(bci) {
+		var latestHeight = bci.blocks;
+		var chain = bci.chain;
+		var reload = false;
+
+		if ((maxH < latestHeight) && (chain != "regtest")) {
+			reload = true;
+		}
+		res.json(reload);
+	});
+
+});
+
 router.get("/mempool-txs/:txids", function(req, res, next) {
 	var txids = req.params.txids.split(",");
 

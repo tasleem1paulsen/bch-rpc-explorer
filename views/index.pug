@@ -140,5 +140,8 @@ block content
 
 									- var graphData = {id:"graphRateDay", dataVar:"txRateDataDay", labels:txStats.txCountStats.txLabels, title:"Tx Rate, 24hr", xaxisTitle:"Block", xaxisStep:5, yaxisTitle:"Tx Per Sec"};
 									include ./includes/line-graph.pug
-						
-											
+
+
+block endOfBody
+	- var reloadPollUrl = `/api/check-for-new-block/${getblockchaininfo.blocks}`;
+		include includes/reload-poll.pug
