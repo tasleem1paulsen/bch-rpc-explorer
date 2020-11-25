@@ -92,6 +92,7 @@ div.table-responsive
 									span.font-weight-light.text-muted -
 
 						td.data-cell.text-monospace.text-right
+							- var miner = block.miner
 							include coinbase-display.pug
 
 						td.data-cell.text-monospace.text-right #{block.nTx.toLocaleString()}
