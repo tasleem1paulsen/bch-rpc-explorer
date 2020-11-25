@@ -56,7 +56,9 @@ block endOfBody
 		});
 
 		var diffChange = data.map(d => { return { x: d.h, y: d.dd * 100 } });
-		createGraph("graph-diff-change", [diffChange], "Difficulty Change %");
+		createGraph("graph-diff-change", [diffChange], "Difficulty Change %", function(options) {
+			options.options.tooltips.mode = 'nearest';
+		});
 
 		function createGraph(graphId, datas, yLabelStr, optionsCallback = undefined) {
 			var datasets = datas.map(d => {
