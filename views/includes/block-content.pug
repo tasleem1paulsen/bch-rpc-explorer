@@ -23,6 +23,7 @@ ul.nav.nav-tabs.mb-3
 		a.nav-link(data-toggle="tab", href="#tab-json", role="tab") JSON
 
 - var txCount = result.getblock.tx.length;
+- var satsMultiplier = coinConfig.baseCurrencyUnit.multiplier;
 
 div.tab-content
 	div.tab-pane.active(id="tab-details", role="tabpanel")
@@ -80,9 +81,8 @@ div.tab-content
 										span.border-dotted(title="Total value of all transaction outputs", data-toggle="tooltip")
 											span Total Output
 									div.text-monospace(class=sumTableValueClass)
-										if (result.blockstats.total_out)
-											- var currencyValue = new Decimal(result.blockstats.total_out).plus(new Decimal(result.blockstats.totalfee)).plus(new Decimal(result.blockstats.subsidy));
-											- currencyValue = currencyValue.dividedBy(coinConfig.baseCurrencyUnit.multiplier);
+										if (result.blockstats.total_out !== undefined)
+											- var currencyValue = new Decimal(result.blockstats.total_out).plus(result.blockstats.totalfee).plus(result.blockstats.subsidy);
 											include ./value-display.pug
 										else
 											span 0
@@ -218,13 +218,14 @@ div.tab-content
 												- var currencyValue = new Decimal(result.blockstats.avgfeerate);
 											else
 												- var currencyValue = new Decimal(result.getblock.totalFees).dividedBy(result.getblock.size);
-											include ./value-display.pug
+											span #{(currencyValue * satsMultiplier).toLocaleString()}
+											small.ml-1 #{coinConfig.baseCurrencyUnit.name}/B
 
 									if (result.blockstats)
 										div.row
 											div.summary-split-table-label Rate Percentiles
 												br
-												small.font-weight-normal (sat/B)
+												small.font-weight-normal (#{coinConfig.baseCurrencyUnit.name}/B)
 											div.summary-split-table-content.text-monospace
 												div.clearfix
 													each item, itemIndex in [10, 25, 50, 75, 90]
@@ -245,23 +246,23 @@ div.tab-content
 												small (min, avg, max)
 												
 											div.summary-split-table-content.text-monospace
-												if (result.blockstats.minfeerate)
-													span #{(result.blockstats.minfeerate * 100000000).toLocaleString()}
-													small.ml-1 sat/B
+												if (result.blockstats.minfeerate !== undefined)
+													span #{(result.blockstats.minfeerate * satsMultiplier).toLocaleString()}
+													small.ml-1 #{coinConfig.baseCurrencyUnit.name}/B
 												else
 													span ?
 
 												br
 
-												if (result.blockstats.avgfeerate)
-													span #{(result.blockstats.avgfeerate * 10000000).toLocaleString()}
-													small.ml-1 sat/B
+												if (result.blockstats.avgfeerate !== undefined)
+													span #{(result.blockstats.avgfeerate * satsMultiplier).toLocaleString()}
+													small.ml-1 #{coinConfig.baseCurrencyUnit.name}/B
 
 												br
 
-												if (result.blockstats.maxfeerate)
-													span #{(result.blockstats.maxfeerate * 10000000).toLocaleString()}
-													small.ml-1 sat/B
+												if (result.blockstats.maxfeerate !== undefined)
+													span #{(result.blockstats.maxfeerate * satsMultiplier).toLocaleString()}
+													small.ml-1 #{coinConfig.baseCurrencyUnit.name}/B
 												else
 													span ?
 
@@ -272,25 +273,25 @@ div.tab-content
 												br
 												small (min, avg, max)
 											div.summary-split-table-content.text-monospace
-												if (result.blockstats.minfee)
-													- var currencyValue = new Decimal(result.blockstats.minfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
-													include ./value-display.pug
+												if (result.blockstats.minfee !== undefined)
+													span #{(result.blockstats.minfee * satsMultiplier).toLocaleString()}
+													small.ml-1 #{coinConfig.baseCurrencyUnit.name}
 												else
 													span 0
 
 												br
 
-												if (result.blockstats.avgfee)
-													- var currencyValue = new Decimal(result.blockstats.avgfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
-													include ./value-display.pug
+												if (result.blockstats.avgfee !== undefined)
+													span #{(result.blockstats.avgfee * satsMultiplier).toLocaleString()}
+													small.ml-1 #{coinConfig.baseCurrencyUnit.name}
 												else
 													span 0
 												
 												br
 
-												if (result.blockstats.maxfee)
-													- var currencyValue = new Decimal(result.blockstats.maxfee);
-													include ./value-display.pug
+												if (result.blockstats.maxfee !== undefined)
+													span #{(result.blockstats.maxfee * satsMultiplier).toLocaleString()}
+													small.ml-1 #{coinConfig.baseCurrencyUnit.name}
 												else
 													span 0
 

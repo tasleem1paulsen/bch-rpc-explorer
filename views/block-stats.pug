@@ -294,6 +294,7 @@ block endOfBody
 			});
 		}
 
+		var satsMultiplier = !{coinConfig.baseCurrencyUnit.multiplier};
 		function summarizeData(results) {
 			var summary = {};
 
@@ -332,16 +333,16 @@ block endOfBody
 			summary.utxo_increase = [];
 
 			for (var i = results.length - 1; i >= 0; i--) {
-				summary.avgfeerate.push({x:results[i].height, y:results[i].avgfeerate});
-				summary.medianfeerate.push({x:results[i].height, y:results[i].feerate_percentiles[2]});
-				summary.minfeerate.push({x:results[i].height, y:results[i].minfeerate});
+				summary.avgfeerate.push({x:results[i].height, y:results[i].avgfeerate * satsMultiplier});
+				summary.medianfeerate.push({x:results[i].height, y:results[i].feerate_percentiles[2] * satsMultiplier});
+				summary.minfeerate.push({x:results[i].height, y:results[i].minfeerate * satsMultiplier});
 				
-				summary.maxfeerate.push({x:results[i].height, y:results[i].maxfeerate});
+				summary.maxfeerate.push({x:results[i].height, y:results[i].maxfeerate * satsMultiplier});
 
-				summary.totalfee.push({x:results[i].height, y:new Decimal(results[i].totalfee).dividedBy(100000000)});
+				summary.totalfee.push({x:results[i].height, y:new Decimal(results[i].totalfee)});
 				
-				summary.minfee.push({x:results[i].height, y:results[i].minfee});
-				summary.maxfee.push({x:results[i].height, y:results[i].maxfee});
+				summary.minfee.push({x:results[i].height, y:results[i].minfee * satsMultiplier});
+				summary.maxfee.push({x:results[i].height, y:results[i].maxfee * satsMultiplier});
 				
 				summary.inputs.push({x:results[i].height, y:results[i].ins});
 				summary.outputs.push({x:results[i].height, y:results[i].outs});
@@ -352,7 +353,7 @@ block endOfBody
 
 				summary.maxtxsize.push({x:results[i].height, y:results[i].maxtxsize});
 				
-				summary.totaloutput.push({x:results[i].height, y:new Decimal(results[i].total_out).dividedBy(100000000)});
+				summary.totaloutput.push({x:results[i].height, y:new Decimal(results[i].total_out)});
 				
 				summary.size.push({x:results[i].height, y:results[i].total_size});
 				
