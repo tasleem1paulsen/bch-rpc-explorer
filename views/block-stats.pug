@@ -249,8 +249,6 @@ block endOfBody
 
 				createGraph("sizes", ["size"], [summary.size], [blue]);
 
-				//createGraph("sw-txs", ["swtxs"], [summary.swtxs], [blue]);
-
 				createGraph("subsidy", ["subsidy"], [summary.subsidy], [blue]);
 
 				createGraph("mediantime", ["mediantime"], [summary.mediantime], [blue]);
@@ -321,8 +319,6 @@ block endOfBody
 
 			summary.size = [];
 
-			summary.swtxs = [];
-
 			summary.subsidy = [];
 
 			summary.mediantime = [];
@@ -356,8 +352,6 @@ block endOfBody
 				
 				summary.size.push({x:results[i].height, y:results[i].total_size});
 				
-				summary.swtxs.push({x:results[i].height, y:results[i].swtxs});
-
 				summary.subsidy.push({x:results[i].height, y:results[i].subsidy});
 
 				summary.mediantime.push({x:results[i].height, y:results[i].mediantime});
