@@ -463,11 +463,9 @@ block endOfBody
 		}
 
 		function createChart(chartId, data, labels) {
-			var bgColors = [];
-
-			for (var i = 0; i < labels.length; i++) {
-				bgColors.push(`hsl(${(333 * i / labels.length)}, 100%, 50%)`);
-			}
+			var hues = labels.map((l, i) => 333 * i / labels.length);
+			var bgColors = hues.map(h => `hsl(${h}, 100%, 50%)`);
+			var hoverBgColors = hues.map(h => `hsl(${h}, 100%, 40%)`);
 
 			var ctx1 = document.getElementById(chartId).getContext('2d');
 			var chart = new Chart(ctx1, {
@@ -476,7 +474,8 @@ block endOfBody
 					labels: labels,
 					datasets: [{
 						data: data,
-						backgroundColor: bgColors
+						backgroundColor: bgColors,
+						hoverBackgroundColor: hoverBgColors
 					}]
 				},
 				options: {
