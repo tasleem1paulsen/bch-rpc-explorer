@@ -49,21 +49,24 @@ block endOfBody
 		var data = !{JSON.stringify(data)};
 
 		var diffHist = data.map(d => { return { x: d.h, y: d.d } });
-		createGraph("graph-diff-hist", [diffHist], "Difficulty", function(options) {
+		var diffHistAvg = data.map(d => { return { x: d.h, y: d.a } });
+		createGraph("graph-diff-hist", ['Difficulty', '!{avglen} block average'], [diffHist, diffHistAvg], ['#007bff', '#FFCC42'], "Difficulty", function(options) {
 			options.options.scales.yAxes[0].ticks = {
 				userCallback: function(item) { return item.toExponential(); }
 			};
 		});
 
 		var diffChange = data.map(d => { return { x: d.h, y: d.dd * 100 } });
-		createGraph("graph-diff-change", [diffChange], "Difficulty Change %", function(options) {
+		var diffChangeAvg = data.map(d => { return { x: d.h, y: d.ad * 100 } });
+		createGraph("graph-diff-change", ['Difficulty Change %', '!{avglen} block average'], [diffChange, diffChangeAvg], ['#007bff', '#FFCC42'], "Difficulty Change %", function(options) {
 			options.options.tooltips.mode = 'nearest';
 		});
 
-		function createGraph(graphId, datas, yLabelStr, optionsCallback = undefined) {
-			var datasets = datas.map(d => {
+		function createGraph(graphId, names, datas, colors, yLabelStr, optionsCallback = undefined) {
+			var datasets = datas.map((d, i) => {
 				return {
-					borderColor: '#007bff',
+					label: names[i],
+					borderColor: colors[i],
 					borderWidth: 2,
 					backgroundColor: 'rgba(0,0,0,0)',
 					data: d,
@@ -78,7 +81,9 @@ block endOfBody
 					datasets: datasets
 				},
 				options: {
-					legend: { display: false },
+					legend: {
+						display: (datasets.length > 1)
+					},
 					scales: {
 						xAxes: [{
 							type: 'linear',

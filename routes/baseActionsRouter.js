@@ -1546,13 +1546,24 @@ router.get("/difficulty-history", function(req, res, next) {
 	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
 		var blockHeights = Array.from({length: global.coinConfig.difficultyAdjustmentBlockOffset}, (_, i) => getblockchaininfo.blocks - i);
 		coreApi.getBlockHeadersByHeight(blockHeights).then(function(blockHeaders) {
-			res.locals.data = blockHeaders.map((b, i) => {
+			var data = blockHeaders.map((b, i) => {
 				return {
 					h: b.height,
 					d: b.difficulty,
 					dd: blockHeaders[i + 1] ? (b.difficulty / blockHeaders[i + 1].difficulty) - 1 : 0
 				}
 			});
+
+			var avglen = 36;
+			var avg = data[data.length - 1].d;
+			var avgd = data[data.length - 1].dd;
+			for (var i = data.length - 1; i >= 0; i--) {
+				data[i].a  = avg  = ((avg  * (avglen - 1)) + data[i].d)  / avglen;
+				data[i].ad = avgd = ((avgd * (avglen - 1)) + data[i].dd) / avglen;
+			}
+
+			res.locals.avglen = avglen
+			res.locals.data = data;
 
 			res.render("difficulty-history");
 			utils.perfMeasure(req);
