@@ -172,7 +172,11 @@ div.tab-content
 							div.row
 								div(class=sumTableLabelClass) Confirmations
 								div.text-monospace(class=sumTableValueClass)
-									if (result.getblock.confirmations < 6)
+									if (result.getblock.confirmations < 0)
+										span.font-weight-bold.text-danger Orphaned 
+											a(data-toggle="tooltip", title="This block is an orphan that is not part of the active chain.")
+												i.fas.fa-unlock-alt
+									else if (result.getblock.confirmations < 6)
 										span.font-weight-bold.text-warning #{result.getblock.confirmations.toLocaleString()} 
 											a(data-toggle="tooltip", title="Fewer than 6 confirmations is generally considered 'unsettled' for high-value transactions. The applicability of this guidance may vary.")
 												i.fas.fa-unlock-alt
