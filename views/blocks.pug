@@ -7,30 +7,30 @@ block content
 	h1.h3 Blocks
 	hr
 
-	if (blocks)
+	if (blockList)
 		nav(aria-label="Page navigation")
 			ul.pagination.justify-content-center
 				
-				li.page-item(class=(sort == "desc" ? "active" : false))
-					a.page-link(href=(sort == "desc" ? "javascript:void(0)" : "/blocks?limit=" + limit + "&offset=0" + "&sort=desc"))
+				li.page-item(class=(blockListArgs.sort == "desc" ? "active" : false))
+					a.page-link(href=(blockListArgs.sort == "desc" ? "javascript:void(0)" : "/blocks?limit=" + blockListArgs.limit + "&offset=0" + "&sort=desc"))
 						span(aria-hidden="true") Newest blocks first
 
-				li.page-item(class=(sort == "asc" ? "active" : false))
-					a.page-link(href=(sort == "asc" ? "javascript:void(0)" : "/blocks?limit=" + limit + "&offset=0" + "&sort=asc"))
+				li.page-item(class=(blockListArgs.sort == "asc" ? "active" : false))
+					a.page-link(href=(blockListArgs.sort == "asc" ? "javascript:void(0)" : "/blocks?limit=" + blockListArgs.limit + "&offset=0" + "&sort=asc"))
 						span(aria-hidden="true") Oldest blocks first
 
 		div.card.shadow-sm.mb-3
 			div.card-body
 				include includes/blocks-list.pug
 
-				if (blockCount > limit)
-					- var pageNumber = offset / limit + 1;
-					- var pageCount = Math.floor(blockCount / limit);
-					- if (pageCount * limit < blockCount) {
+				if (blockChainInfo.blocks > blockListArgs.limit)
+					- var pageNumber = blockListArgs.offset / blockListArgs.limit + 1;
+					- var pageCount = Math.floor(blockChainInfo.blocks / blockListArgs.limit);
+					- if (pageCount * blockListArgs.limit < blockChainInfo.blocks) {
 						- pageCount++;
 					- }
 					- var paginationUrlFunction = function(x) {
-						- return paginationBaseUrl + "?limit=" + limit + "&offset=" + ((x - 1) * limit + "&sort=" + sort);
+						- return paginationBaseUrl + "?limit=" + blockListArgs.limit + "&offset=" + ((x - 1) * blockListArgs.limit + "&sort=" + blockListArgs.sort);
 					- }
 					
 					div.pt-5
@@ -40,5 +40,5 @@ block content
 
 
 block endOfBody
-	- var reloadPollUrl = `/api/check-for-new-block/${getblockchaininfo.blocks}`;
+	- var reloadPollUrl = `/api/check-for-new-block/${blockChainInfo.blocks}`;
 		include includes/reload-poll.pug
