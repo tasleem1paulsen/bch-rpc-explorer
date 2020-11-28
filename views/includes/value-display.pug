@@ -11,7 +11,7 @@ if (currencyValue > 0)
 	else
 		- var parts = utils.formatCurrencyAmount(currencyValue, currencyFormatTypeInt);
 
-	span.text-monospace #{parts.val}#{(currencyValueDecimals && currencyFormatInfo.type == "native" && currencyFormatInfo.multiplier <= 1000) ? "…" : ""}
+	span.text-monospace #{parts.val}
 	if (parts.lessSignificantDigits)
 		span.text-monospace.text-small(style="margin-left: 2px;") #{parts.lessSignificantDigits}
 
