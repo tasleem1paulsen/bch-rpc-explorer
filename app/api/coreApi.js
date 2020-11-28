@@ -589,6 +589,12 @@ function getBlocksStatsByHeight(blockHeights) {
 	});
 }
 
+function getBlockTemplate(args = {}) {
+	return tryCacheThenRpcApi(miscCache, "getBlockTemplate", ONE_MIN, function() {
+		return rpcApi.getBlockTemplate(args);
+	});
+}
+
 function getRawTransaction(txid) {
 	var rpcApiFunction = function() {
 		return rpcApi.getRawTransaction(txid);
@@ -1100,6 +1106,7 @@ module.exports = {
 	getBlockByHeight: getBlockByHeight,
 	getBlocksByHeight: getBlocksByHeight,
 	getBlockByHashWithTransactions: getBlockByHashWithTransactions,
+	getBlockTemplate: getBlockTemplate,
 	getRawTransaction: getRawTransaction,
 	getRawTransactions: getRawTransactions,
 	getRawTransactionsWithInputs: getRawTransactionsWithInputs,

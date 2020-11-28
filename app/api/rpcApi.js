@@ -158,6 +158,10 @@ function getAddress(address) {
 	return getRpcDataWithParams({method:"validateaddress", parameters:[address]});
 }
 
+function getBlockTemplate(args = {}) {
+	return getRpcDataWithParams({method:"getblocktemplate", parameters:[args]});
+}
+
 function getRawTransaction(txid) {
 	debugLog("getRawTransaction: %s", txid);
 
@@ -432,6 +436,7 @@ module.exports = {
 	getMiningInfo: getMiningInfo,
 	getBlockHash: getBlockHash,
 	getBlock: getBlock,
+	getBlockTemplate: getBlockTemplate,
 	getRawTransaction: getRawTransaction,
 	getUtxo: getUtxo,
 	getMempoolTxDetails: getMempoolTxDetails,

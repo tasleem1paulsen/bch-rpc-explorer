@@ -17,6 +17,7 @@ RUN apt-get update -q && \
     apt-get clean
 WORKDIR /workspace
 COPY --from=builder /workspace .
+CMD node-gyp rebuild
 ENV NODE_OPTIONS=--max_old_space_size=4096
 ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
 ADD . /workspace
