@@ -1117,10 +1117,12 @@ router.get("/address/:address", function(req, res, next) {
 								if (coinbaseTxs.length > 0) {
 									// we need to query some blockHeights by hash for some coinbase txs
 									blockHeightsPromises.push(new Promise(function(resolve2, reject2) {
-										coreApi.getBlocks(coinbaseTxBlockHashes, false).then(function(blocksByHashResult) {
+										coreApi.getBlocks(coinbaseTxBlockHashes, false).then(function(blocks) {
+											var blocksByHash = {};
+											blocks.forEach(b => blocksByHash[b.hash] = b);
 											for (var txid in blockHashesByTxid) {
 												if (blockHashesByTxid.hasOwnProperty(txid)) {
-													blockHeightsByTxid[txid] = blocksByHashResult[blockHashesByTxid[txid]].height;
+													blockHeightsByTxid[txid] = blocksByHash[blockHashesByTxid[txid]].height;
 												}
 											}
 
