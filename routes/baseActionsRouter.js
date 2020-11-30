@@ -778,9 +778,7 @@ router.get("/block/:blockHash", function(req, res, next) {
 			resolve();
 
 		}).catch(function(err) {
-			res.locals.pageErrors.push(utils.logError("21983ue8hye", err));
-
-			reject(err);
+			resolve();
 		});
 	}));
 

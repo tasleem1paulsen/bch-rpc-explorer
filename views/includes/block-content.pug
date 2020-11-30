@@ -52,10 +52,10 @@ div.tab-content
 								a(href=sbInfo.referenceUrl) Read more
 
 		div.row
-			- var sumTableLabelClass = (result.blockstats != null ? "summary-split-table-label" : "summary-table-label");
-			- var sumTableValueClass = (result.blockstats != null ? "summary-split-table-content" : "summary-table-content");
+			- var sumTableLabelClass = (result.blockstats ? "summary-split-table-label" : "summary-table-label");
+			- var sumTableValueClass = (result.blockstats ? "summary-split-table-content" : "summary-table-content");
 
-			div.mb-3(class=(result.blockstats != null ? "col-md-6 pr-0" : "col-md-12"))
+			div.mb-3(class=(result.blockstats ? "col-md-6 pr-0" : "col-md-12"))
 				div.card.shadow-sm(style="height: 100%;")
 					div.card-body.px-2.px-md-3
 						h3.h6.mb-0 Summary
@@ -164,8 +164,8 @@ div.tab-content
 
 							if (result.getblock.miner)
 								div.row
-									div.summary-split-table-label Miner
-									div.summary-split-table-content.text-monospace.mb-0
+									div(class=sumTableLabelClass) Miner
+									div.text-monospace(class=sumTableValueClass)
 										- var miner = result.getblock.miner
 										include coinbase-display.pug
 
