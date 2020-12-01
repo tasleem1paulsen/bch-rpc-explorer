@@ -38,6 +38,25 @@ router.get("/mempoolinfo", function(req, res, next) {
 	});
 });
 
+router.get("/blocks", function(req, res, next) {
+	var args = {}
+	if (req.query.limit)
+		args.limit = parseInt(req.query.limit);
+	if (req.query.offset)
+		args.offset = parseInt(req.query.offset);
+	if (req.query.sort)
+		args.sort = req.query.sort;
+
+	coreApi.getBlockList(args).then(function(data) {
+		res.json(data);
+
+		utils.perfMeasure(req);
+	}).catch(function(err) {
+		res.json({success:false, error:err});
+
+		next();
+	});
+});
 
 router.get("/blocks-by-height/:blockHeights", function(req, res, next) {
 	var blockHeightStrs = req.params.blockHeights.split(",");

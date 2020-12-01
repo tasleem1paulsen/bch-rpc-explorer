@@ -17,7 +17,7 @@ div.table-responsive
 				th.data-header.text-right
 					span.border-dotted(title="The number of transactions included in each block.", data-toggle="tooltip") N(tx)
 
-				if (blockstatsByHeight)
+				if (hasBlockStats)
 					th.data-header.text-right
 						span.border-dotted(title="The total output of all transactions in each block.", data-toggle="tooltip") Volume
 
@@ -30,115 +30,99 @@ div.table-responsive
 
 		tbody
 
-			each block, blockIndex in blocks
-				if (block && ((sort == "desc" && blockIndex < blocks.length - 1) || (sort == "asc" && (block.height == 0 || blockIndex > 0))))
-					tr
-						td
-							if (sort == "desc")
-								small.text-muted #{(blockIndex + offset + 1).toLocaleString()}
-							else
-								small.text-muted #{(blockIndex + offset).toLocaleString()}
-
-						td.data-cell.text-monospace.text-right
-							if (global.specialBlocks && global.specialBlocks[block.hash])
-								a(data-toggle="tooltip", title=(coinConfig.name + " Fun! See block for details"))
-									i.fas.fa-certificate.text-primary.mr-1
-
-							a(href=("/block-height/" + block.height)) #{block.height.toLocaleString()}
-						
-
-						- var timeAgoTime = moment.utc(new Date()).diff(moment.utc(new Date(parseInt(block.time) * 1000)));
-						- var timeAgo = moment.duration(timeAgoTime);
-
-						- var timeDiff = null;
-						
-						if (sort == "asc")
-							if (blockIndex > 0)
-								- var timeDiff = moment.duration(moment.utc(new Date(parseInt(block.time) * 1000)).diff(moment.utc(new Date(parseInt(blocks[blockIndex - 1].time) * 1000))));
+			each block, blockIndex in blockList
+				tr
+					td
+						if (blockListArgs.sort == "desc")
+							small.text-muted #{(blockIndex + blockListArgs.offset + 1).toLocaleString()}
 						else
-							if (blockIndex < blocks.length - 1)
-								- var timeDiff = moment.duration(moment.utc(new Date(parseInt(block.time) * 1000)).diff(moment.utc(new Date(parseInt(blocks[blockIndex + 1].time) * 1000))));
+							small.text-muted #{(blockIndex + blockListArgs.offset).toLocaleString()}
 
-						if (!hideTimestampColumn)
-							td.data-cell.text-monospace.text-right
-								- var timestampHuman = block.time;
-								include timestamp-human.pug
-								
+					td.data-cell.text-monospace.text-right
+						if (global.specialBlocks && global.specialBlocks[block.hash])
+							a(data-toggle="tooltip", title=(coinConfig.name + " Fun! See block for details"))
+								i.fas.fa-certificate.text-primary.mr-1
 
+						a(href=("/block-height/" + block.height)) #{block.height.toLocaleString()}
+					
+
+					- var timeAgoTime = moment.utc(new Date()).diff(moment.utc(new Date(parseInt(block.time) * 1000)));
+					- var timeAgo = moment.duration(timeAgoTime);
+					- var timeDiff = block.timeDiff ? moment.duration(block.timeDiff * 1000) : null;
+					
+					if (!hideTimestampColumn)
 						td.data-cell.text-monospace.text-right
-							if (sort != "asc" && blockIndex == 0 && offset == 0 && timeAgoTime > (15 * 60 * 1000))
-								- var timeAgoTime = block.time;
-								span.text-danger.border-dotted(title="It's been > 15 min since this latest block.", data-toggle="tooltip")
-									include ./time-ago-text.pug
-							else
-								- var timeAgoTime = block.time;
-								include ./time-ago-text.pug
-
-						td.data-cell.text-monospace.text-right
-							if (timeDiff)
-								- var colorClass = "text-muted";
-								if (timeDiff < 300000)
-									- var colorClass = "text-success";
-								if (timeDiff > 900000)
-									- var colorClass = "text-danger";
-
-								span.font-weight-light(class=colorClass)
-									span #{timeDiff.format()}
-
-							else
-								if (block.height == 0)
-									small.border-dotted.text-muted(title="Not applicable: genesis block has no previous block to compare to.", data-toggle="tooltip") N/A (genesis)
-								else
-									span.font-weight-light.text-muted -
-
-						td.data-cell.text-monospace.text-right
-							- var miner = block.miner
-							include coinbase-display.pug
-
-						td.data-cell.text-monospace.text-right #{block.nTx.toLocaleString()}
-
-						if (blockstatsByHeight)
-							td.data-cell.text-monospace.text-right
-								//- console.log(blockstatsByHeight[block.height])
-								if (blockstatsByHeight[block.height])
-									- var currencyValue = parseInt(new Decimal(blockstatsByHeight[block.height].total_out).plus(blockstatsByHeight[block.height].subsidy).plus(blockstatsByHeight[block.height].totalfee));
-									- var currencyValueDecimals = 0;
-									include ./value-display.pug
-
-								else
-									span 0
-
-						td.data-cell.text-monospace.text-right
-							- var currencyValue = new Decimal(block.totalFees).dividedBy(block.size);
-							- var currencyValueDecimals = 2;
-							- currencyFormatTypeOverride = "sat";
-							- currencyUnitSuffix = "/b"
-							include ./value-display.pug
-							- currencyFormatTypeOverride = null
-							- currencyUnitSuffix = null
-
-						td.data-cell.text-monospace.text-right
-							- var currencyValue = new Decimal(block.totalFees).toDecimalPlaces(9);
-							- var currencyValueDecimals = 2;
-							include ./value-display.pug
+							- var timestampHuman = block.time;
+							include timestamp-human.pug
 							
-						
+
+					td.data-cell.text-monospace.text-right
+						if (blockListArgs.sort != "asc" && blockIndex == 0 && blockListArgs.offset == 0 && timeAgoTime > (15 * 60 * 1000))
+							- var timeAgoTime = block.time;
+							span.text-danger.border-dotted(title="It's been > 15 min since this latest block.", data-toggle="tooltip")
+								include ./time-ago-text.pug
+						else
+							- var timeAgoTime = block.time;
+							include ./time-ago-text.pug
+
+					td.data-cell.text-monospace.text-right
+						if (timeDiff)
+							- var colorClass = "text-muted";
+							if (timeDiff < 300000)
+								- var colorClass = "text-success";
+							if (timeDiff > 900000)
+								- var colorClass = "text-danger";
+
+							span.font-weight-light(class=colorClass)
+								span #{timeDiff.format()}
+
+						else
+							if (block.height == 0)
+								small.border-dotted.text-muted(title="Not applicable: genesis block has no previous block to compare to.", data-toggle="tooltip") N/A (genesis)
+							else
+								span.font-weight-light.text-muted -
+
+					td.data-cell.text-monospace.text-right
+						- var miner = block.miner
+						include coinbase-display.pug
+
+					td.data-cell.text-monospace.text-right #{block.nTx.toLocaleString()}
+
+					if (hasBlockStats)
 						td.data-cell.text-monospace.text-right
-							- var data = utils.formatLargeNumber(block.size, 1);
-							- var fullRatio = block.size / coinConfig.maxBlockSizeByNetwork[activeBlockchain];
-							- var full = new Decimal(100 * fullRatio).toDecimalPlaces(1);
-							- var abbr = data[1].abbreviation || "";
-							- var toolTip = `${data[0]} ${abbr}B`;
+							- var currencyValue = new Decimal(block.stats.volume);
+							- var currencyValueDecimals = 0;
+							include ./value-display.pug
 
-								span.border-dotted(title=toolTip, data-toggle="tooltip") #{full}%
-								span  
-								if (full > 90)
-									img(src="/img/block-fullness-3.png", style="width: 18px; height: 18px;")
-								else if (full > 50)
-									img(src="/img/block-fullness-2.png", style="width: 18px; height: 18px;")
-								else if (full > 25)
-									img(src="/img/block-fullness-1.png", style="width: 18px; height: 18px;")
-								else
-									img(src="/img/block-fullness-0.png", style="width: 18px; height: 18px;")
+					td.data-cell.text-monospace.text-right
+						- var currencyValue = new Decimal(block.totalFees).dividedBy(block.size);
+						- var currencyValueDecimals = 2;
+						- currencyFormatTypeOverride = "sat";
+						- currencyUnitSuffix = "/b"
+						include ./value-display.pug
+						- currencyFormatTypeOverride = null
+						- currencyUnitSuffix = null
 
-						- var lastBlock = block;
+					td.data-cell.text-monospace.text-right
+						- var currencyValue = new Decimal(block.totalFees).toDecimalPlaces(9);
+						- var currencyValueDecimals = 2;
+						include ./value-display.pug
+						
+					
+					td.data-cell.text-monospace.text-right
+						- var data = utils.formatLargeNumber(block.size, 1);
+						- var fullRatio = block.size / coinConfig.maxBlockSizeByNetwork[activeBlockchain];
+						- var full = new Decimal(100 * fullRatio).toDecimalPlaces(1);
+						- var abbr = data[1].abbreviation || "";
+						- var toolTip = `${data[0]} ${abbr}B`;
+
+							span.border-dotted(title=toolTip, data-toggle="tooltip") #{full}%
+							span  
+							if (full > 90)
+								img(src="/img/block-fullness-3.png", style="width: 18px; height: 18px;")
+							else if (full > 50)
+								img(src="/img/block-fullness-2.png", style="width: 18px; height: 18px;")
+							else if (full > 25)
+								img(src="/img/block-fullness-1.png", style="width: 18px; height: 18px;")
+							else
+								img(src="/img/block-fullness-0.png", style="width: 18px; height: 18px;")

@@ -523,9 +523,7 @@ function getBlock(blockHash, full = false) {
 function getBlocks(blockHashes, full = false) {
 	return new Promise(function(resolve, reject) {
 		Promise.all(blockHashes.map(h => getBlock(h, full))).then(function(blocks) {
-			var result = {};
-			blocks.forEach(b => result[b.hash] = b);
-			resolve(result);
+			resolve(blocks);
 		}).catch(function(err) {
 			reject(err);
 		});
@@ -589,6 +587,16 @@ function getBlockHeaderByHeight(blockHeight) {
 function getBlockHeadersByHeight(blockHeights) {
 	return new Promise(function(resolve, reject) {
 		Promise.all(blockHeights.map(h => getBlockHeaderByHeight(h))).then(function(results) {
+			resolve(results);
+		}).catch(function(err) {
+			reject(err);
+		});
+	});
+}
+
+function getBlocksStats(blockHashes) {
+	return new Promise(function(resolve, reject) {
+		Promise.all(blockHashes.map(h => getBlockStats(h))).then(function(results) {
 			resolve(results);
 		}).catch(function(err) {
 			reject(err);
@@ -905,6 +913,82 @@ function getBlockByHashWithTransactions(blockHash, txLimit, txOffset) {
 	});
 }
 
+const getBlockListDefaultArgs = {
+	limit: config.site.browseBlocksPageSize,
+	offset: 0,
+	sort: 'desc'
+};
+
+function getBlockList(args)
+{
+	args = Object.assign(Object.assign({}, getBlockListDefaultArgs), args);
+
+	return new Promise(function(resolve, reject) {
+		getBlockchainInfo().then(function(getblockchaininfo) {
+			var sortDesc = args.sort == 'desc';
+
+			// Get all the block heights we will display
+			var blockHeights = Array.from({length: args.limit})
+				.map((_, i) => sortDesc ? (getblockchaininfo.blocks - args.offset - i) : (args.offset + i))
+				.filter(h => h >= 0 && h <= getblockchaininfo.blocks);
+
+			// hack: default regtest node returns getblockchaininfo.blocks=0, despite having a genesis block
+			if (global.activeBlockchain == "regtest" && blockHeights.length < 1)
+				blockHeights.push(0);
+
+			// Check if we can fetch an extra block height for time difference calculation
+			var hasExtraElement = false;
+			var extraElement = sortDesc ? getblockchaininfo.blocks - args.offset - args.limit : args.offset - 1;
+			if (extraElement >= 0) {
+				if (sortDesc)
+					blockHeights.push(extraElement);
+				else
+					blockHeights.unshift(extraElement);
+				hasExtraElement = true;
+			}
+			
+			Promise.all(blockHeights.map(h => rpcApi.getBlockHash(h))).then(function(blockHashes) {
+				var promises = [];
+				promises.push(getBlocks(blockHashes));
+				promises.push(getBlocksStats(blockHashes));
+				Promise.all(promises).then(function(promiseResults) {
+					var blocks = promiseResults[0];
+					var blockstats = promiseResults[1];
+	
+					var data = blockHeights.map((h, i) => {
+						var res = blocks[i];
+						if (blockstats) {
+							res.stats = blockstats[i];
+							res.stats.volume = res.stats.total_out + res.stats.subsidy + res.stats.totalfee;
+						}
+						return res;
+					});
+	
+					// Calculate time deltas
+					var prevIdx = sortDesc ? 1 : -1;
+					data.forEach((d, i) => { if (data[i + prevIdx]) d.timeDiff = d.time - data[i + prevIdx].time });
+
+					// Remove extra element from the beginning/end if we have one
+					if (hasExtraElement) {
+						if (sortDesc)
+							data.length = data.length - 1;
+						else
+							data = data.slice(1)
+					}
+
+					resolve({ blockList: data, blockListArgs: args, hasBlockStats: !!blockstats, blockChainInfo: getblockchaininfo });
+				}).catch(function(err) {
+					reject(err);
+				});
+			}).catch(function(err) {
+				reject(err);
+			});
+		}).catch(function(err) {
+			reject(err);
+		});
+	});
+}
+
 function getHelp() {
 	return new Promise(function(resolve, reject) {
 		tryCacheThenRpcApi(miscCache, "getHelp", ONE_DAY, rpcApi.getHelp).then(function(helpContent) {
@@ -1060,11 +1144,13 @@ module.exports = {
 	getUtxoSetSummary: getUtxoSetSummary,
 	getNetworkHashrate: getNetworkHashrate,
 	getBlockStats: getBlockStats,
+	getBlocksStats: getBlocksStats,
 	getBlocksStatsByHeight: getBlocksStatsByHeight,
 	buildBlockAnalysisData: buildBlockAnalysisData,
 	getBlockHeader: getBlockHeader,
 	getBlockHeaderByHeight: getBlockHeaderByHeight,
 	getBlockHeadersByHeight: getBlockHeadersByHeight,
 	decodeScript: decodeScript,
-	decodeRawTransaction: decodeRawTransaction
+	decodeRawTransaction: decodeRawTransaction,
+	getBlockList: getBlockList
 };

@@ -32,7 +32,7 @@ div.row.index-summary
 						i.fas.fa-edit.mr-1.summary-icon
 						span.border-dotted(title="Estimate of the number of days the current BCH hashrate would require to produce all the hashes needed to re-write the entire blockchain.", data-toggle="tooltip") Chain Rewrite Days
 					td.text-right.text-monospace
-						- var globalHashCount = parseInt("0x" + getblockchaininfo.chainwork);
+						- var globalHashCount = parseInt("0x" + blockChainInfo.chainwork);
 						- var rewriteDays = globalHashCount / hashrate7d / 60 / 60 / 24;
 						span #{new Decimal(rewriteDays).toDecimalPlaces(1)}
 
@@ -41,8 +41,8 @@ div.row.index-summary
 						i.fas.fa-dumbbell.mr-1.summary-icon
 						span Difficulty
 					td.text-right.text-monospace
-						- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulty, 2);
-						span.border-dotted(data-toggle="tooltip", title=parseFloat(getblockchaininfo.difficulty).toLocaleString())
+						- var difficultyData = utils.formatLargeNumber(blockChainInfo.difficulty, 2);
+						span.border-dotted(data-toggle="tooltip", title=parseFloat(blockChainInfo.difficulty).toLocaleString())
 							span #{difficultyData[0]}
 							small.px-2.px-lg-0.px-xl-2 x
 							span 10
@@ -77,8 +77,8 @@ div.row.index-summary
 						else
 							span ???
 
-				if (getblockchaininfo.size_on_disk)
-					- var sizeData = utils.formatLargeNumber(getblockchaininfo.size_on_disk, 2);
+				if (blockChainInfo.size_on_disk)
+					- var sizeData = utils.formatLargeNumber(blockChainInfo.size_on_disk, 2);
 
 					tr
 						th.px-2.px-lg-0.px-xl-2
@@ -91,8 +91,8 @@ div.row.index-summary
 						i.fas.fa-bolt.mr-1.summary-icon
 						span.border-dotted(title="The total amount of work necessary to produce the active chain, approximated in 'hashes'.", data-toggle="tooltip") Chain Work
 					td.text-right.text-monospace
-						- var chainworkData = utils.formatLargeNumber(parseInt("0x" + getblockchaininfo.chainwork), 2);
-						span.border-dotted(data-toggle="tooltip", title=`hex: ${getblockchaininfo.chainwork.replace(/^0+/, '')}`)
+						- var chainworkData = utils.formatLargeNumber(parseInt("0x" + blockChainInfo.chainwork), 2);
+						span.border-dotted(data-toggle="tooltip", title=`hex: ${blockChainInfo.chainwork.replace(/^0+/, '')}`)
 							span #{chainworkData[0]}
 							small.px-2.px-lg-0.px-xl-2 x
 							span 10
