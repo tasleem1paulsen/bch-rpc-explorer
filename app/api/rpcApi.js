@@ -13,13 +13,11 @@ var activeQueueTasks = 0;
 
 var rpcQueue = async.queue(function(task, callback) {
 	activeQueueTasks++;
-	//debugLog("activeQueueTasks: " + activeQueueTasks);
 
 	task.rpcCall(function() {
 		callback();
 
 		activeQueueTasks--;
-		//debugLog("activeQueueTasks: " + activeQueueTasks);
 	});
 
 }, config.rpcConcurrency);

@@ -100,7 +100,6 @@ if (!config.noInmemoryRpcCache) {
 
 	var onMemoryCacheEvent = function(cacheType, eventType, cacheKey) {
 		global.cacheStats.memory[eventType]++;
-		//debugLog(`cache.${cacheType}.${eventType}: ${cacheKey}`);
 	}
 
 	miscCaches.push(createMemoryLruCache(new LRU(2000), onMemoryCacheEvent));
@@ -118,7 +117,6 @@ if (redisCache.active) {
 
 	var onRedisCacheEvent = function(cacheType, eventType, cacheKey) {
 		global.cacheStats.redis[eventType]++;
-		//debugLog(`cache.${cacheType}.${eventType}: ${cacheKey}`);
 	}
 
 	// md5 of the active RPC credentials serves as part of the key; this enables
@@ -152,8 +150,7 @@ function getGenesisCoinbaseTransactionId() {
 
 
 function tryCacheThenRpcApi(cache, cacheKey, cacheMaxAge, rpcApiFunction, cacheConditionFunction) {
-	//debugLog("tryCache: " + versionedCacheKey + ", " + cacheMaxAge);
-	
+
 	if (cacheConditionFunction == null) {
 		cacheConditionFunction = function(obj) {
 			return true;
@@ -349,28 +346,6 @@ function getTxCountStats(dataPtCount, blockStart, blockEnd) {
 		});
 	});
 }
-
-//function getSmartFeeEstimates(mode, confTargetBlockCounts) {
-//	return new Promise(function(resolve, reject) {
-//		var promises = [];
-//		for (var i = 0; i < confTargetBlockCounts.length; i++) {
-//			promises.push(getSmartFeeEstimate(mode, confTargetBlockCounts[i]));
-//		}
-//
-//		Promise.all(promises).then(function(results) {
-//			resolve(results);
-//
-//		}).catch(function(err) {
-//			reject(err);
-//		});
-//	});
-//}
-//
-//function getSmartFeeEstimate(mode, confTargetBlockCount) {
-//	return tryCacheThenRpcApi(miscCache, "getSmartFeeEstimate-" + mode + "-" + confTargetBlockCount, 5 * ONE_MIN, function() {
-//		return rpcApi.getSmartFeeEstimate(mode, confTargetBlockCount);
-//	});
-//}
 
 function getPeerSummary() {
 	return new Promise(function(resolve, reject) {
@@ -1139,8 +1114,6 @@ module.exports = {
 	getChainTxStats: getChainTxStats,
 	getMempoolDetails: getMempoolDetails,
 	getTxCountStats: getTxCountStats,
-//	getSmartFeeEstimates: getSmartFeeEstimates,
-//	getSmartFeeEstimate: getSmartFeeEstimate,
 	getUtxoSetSummary: getUtxoSetSummary,
 	getNetworkHashrate: getNetworkHashrate,
 	getBlockStats: getBlockStats,
