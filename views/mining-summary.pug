@@ -80,13 +80,9 @@ block content
 							td.data-cell.text-monospace.text-right
 								span.miner-subsidy
 								small.text-muted.miner-subsidy-percent.ml-2
-								//- var currencyValue = new Decimal(summary.totalSubsidiesCollected);
-								//include ./includes/value-display.pug
 							td.data-cell.text-monospace.text-right
 								span.miner-fees
 								small.text-muted.miner-fees-percent
-								//- var currencyValue = new Decimal(summary.totalFeesCollected);
-								//include ./includes/value-display.pug
 
 						tr(id="miner-summary-totals", style="display: none;")
 							th.data-cell.text-monospace.miner-name Total
@@ -98,12 +94,8 @@ block content
 								small.text-muted.miner-tx-percent.ml-2 (100%)
 							th.data-cell.text-monospace.text-right
 								span.miner-subsidy
-								//- var currencyValue = new Decimal(summary.totalSubsidiesCollected);
-								//include ./includes/value-display.pug
 							th.data-cell.text-monospace.text-right
 								span.miner-fees
-								//- var currencyValue = new Decimal(summary.totalFeesCollected);
-								//include ./includes/value-display.pug
 
 block endOfBody
 	script(src='/js/decimal.min.js')
@@ -115,9 +107,9 @@ block endOfBody
 				$("#time-range-buttons .block-count-btn").removeClass("btn-primary").addClass("btn-outline-primary");
 				$(this).addClass("btn-primary").removeClass("btn-outline-primary");
 				$("#preconfigured-dropdown").removeClass("btn-primary").addClass("btn-outline-primary");
-				
+
 				var blockCount = parseInt($(this).attr("data-blockCount"));
-				
+
 				$(".miner-summary-row").remove();
 
 				$("#data-progress").css("width", "0%");
@@ -133,7 +125,7 @@ block endOfBody
 				// highlight current selection
 				$("#time-range-buttons .block-count-btn").removeClass("btn-primary").addClass("btn-outline-primary");
 				$("#preconfigured-dropdown").removeClass("btn-outline-primary").addClass("btn-primary");
-				
+
 				var blocks = $(this).attr("data-blocks");
 				var bStartEnd = blocks.split("-");
 				var bStart = parseInt(bStartEnd[0]);
@@ -154,7 +146,7 @@ block endOfBody
 				// highlight current selection
 				$("#time-range-buttons .block-count-btn").removeClass("btn-primary").addClass("btn-outline-primary");
 				$("#preconfigured-dropdown").removeClass("btn-primary").addClass("btn-outline-primary");
-				
+
 				var bStart = parseInt($("#custom-range-start").val());
 				var bEnd = parseInt($("#custom-range-end").val());
 				if ((bEnd - bStart) > 1008) {
@@ -194,7 +186,6 @@ block endOfBody
 			}
 
 			console.log(JSON.stringify(chunks));
-			//alert(JSON.stringify(chunks));
 
 			var results = [];
 
@@ -202,7 +193,7 @@ block endOfBody
 				console.log("Done: " + Math.min(((chunkIndexDone + 1) * chunkSize), count) + " of " + count);
 
 				var wPercent = `${parseInt(100 * (chunkIndexDone + 1) / parseFloat(chunkCount))}%`;
-				
+
 				$("#data-progress").css("width", wPercent);
 				$("#block-progress-text").text(`${Math.min(((chunkIndexDone + 1) * chunkSize), count).toLocaleString()} of ${count.toLocaleString()} (${wPercent})`);
 			};
@@ -210,8 +201,6 @@ block endOfBody
 			var finishedCallback = function() {
 				$("#time-range-buttons .block-count-btn").removeClass("disabled");
 				$("#block-selections-buttons .dropdown-item").removeClass("disabled");
-
-				//console.log(JSON.stringify(results));
 
 				var summary = summarizeBlockData(results);
 
@@ -280,8 +269,6 @@ block endOfBody
 			}
 
 			var url = `/api/blocks-by-height/${chunks[chunkIndex]}`;
-			
-			//console.log(url);
 
 			$.ajax({
 				url: url
@@ -292,7 +279,7 @@ block endOfBody
 				}
 
 				statusCallback(chunkIndex, chunks.length);
-				
+
 				getBlockData(results, chunks, chunkIndex + 1, statusCallback, finishedCallback);
 			});
 		}

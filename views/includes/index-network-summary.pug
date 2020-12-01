@@ -69,7 +69,6 @@ div.row.index-summary
 				tr
 					th.px-2.px-lg-0.px-xl-2
 						i.fas.fa-sign-out-alt.mr-1.summary-icon
-						//span Total Transactions
 						span Total Txs
 					td.text-right.text-monospace
 						if (txStats && txStats.totalTxCount)
@@ -173,7 +172,6 @@ div.row.index-summary
 										else
 											span  x 10
 											sup #{xxx[1].exponent}
-										// ["154.9",{"val":1000000000,"name":"giga","abbreviation":"G","exponent":"9"}]
 
 									else
 										small.text-muted.border-dotted(title=utxoCalculatingDesc, data-toggle="tooltip") calculating...

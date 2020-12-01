@@ -113,15 +113,12 @@ block endOfBody
 				chunkStrs.push(chunkStr);
 			}
 
-			//alert(JSON.stringify(chunks));
-
 			var results = [];
 
 			var statusCallback = function(chunkIndexDone, chunkCount) {
-				//console.log("Done: " + Math.min(((chunkIndexDone + 1) * chunkSize), count) + " of " + count);
 
 				var wPercent = `${parseInt(100 * (chunkIndexDone + 1) / parseFloat(chunkCount))}%`;
-				
+
 				$("#data-progress").css("width", wPercent);
 				$("#progress-text").text(`${Math.min(((chunkIndexDone + 1) * chunkSize), count).toLocaleString()} of ${count.toLocaleString()} (${wPercent})`);
 			};
@@ -132,8 +129,6 @@ block endOfBody
 				var feeRateGraphData = buildFeeRateGraphData(summary);
 				var txSizeGraphData = buildTxSizeGraphData(summary);
 				var txAgeGraphData = buildTxAgeGraphData(summary);
-
-				//console.log(JSON.stringify(summary));
 
 				$("#tx-count").text(summary.count.toLocaleString());
 				$("#mem-usage").text(summary.totalBytes.toLocaleString());
@@ -152,9 +147,6 @@ block endOfBody
 				updateCurrencyValue($("#avg-fee"), summary.averageFee);
 
 				updateFeeRateValue($("#avg-fee-rate"), summary.averageFeePerByte, 2);
-
-
-				//$("#summary-json").text(JSON.stringify(summary, null, 4));
 
 
 				// fee rate chart
@@ -287,8 +279,6 @@ block endOfBody
 			}
 
 			var url = `/api/mempool-txs/${chunkStrs[chunkIndex]}`;
-			
-			//console.log(url);
 
 			$.ajax({
 				url: url
