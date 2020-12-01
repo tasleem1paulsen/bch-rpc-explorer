@@ -113,20 +113,6 @@ router.get("/", function(req, res, next) {
 
 			var rawSmartFeeEstimates = promiseResults[2];
 
-			var smartFeeEstimates = {};
-
-			//for (var i = 0; i < feeConfTargets.length; i++) {
-			//	var rawSmartFeeEstimate = rawSmartFeeEstimates[i];
-			//	if (rawSmartFeeEstimate.errors) {
-			//		smartFeeEstimates[feeConfTargets[i]] = "?";
-			//	} else {
-			//		smartFeeEstimates[feeConfTargets[i]] = parseInt(new Decimal(rawSmartFeeEstimate.feerate).times(coinConfig.baseCurrencyUnit.multiplier).dividedBy(1000));
-			//	}
-			//}
-
-			res.locals.smartFeeEstimates = smartFeeEstimates;
-
-
 			res.locals.hashrate1d = promiseResults[3];
 			res.locals.hashrate7d = promiseResults[4];
 
