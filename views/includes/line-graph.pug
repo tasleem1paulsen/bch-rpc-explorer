@@ -1,4 +1,5 @@
 script(src="/js/chart.bundle.min.js", integrity="sha384-qgOtiGNaHh9fVWUnRjyHlV39rfbDcvPPkEzL1RHvsHKbuqUqM6uybNuVnghY2z4/")
+script(src='/js/decimal.min.js', integrity="sha384-zcNJYsoavmOdYj5MgXBBIO8scbka8MlR5mSGt0GKjdqbm26j4w0yVyOb9s5rY7Jh")
 
 canvas.mb-3(id=graphData.id)
 
@@ -71,9 +72,8 @@ script.
 						callback: function(value, index, values) {
 							if (value > 1000000) {
 								return (value / 1000000).toLocaleString() + "M";
-
 							} else {
-								return value;
+								return new Decimal(value).toSignificantDigits(6);
 							}
 						}
 					}
