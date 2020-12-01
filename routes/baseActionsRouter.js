@@ -61,7 +61,7 @@ router.get("/", function(req, res, next) {
 
 	promises.push(coreApi.getMempoolInfo());
 	promises.push(coreApi.getMiningInfo());
-	promises.push(0); // unused
+	promises.push(coreApi.getNetworkHashrate(6));
 	promises.push(coreApi.getNetworkHashrate(144));
 	promises.push(coreApi.getNetworkHashrate(1008));
 
@@ -115,7 +115,7 @@ router.get("/", function(req, res, next) {
 		Promise.all(promises).then(function(promiseResults) {
 			res.locals.mempoolInfo = promiseResults[0];
 			res.locals.miningInfo = promiseResults[1];
-
+			res.locals.hashrate1h = promiseResults[2];
 			res.locals.hashrate1d = promiseResults[3];
 			res.locals.hashrate7d = promiseResults[4];
 
