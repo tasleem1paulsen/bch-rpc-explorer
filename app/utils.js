@@ -36,7 +36,6 @@ var ipRedisCache = null;
 if (redisCache.active) {
 	var onRedisCacheEvent = function(cacheType, eventType, cacheKey) {
 		global.cacheStats.redis[eventType]++;
-		//debugLog(`cache.${cacheType}.${eventType}: ${cacheKey}`);
 	}
 
 	ipRedisCache = redisCache.createCache("v0", onRedisCacheEvent);
@@ -195,9 +194,6 @@ function formatCurrencyAmountWithForcedDecimalPlaces(amount, formatType, forcedD
 		var dec = new Decimal(amount);
 
 		var decimalPlaces = formatInfo.decimalPlaces;
-		//if (decimalPlaces == 0 && dec < 1) {
-		//	decimalPlaces = 5;
-		//}
 
 		if (forcedDecimalPlaces >= 0) {
 			decimalPlaces = forcedDecimalPlaces;
@@ -311,13 +307,6 @@ function satoshisPerUnitOfActiveCurrency() {
 	}
 
 	return null;
-	// dead code?
-	if (global.currencyFormatType) {
-		return formatExchangedCurrency(amount, global.currencyFormatType);
-
-	} else {
-		return formatExchangedCurrency(amount, "usd");
-	}
 }
 
 function formatExchangedCurrency(amount, exchangeType) {
