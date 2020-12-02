@@ -9,12 +9,12 @@ block content
 			div.alert.alert-danger.mb-huge
 				h1.h6.font-weight-bold Invalid Address
 				span.text-monospace #{address}
-				
+
 		else
 			h1.h3 Address
 				br
 				small.text-monospace #{address}
-			
+
 			hr
 
 			if (payoutAddressForMiner)
@@ -275,8 +275,6 @@ block content
 								span No transactions found
 
 							each tx, txIndex in transactions
-								//pre
-								//	code.json.bg-light #{JSON.stringify(tx, null, 4)}
 								div.card.shadow-sm(class=((txIndex < (transactions.length - 1) || txids.length > limit) ? "mb-3" : ""))
 									div.card-header.text-monospace.clearfix
 										div.float-left.mr-0

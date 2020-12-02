@@ -11,7 +11,6 @@ if (currencyValue > 0)
 	else
 		- var parts = utils.formatCurrencyAmount(currencyValue, currencyFormatTypeInt);
 
-	//span #{JSON.stringify(currencyFormatInfo)}
 	span.text-monospace #{parts.val}#{(currencyValueDecimals && currencyFormatInfo.type == "native" && currencyFormatInfo.multiplier <= 1000) ? "…" : ""}
 	if (parts.lessSignificantDigits)
 		span.text-monospace.text-small(style="margin-left: 2px;") #{parts.lessSignificantDigits}
@@ -19,12 +18,12 @@ if (currencyValue > 0)
 	if (currencyFormatInfo.type == "native")
 		if (exchangeRates)
 			small.border-dotted.ml-1(data-toggle="tooltip", title=utils.formatExchangedCurrency(currencyValue, "usd")) #{parts.currencyUnit}#{currencyUnitSuffix}
-				
+
 		else
 			small.ml-1 #{parts.currencyUnit}#{currencyUnitSuffix}
-				
+
 	else if (currencyFormatInfo.type == "exchanged")
 		small.border-dotted.ml-1(data-toggle="tooltip", title=`${utils.formatCurrencyAmount(currencyValue, coinConfig.defaultCurrencyUnit.name).simpleVal} BCH`) #{parts.currencyUnit}
-			
+
 else
 	span.text-monospace 0

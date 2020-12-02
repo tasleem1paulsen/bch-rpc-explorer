@@ -379,8 +379,6 @@ div.tab-content
 
 				div
 					each tx, txIndex in result.transactions
-						//pre
-						//	code.json.bg-light #{JSON.stringify(tx, null, 4)}
 						div.card.shadow-sm(class=(" " + ((txIndex < (result.transactions.length - 1) || txCount > limit) ? "mb-3" : "")))
 							div.card-header.text-monospace
 								if (tx && tx.txid)
@@ -398,9 +396,6 @@ div.tab-content
 								- var blockHeight = result.getblock.height;
 
 									include ./transaction-io-details.pug
-
-						//pre
-						//	code.json.bg-light #{JSON.stringify(tx, null, 4)}
 
 					if (!crawlerBot && txCount > limit)
 						- var pageNumber = offset / limit + 1;

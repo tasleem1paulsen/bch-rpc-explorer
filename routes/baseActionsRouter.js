@@ -1077,8 +1077,6 @@ router.get("/address/:address", function(req, res, next) {
 											}
 										}
 
-										//debugLog("tx: " + JSON.stringify(tx));
-										//debugLog("txInputs: " + JSON.stringify(txInputs));
 									}
 
 									res.locals.blockHeightsByTxid = blockHeightsByTxid;

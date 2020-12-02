@@ -264,12 +264,9 @@ block endOfBody
 				chunkStrs.push(chunkStr);
 			}
 
-			//alert(JSON.stringify(chunks));
-
 			var results = [];
 
 			var statusCallback = function(chunkIndexDone, chunkCount) {
-				//console.log("Done: " + Math.min(((chunkIndexDone + 1) * chunkSize), count) + " of " + count);
 
 				var wPercent = `${parseInt(100 * (chunkIndexDone + 1) / parseFloat(chunkCount))}%`;
 				
@@ -295,8 +292,6 @@ block endOfBody
 				createChart("chart-tx-value-distribution", summary.valueDistribution, summary.valueDistributionLabels);
 				createChart("chart-tx-fee-distribution", summary.feeDistribution, summary.feeDistributionLabels);
 				createChart("chart-tx-size-distribution", summary.sizeDistribution, summary.sizeDistributionLabels);
-
-				//$(".abc").text(JSON.stringify(summary));
 
 				$("#main-content").show();
 				$("#progress-wrapper").hide();
@@ -399,8 +394,7 @@ block endOfBody
 				if (i == 0) {
 					row.addClass("table-borderless");
 				}
-				
-				// span(title=`Output Type: ${utils.outputTypeName(inputTypeKey)}`, data-toggle="tooltip") #{utils.outputTypeAbbreviation(inputTypeKey)}
+
 				row.find(".data-type").html(`<span title='Type: ${item.type}' data-toggle='tooltip'>${item.type}</span>`);
 				row.find(".data-count").text(item.count.toLocaleString());
 
@@ -419,8 +413,7 @@ block endOfBody
 				if (i == 0) {
 					row.addClass("table-borderless");
 				}
-				
-				// span(title=`Output Type: ${utils.outputTypeName(inputTypeKey)}`, data-toggle="tooltip") #{utils.outputTypeAbbreviation(inputTypeKey)}
+
 				row.find(".data-type").html(`<span title='Type: ${item.type}' data-toggle='tooltip'>${item.type}</span>`);
 				row.find(".data-count").text(item.count.toLocaleString());
 
@@ -452,10 +445,7 @@ block endOfBody
 							scaleLabel: {
 								display: true,
 								labelString: 'Index in Block'
-							},
-							//ticks: {
-							//	stepSize: 100,
-							//}
+							}
 						}],
 						yAxes: [{
 							scaleLabel: {
@@ -516,8 +506,6 @@ block endOfBody
 			}
 
 			var url = `/api/block-tx-summaries/${blockHeight}/${chunks[chunkIndex]}`;
-			
-			//console.log(url);
 
 			$.ajax({
 				url: url
@@ -528,7 +516,7 @@ block endOfBody
 				}
 
 				statusCallback(chunkIndex, chunks.length);
-				
+
 				getTxData(results, chunks, chunkIndex + 1, statusCallback, finishedCallback);
 			});
 		}
@@ -553,12 +541,10 @@ block endOfBody
 			for (var i = 0; i < txResults.length; i++) {
 				var txSummary = txResults[i];
 
-				//console.log(JSON.stringify(txSummary));
-				
 				for (var j = 0; j < txSummary.vout.length; j++) {
 					var vout = txSummary.vout[j];
 					var outputType = vout.type;
-					
+
 					if (!analysis.outputTypeCounts[outputType]) {
 						analysis.outputTypeCounts[outputType] = 0;
 					}
