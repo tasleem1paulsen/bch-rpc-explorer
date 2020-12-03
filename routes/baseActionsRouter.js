@@ -59,10 +59,7 @@ router.get("/", function(req, res, next) {
 
 	promises.push(coreApi.getMempoolInfo());
 	promises.push(coreApi.getMiningInfo());
-
-	// This is a placeholder for fee estimate in case we would need it in the future
-	promises.push(0);
-
+	promises.push(0); // unused
 	promises.push(coreApi.getNetworkHashrate(144));
 	promises.push(coreApi.getNetworkHashrate(1008));
 
@@ -110,8 +107,6 @@ router.get("/", function(req, res, next) {
 		Promise.all(promises).then(function(promiseResults) {
 			res.locals.mempoolInfo = promiseResults[0];
 			res.locals.miningInfo = promiseResults[1];
-
-			var rawSmartFeeEstimates = promiseResults[2];
 
 			res.locals.hashrate1d = promiseResults[3];
 			res.locals.hashrate7d = promiseResults[4];
