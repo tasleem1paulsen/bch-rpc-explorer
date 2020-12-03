@@ -21,10 +21,13 @@ div.row.index-summary
 						- var hashrate1dayData = utils.formatLargeNumber(hashrate1d, 0, esi);
 						- var hashrate7dayData = utils.formatLargeNumber(hashrate7d, 0, esi);
 						span.d-xxl-none #{hashrate1hourData[0]}
+						span.d-none.d-xxl-inline #{hashrate1hourData[0]}
 						small.text-muted  / 
 						span.d-xxl-none #{hashrate1dayData[0]}
+						span.d-none.d-xxl-inline #{hashrate1dayData[0]}
 						small.text-muted  / 
 						span.d-xxl-none #{hashrate7dayData[0]} 
+						span.d-none.d-xxl-inline #{hashrate7dayData[0]} 
 						small.border-dotted(title=`${hashrate1dayData[1].abbreviation}H = ${hashrate1dayData[1].name}-hash (x10^${hashrate1dayData[1].exponent})`, data-toggle="tooltip") #{hashrate1dayData[1].abbreviation}H/s
 
 				tr
