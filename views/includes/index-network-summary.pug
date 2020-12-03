@@ -42,7 +42,7 @@ div.row.index-summary
 				tr
 					th.px-2.px-lg-0.px-xl-2
 						i.fas.fa-dumbbell.mr-1.summary-icon
-						span Last difficulty
+						span.border-dotted(title="The target difficulty that the last block, current chaintip, needed to reach to win the mining lottery", data-toggle="tooltip") Last difficulty
 					td.text-right.text-monospace
 						- var difficultyData = utils.formatLargeNumber(blockChainInfo.difficulty, 2);
 						span.border-dotted(data-toggle="tooltip", title=parseFloat(blockChainInfo.difficulty).toLocaleString())
@@ -55,7 +55,7 @@ div.row.index-summary
 					tr
 						th.px-2.px-lg-0.px-xl-2
 							i.fas.fa-dumbbell.mr-1.summary-icon
-							span Difficulty
+							span.border-dotted(title="The target difficutly needed to mine the next block", data-toggle="tooltip") Difficulty
 						td.text-right.text-monospace
 							- var difficultyData = utils.formatLargeNumber(realDifficulty, 2);
 							span.border-dotted(data-toggle="tooltip", title=parseFloat(realDifficulty).toLocaleString())
