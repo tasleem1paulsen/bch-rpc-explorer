@@ -31,13 +31,13 @@ div.tab-content
 			div.alert.alert-primary.shadow-sm.pb-0
 				div.float-left(style="width: 55px; height: 55px; font-size: 18px;")
 					i.fas.fa-certificate.fa-2x(style="margin-top: 10px;")
-				h4.alert-heading.h6.font-weight-bold #{coinConfig.name} Fun
+				h4.alert-heading.h6.font-weight-bold !{coinConfig.nameHtml} Fun
 
 				// special transaction info
 				- var sbInfo = global.specialBlocks[result.getblock.hash];
 				if (sbInfo.alertBodyHtml)
 					p
-						span !{sbInfo.alertBodyHtml}
+						span !{sbInfo.alertBodyHtml} 
 
 						if (sbInfo.referenceUrl && sbInfo.referenceUrl.trim().length > 0 && sbInfo.alertBodyHtml.indexOf(sbInfo.referenceUrl) == -1)
 							span  
@@ -45,7 +45,7 @@ div.tab-content
 
 				else
 					p
-						span #{sbInfo.summary}
+						span #{sbInfo.summary} 
 
 						if (sbInfo.referenceUrl && sbInfo.referenceUrl.trim().length > 0)
 							span  

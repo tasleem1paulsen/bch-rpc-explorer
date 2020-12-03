@@ -16,20 +16,6 @@ var coinConfig = coins[config.coin];
 var redisCache = require("./redisCache.js");
 
 
-var exponentScales = [
-	{val:1000000000000000000000000000000000, name:"?", abbreviation:"V", exponent:"33"},
-	{val:1000000000000000000000000000000, name:"?", abbreviation:"W", exponent:"30"},
-	{val:1000000000000000000000000000, name:"?", abbreviation:"X", exponent:"27"},
-	{val:1000000000000000000000000, name:"yotta", abbreviation:"Y", exponent:"24"},
-	{val:1000000000000000000000, name:"zetta", abbreviation:"Z", exponent:"21"},
-	{val:1000000000000000000, name:"exa", abbreviation:"E", exponent:"18"},
-	{val:1000000000000000, name:"peta", abbreviation:"P", exponent:"15", textDesc:"Q"},
-	{val:1000000000000, name:"tera", abbreviation:"T", exponent:"12", textDesc:"T"},
-	{val:1000000000, name:"giga", abbreviation:"G", exponent:"9", textDesc:"B"},
-	{val:1000000, name:"mega", abbreviation:"M", exponent:"6", textDesc:"M"},
-	{val:1000, name:"kilo", abbreviation:"K", exponent:"3", textDesc:"thou"}
-];
-
 var ipMemoryCache = {};
 
 var ipRedisCache = null;
@@ -586,17 +572,54 @@ function parseExponentStringDouble(val) {
 		: lead + ( +pow >= decimal.length ? (decimal + "0".repeat(+pow-decimal.length)) : (decimal.slice(0,+pow)+"."+decimal.slice(+pow)));
 }
 
-function formatLargeNumber(n, decimalPlaces) {
+var exponentScales = [
+	{val:1000000000000000000000000000000000, name:"?", abbreviation:"V", exponent:"33"},
+	{val:1000000000000000000000000000000, name:"?", abbreviation:"W", exponent:"30"},
+	{val:1000000000000000000000000000, name:"?", abbreviation:"X", exponent:"27"},
+	{val:1000000000000000000000000, name:"yotta", abbreviation:"Y", exponent:"24"},
+	{val:1000000000000000000000, name:"zetta", abbreviation:"Z", exponent:"21"},
+	{val:1000000000000000000, name:"exa", abbreviation:"E", exponent:"18"},
+	{val:1000000000000000, name:"peta", abbreviation:"P", exponent:"15", textDesc:"Q"},
+	{val:1000000000000, name:"tera", abbreviation:"T", exponent:"12", textDesc:"T"},
+	{val:1000000000, name:"giga", abbreviation:"G", exponent:"9", textDesc:"B"},
+	{val:1000000, name:"mega", abbreviation:"M", exponent:"6", textDesc:"M"},
+	{val:1000, name:"kilo", abbreviation:"K", exponent:"3", textDesc:"thou"},
+	{val:1, name:"", abbreviation:"", exponent:"0", textDesc:""}
+];
+
+function testExponentScaleIndex(n, exponentScaleIndex) {
+	var item = exponentScales[exponentScaleIndex];
+	var fraction = new Decimal(n / item.val);
+	return {
+		ok: fraction >= 1,
+		fraction: fraction
+	};
+}
+
+function getBestExponentScaleIndex(n) {
+	if (n < 1)
+		return exponentScales.length - 1;
+
 	for (var i = 0; i < exponentScales.length; i++) {
-		var item = exponentScales[i];
-
-		var fraction = new Decimal(n / item.val);
-		if (fraction >= 1) {
-			return [fraction.toDecimalPlaces(decimalPlaces), item];
-		}
+		var res = testExponentScaleIndex(n, i);
+		if (res.ok)
+			return i;
 	}
+	throw new Error(`Unable to find exponent scale index for ${n}`);
+}
 
-	return [new Decimal(n).toDecimalPlaces(decimalPlaces), {}];
+function findBestCommonExponentScaleIndex(ns) {
+	var best = ns.map(n => getBestExponentScaleIndex(n));
+	return Math.max(...best);
+}
+
+function formatLargeNumber(n, decimalPlaces, exponentScaleIndex = undefined) {
+	if (exponentScaleIndex === undefined)
+		exponentScaleIndex = getBestExponentScaleIndex(n);
+
+	var item = exponentScales[exponentScaleIndex];
+	var fraction = new Decimal(n / item.val);
+	return [fraction.toDecimalPlaces(decimalPlaces), item];
 }
 
 function rgbToHsl(r, g, b) {
@@ -823,6 +846,7 @@ module.exports = {
 	getBlockTotalFeesFromCoinbaseTxAndBlockHeight: getBlockTotalFeesFromCoinbaseTxAndBlockHeight,
 	refreshExchangeRates: refreshExchangeRates,
 	parseExponentStringDouble: parseExponentStringDouble,
+	findBestCommonExponentScaleIndex: findBestCommonExponentScaleIndex,
 	formatLargeNumber: formatLargeNumber,
 	geoLocateIpAddresses: geoLocateIpAddresses,
 	getTxTotalInputOutputValues: getTxTotalInputOutputValues,

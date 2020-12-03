@@ -22,7 +22,7 @@ block content
 					div.float-left(style="width: 50px; height: 50px; font-size: 18px;")
 						i.fas.fa-certificate.fa-2x(style="margin-top: 10px;")
 
-					h4.alert-heading.h6.font-weight-bold #{coinConfig.name} Fun
+					h4.alert-heading.h6.font-weight-bold !{coinConfig.nameHtml} Fun
 
 					p
 						span This looks like a miner payout address for  
@@ -44,7 +44,7 @@ block content
 					div.float-left(style="width: 50px; height: 50px; font-size: 18px;")
 						i.fas.fa-certificate.fa-2x(style="margin-top: 10px;")
 
-					h4.alert-heading.h6.font-weight-bold #{coinConfig.name} Fun
+					h4.alert-heading.h6.font-weight-bold !{coinConfig.nameHtml} Fun
 
 					// special address info
 					- var saInfo = global.specialAddresses[address].addressInfo;

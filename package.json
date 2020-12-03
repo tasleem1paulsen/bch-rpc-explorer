@@ -4,6 +4,7 @@
   "description": "Self-hosted Bitcoin Cash blockchain explorer",
   "private": false,
   "bin": "bin/cli.js",
+  "gypfile": true,
   "scripts": {
     "start": "node ./bin/www",
     "refresh-mining-pool-configs": "node ./bin/refresh-mining-pool-configs.js"
@@ -22,6 +23,7 @@
   "dependencies": {
     "async": "^3.2.0",
     "basic-auth": "^2.0.1",
+    "bindings": "^1.5.0",
     "bitcoin-core": "EchterAgo/bitcoin-core#c30b4a0cd51305449c08ca361b15afc1646b5388",
     "bitcoinjs-lib": "^5.1.8",
     "bluebird": "^3.7.2",
@@ -44,6 +46,7 @@
     "moment": "^2.27.0",
     "moment-duration-format": "^2.3.2",
     "morgan": "^1.10.0",
+    "node-addon-api": "^3.0.2",
     "pug": "^2.0.4",
     "qrcode": "^1.4.4",
     "redis": "^2.8.0",
