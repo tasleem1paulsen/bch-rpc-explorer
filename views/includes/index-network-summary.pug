@@ -184,11 +184,11 @@ div.row.index-summary
 								td.text-right.text-monospace
 									if (utxoSetSummary)
 										- var activeCurrency = global.currencyFormatType.length > 0 ? global.currencyFormatType : "usd";
-										- var xxx = utils.formatLargeNumber(parseFloat(utxoSetSummary.total_amount) * exchangeRates[activeCurrency], 1);
-
 										if (activeCurrency == "eur")
+											- var xxx = utils.formatLargeNumber(parseFloat(utxoSetSummary.total_amount) * exchangeRates[activeCurrency], 1);
 											span €
 										else
+											- var xxx = utils.formatLargeNumber(parseFloat(utxoSetSummary.total_amount) * exchangeRates["usd"], 1);
 											span $
 
 										span #{xxx[0]}
