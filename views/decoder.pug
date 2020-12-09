@@ -28,7 +28,7 @@ block content
 			if type === "script"
 				div.mb-5 !{decodedDetails}
 			else if type === "tx"
-				if (tx.vin[0].coinbase)
+				if (tx.vin.length > 0 && tx.vin[0].coinbase)
 					div.card.shadow-sm.mb-3
 						div.card-body.px-2.px-md-3
 							h2.h6.mb-0 Coinbase
