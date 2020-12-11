@@ -797,6 +797,64 @@ function parseTwoOptionVote(tx) {
 	}
 }
 
+/**
+ * Guess if transaction is a flipstarter transaction.
+ *
+ * Flipstarter transactions has all inputs signed as ALL|FORKID|ANYONECANPAY
+ * and is around ~4 sat/bytes in fee.
+ */
+function isFlipstarter(tx, fee) {
+  try {
+    if (fee < 3.9 || fee > 4.1) {
+      return false;
+    }
+    if (tx.vin[0].coinbase) {
+      return false;
+    }
+
+    // Assume at least n pledges
+    if (tx.vin.length < 3) {
+      return false;
+    }
+
+    for(let i = 0; i < tx.vin.length; i++) {
+      if (!tx.vin[i].scriptSig.asm.includes("ALL|FORKID|ANYONECANPAY")) {
+        return false;
+      }
+    }
+
+    return true;
+
+  } catch (e) {
+    // On error, guess that it's not.
+    return false;
+  }
+}
+
+function calcFee(tx, inputTxs) {
+  let inputAmount = new Decimal(0);
+  let outputAmount = new Decimal(0);
+  try {
+    for (var key in inputTxs) {
+      inputAmount = inputAmount.plus(inputTxs[key].value);
+    }
+
+    for(let o = 0; o < tx.vout.length; o++) {
+      outputAmount = outputAmount.plus(tx.vout[0].value);
+    }
+    const fee = inputAmount.minus(outputAmount);
+    const feeSatoshis = fee.times(100000000);
+    if (feeSatoshis.isZero()) {
+      return 0;
+    }
+    return feeSatoshis.div(new Decimal(tx.size)).toNumber();
+  }
+  catch (e) {
+    console.log(e);
+    return -1;
+  }
+}
+
 router.get("/tx/:transactionId", function(req, res, next) {
 	var txid = req.params.transactionId;
 
@@ -815,6 +873,8 @@ router.get("/tx/:transactionId", function(req, res, next) {
 		res.locals.result.ballot = parseTwoOptionVote(tx);
 		res.locals.result.getrawtransaction = tx;
 		res.locals.result.txInputs = rawTxResult.txInputsByTransaction[txid]
+		const fee = calcFee(tx, rawTxResult.txInputsByTransaction[txid]);
+		res.locals.result.isflipstarter = isFlipstarter(tx, fee);
 
 		var promises = [];
 

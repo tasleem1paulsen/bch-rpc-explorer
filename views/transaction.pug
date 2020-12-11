@@ -223,6 +223,19 @@ block content
 										a(href=("https://voter.cash")) voter.cash
 											i.fas.fa-file-signature
 
+						if (result.isflipstarter)
+								p This looks like a Flipstarter transaction&nbsp;
+									i.fas.fa-glass-cheers
+
+
+								p Flipstarter is a DeFi crowdfunding platform for Bitcoin Cash.
+
+								p Check out&nbsp;
+										a(href=("https://flipstarters.bitcoincash.network")) active and historical flipstarters.
+
+								p Run&nbsp;
+									a(href=("https://flipstarter.cash")) your own flipstarter crowdfunding campaign.
+
 
 
 				if (result.getrawtransaction.vin[0].coinbase)
