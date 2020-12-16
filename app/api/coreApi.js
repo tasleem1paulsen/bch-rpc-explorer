@@ -728,14 +728,6 @@ function summarizeBlockAnalysisData(blockHeight, tx, inputs) {
 	txSummary.version = tx.version;
 	txSummary.size = tx.size;
 
-	if (tx.vsize) {
-		txSummary.vsize = tx.vsize;
-	}
-
-	if (tx.weight) {
-		txSummary.weight = tx.weight;
-	}
-
 	if (tx.vin[0].coinbase) {
 		txSummary.coinbase = true;
 	}

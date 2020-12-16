@@ -108,7 +108,6 @@ module.exports = {
 			"txid": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
 			"hash": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
 			"size": 204,
-			"vsize": 204,
 			"version": 1,
 			"confirmations":618235,
 			"vin": [
@@ -142,8 +141,6 @@ module.exports = {
 			"hash": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
 			"version": 1,
 			"size": 204,
-			"vsize": 204,
-			"weight": 816,
 			"locktime": 0,
 			"vin": [
 				{
@@ -176,8 +173,6 @@ module.exports = {
 			"hash": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
 			"version": 1,
 			"size": 204,
-			"vsize": 204,
-			"weight": 816,
 			"locktime": 0,
 			"vin": [
 				{
@@ -227,13 +222,9 @@ module.exports = {
 			"mintxsize": 0,
 			"outs": 1,
 			"subsidy": 50,
-			"swtotal_size": 0,
-			"swtotal_weight": 0,
-			"swtxs": 0,
 			"time": 1231006505,
 			"total_out": 0,
 			"total_size": 0,
-			"total_weight": 0,
 			"totalfee": 0,
 			"txs": 1,
 			"utxo_increase": 1,
@@ -264,13 +255,9 @@ module.exports = {
 			"mintxsize": 0,
 			"outs": 1,
 			"subsidy": 50,
-			"swtotal_size": 0,
-			"swtotal_weight": 0,
-			"swtxs": 0,
 			"time": 1296688602,
 			"total_out": 0,
 			"total_size": 0,
-			"total_weight": 0,
 			"totalfee": 0,
 			"txs": 1,
 			"utxo_increase": 1,

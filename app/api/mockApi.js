@@ -49,7 +49,6 @@ function getBlockByHeight(blockHeight) {
 			"confirmations": currentBlockHeight - blockHeight,
 			"strippedsize": 56098,
 			"size": 65384,
-			"weight": 233678,
 			"height": blockHeight,
 			"version": 536870912,
 			"versionHex": "20000000",
@@ -80,7 +79,6 @@ function getBlocksByHeight(blockHeights) {
 				"confirmations": 3,
 				"strippedsize": 56098,
 				"size": 65384,
-				"weight": 233678,
 				"height": blockHeights[i],
 				"version": 536870912,
 				"versionHex": "20000000",
@@ -114,7 +112,6 @@ function getBlockByHash(blockHash) {
 			"confirmations": 3,
 			"strippedsize": 56098,
 			"size": 65384,
-			"weight": 233678,
 			"height": 123456,
 			"version": 536870912,
 			"versionHex": "20000000",
@@ -147,7 +144,6 @@ function getBlocksByHash(blockHashes) {
 				"confirmations": 3,
 				"strippedsize": 56098,
 				"size": 65384,
-				"weight": 233678,
 				"height": 123456,
 				"version": 536870912,
 				"versionHex": "20000000",
@@ -181,7 +177,6 @@ function getRawTransaction(txid) {
 			"hash": txid,
 			"version": 1,
 			"size": 237,
-			"vsize": 210,
 			"locktime": 0,
 			"vin": [
 				{
@@ -235,7 +230,6 @@ function getRawTransactions(txids) {
 				"hash": txid,
 				"version": 1,
 				"size": 237,
-				"vsize": 210,
 				"locktime": 0,
 				"vin": [
 					{
