@@ -229,7 +229,8 @@ div.tab-content
 															br
 
 															if (result.blockstats.feerate_percentiles)
-																span #{JSON.stringify(result.blockstats.feerate_percentiles[itemIndex] * 100000000)}
+																- var feeRate = new Decimal(result.blockstats.feerate_percentiles[itemIndex])
+																span #{feeRate.mul(coinConfig.baseCurrencyUnit.multiplier).toSignificantDigits(4)}
 															else
 																span -
 
