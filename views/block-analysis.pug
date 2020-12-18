@@ -38,20 +38,10 @@ block content
 									include includes/time-ago-text.pug
 									span  ago)
 
-						if (result.getblock.weight)
-							div.row
-								div.summary-table-label Weight
-								div.summary-table-content.text-monospace
-									span #{result.getblock.weight.toLocaleString()} 
-										small wu 
-
-									span.text-muted  (#{new Decimal(100 * result.getblock.weight / coinConfig.maxBlockWeight).toDecimalPlaces(2)}% full)
-									
-						else
-							div.row
-								div.summary-table-label Size
-								div.summary-table-content.text-monospace #{result.getblock.size.toLocaleString()}
-									small B
+						div.row
+							div.summary-table-label Size
+							div.summary-table-content.text-monospace #{result.getblock.size.toLocaleString()}
+								small B
 
 						div.row
 							div.summary-table-label Transactions
@@ -239,7 +229,6 @@ block endOfBody
 		var txidChunks = !{JSON.stringify(utils.splitArrayIntoChunks(result.getblock.tx, txidChunkSize))};
 		var blockHeight = !{result.getblock.height};
 		var satsMultiplier = !{coinConfig.baseCurrencyUnit.multiplier};
-		var vByteSizes = false;
 
 		$(document).ready(function() {
 			loadTransactions(txidChunks, txidChunkSize, txidChunks.length * txidChunkSize);
@@ -353,7 +342,7 @@ block endOfBody
 				row.removeClass("row-prototype");
 
 				row.find(".data-tx-link").html(`<a href='/tx/${item.txid}'>${item.txid.substring(0, 14)}<span class='d-inline d-xl-none'>${item.txid.substring(14, 32)}</span><span class='d-none d-xxl-inline'>${item.txid.substring(14, 30)}</span>…</a>`);
-				row.find(".data-tx-value").html(`<span>${parseInt(item.value).toLocaleString()} <small>${vByteSizes ? "v" : ""}B</small></span>`);
+				row.find(".data-tx-value").html(`<span>${parseInt(item.value).toLocaleString()} <small>B</small></span>`);
 
 				row.show();
 
@@ -551,18 +540,14 @@ block endOfBody
 					analysis.outputTypeCounts[outputType]++;
 				}
 
-				if (txSummary.vsize) {
-					vByteSizes = true;
-				}
-
 				analysis.txValues.push({txid:txSummary.txid, value:new Decimal(txSummary.totalOutput)});
 				analysis.txValueGraphData.push({x:i, y:new Decimal(txSummary.totalOutput).toNumber()});
 				
 				analysis.txFees.push({txid:txSummary.txid, value:new Decimal(txSummary.totalFee)});
 				analysis.txFeeGraphData.push({x:i, y:new Decimal(txSummary.totalFee).toNumber()});
 
-				analysis.txSizes.push({txid:txSummary.txid, value:new Decimal(txSummary.vsize ? txSummary.vsize : txSummary.size)});
-				analysis.txSizeGraphData.push({x:i, y:(txSummary.vsize ? txSummary.vsize : txSummary.size)});
+				analysis.txSizes.push({txid:txSummary.txid, value:new Decimal(txSummary.size)});
+				analysis.txSizeGraphData.push({x:i, y:txSummary.size});
 
 				analysis.txInputCountGraphData.push({x:i, y:txSummary.vin.length});
 				analysis.txOutputCountGraphData.push({x:i, y:txSummary.vout.length});
@@ -636,7 +621,7 @@ block endOfBody
 
 				var valueSats = new Decimal(txSummary.totalOutput).times(satsMultiplier);
 				var feeSats = new Decimal(txSummary.totalFee).times(satsMultiplier);
-				var size = new Decimal(txSummary.vsize ? txSummary.vsize : txSummary.size);
+				var size = new Decimal(txSummary.size);
 
 				var valueBucket = parseInt(distributionBucketCount * valueSats / topValueSats);
 				if (valueBucket >= distributionBucketCount) {

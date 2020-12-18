@@ -314,11 +314,6 @@ block endOfBody
 					summariesByMiner[miner.name].totalSubsidiesCollected = new Decimal(0);
 					summariesByMiner[miner.name].totalFeesCollected = new Decimal(0);
 					summariesByMiner[miner.name].blockSizeTotal = 0;
-
-
-					if (blocks[0].weight) {
-						summariesByMiner[miner.name].blockWeightTotal = 0;
-					}
 				}
 
 				summariesByMiner[miner.name].blockCount++;
@@ -327,20 +322,11 @@ block endOfBody
 				summariesByMiner[miner.name].totalFeesCollected = summariesByMiner[miner.name].totalFeesCollected.add(new Decimal(block.totalFees));
 				summariesByMiner[miner.name].blockSizeTotal += block.size;
 
-				if (blocks[0].weight) {
-					summariesByMiner[miner.name].blockWeightTotal += block.weight;
-				}
-
-
 				overallSummary.blockCount++;
 				overallSummary.transactionCount += block.nTx;
 				overallSummary.totalSubsidiesCollected = overallSummary.totalSubsidiesCollected.add(new Decimal(block.subsidy));
 				overallSummary.totalFeesCollected = overallSummary.totalFeesCollected.add(new Decimal(block.totalFees));
 				overallSummary.blockSizeTotal += block.size;
-
-				if (blocks[0].weight) {
-					overallSummary.blockWeightTotal += block.weight;
-				}
 			}
 
 			minerNamesSortedByBlockCount.sort(function(a, b) {

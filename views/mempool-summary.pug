@@ -374,7 +374,7 @@ block endOfBody
 				var txMempoolInfo = rawdata[i].entry;
 
 				var fee = txMempoolInfo.modifiedfee;
-				var size = txMempoolInfo.vsize ? txMempoolInfo.vsize : txMempoolInfo.size;
+				var size = txMempoolInfo.size;
 				var feePerByte = txMempoolInfo.modifiedfee / size;
 				var age = Date.now() / 1000 - txMempoolInfo.time;
 
@@ -486,7 +486,7 @@ block endOfBody
 			for (var x = 0; x < rawdata.length; x++) {
 				var txMempoolInfo = rawdata[x].entry;
 				var fee = txMempoolInfo.modifiedfee;
-				var size = txMempoolInfo.vsize ? txMempoolInfo.vsize : txMempoolInfo.size;
+				var size = txMempoolInfo.size;
 				var feePerByte = txMempoolInfo.modifiedfee / size;
 				var satoshiPerByte = feePerByte * satsMultiplier;
 				var age = Date.now() / 1000 - txMempoolInfo.time;
