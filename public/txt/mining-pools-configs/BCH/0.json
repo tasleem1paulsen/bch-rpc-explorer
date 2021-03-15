@@ -9,8 +9,8 @@
             "link": "https://minerium.com"
         },
         "Hath": {
-            "name": "Hath",
-            "link": "Unknown"
+            "name": "Hathor",
+            "link": "https://hathor.network/"
         },
         "BTCPool": {
             "name": "BTCPool",
@@ -543,6 +543,18 @@
         "Global": {
             "name" : "Global",
             "link" : "Unknown"
+        },
+        "ASICseer": {
+            "name" : "ASICseer",
+            "link" : "https://asicseer.com/"
+        },
+        "Bitdeer": {
+            "name" : "Bitdeer",
+            "link" : "https://www.bitdeer.com/"
+        },
+        "Foundry USA Pool": {
+            "name" : "Foundry USA Pool",
+            "link" : "https://foundrydigital.com/"
         }
     },
     "payout_addresses" : {
