@@ -10,3 +10,7 @@ charset = utf-8
 
 [*.pug]
 trim_trailing_whitespace = false
+
+[public/txt/mining-pools-configs/**.json]
+indent_style = space
+indent_size = 4
