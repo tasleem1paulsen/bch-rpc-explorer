@@ -9,8 +9,8 @@
             "link": "https://minerium.com"
         },
         "Hath": {
-            "name": "Hath",
-            "link": "Unknown"
+            "name": "Hathor",
+            "link": "https://hathor.network/"
         },
         "BTCPool": {
             "name": "BTCPool",
@@ -532,17 +532,29 @@
             "name" : "SpiderPool",
             "link" : "https://www.spiderpool.com/"
         },
-	"okex.com": {
+        "okex.com": {
             "name" : "OKEX Pool",
-	    "link" : "https://www.okex.com/pool"
+            "link" : "https://www.okex.com/pool"
         },
-	"prohashing.com": {
+        "prohashing.com": {
             "name" : "Prohashing",
-	    "link" : "https://prohashing.com"
+            "link" : "https://prohashing.com"
         },
-	"Global": {
+        "Global": {
             "name" : "Global",
-	    "link" : "Unknown"
+            "link" : "Unknown"
+        },
+        "ASICseer": {
+            "name" : "ASICseer",
+            "link" : "https://asicseer.com/"
+        },
+        "Bitdeer": {
+            "name" : "Bitdeer",
+            "link" : "https://www.bitdeer.com/"
+        },
+        "Foundry USA Pool": {
+            "name" : "Foundry USA Pool",
+            "link" : "https://foundrydigital.com/"
         }
     },
     "payout_addresses" : {
