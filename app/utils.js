@@ -489,13 +489,51 @@ function refreshExchangeRates() {
 					global.exchangeRatesUpdateTime = new Date();
 
 					debugLog("Using exchange rates: " + JSON.stringify(global.exchangeRates) + " starting at " + global.exchangeRatesUpdateTime);
-
+					getExchangeFromExchangeRateExtensions();
 				} else {
 					debugLog("Unable to get exchange rate data");
 				}
 			} else {
 				logError("39r7h2390fgewfgds", {error:error, response:response, body:body});
 			}
+		});
+	}
+}
+
+function getExchangeRatesUpdateTime() {
+	return global.exchangeRatesUpdateTime;
+}
+
+function getExchangeFromExchangeRateExtensions() {
+	// Any other kind of currency conversion must use the BCHUSD base conversion rate to be calculated, in consecuence --no-rates must be disabled.
+	if (coins[config.coin].exchangedRateDataExtension.length > 0 && global.exchangeRates['usd']) {
+		coins[config.coin].exchangedRateDataExtension.forEach(exchangeProvider => {
+			request(exchangeProvider.jsonUrl, function(error, response, body) {
+				if (error == null && response && response.statusCode && response.statusCode == 200) {
+					var responseBody = JSON.parse(body);
+	
+					var exchangeRates = exchangeProvider.responseBodySelectorFunction(responseBody);
+					if (exchangeRates != null || Object.entries(exchangeRates).length > 0) {
+						var originalExchangeRates = global.exchangeRates;
+						var extendedExchangeRates =  {};
+						for	(const  key in exchangeRates) {
+							extendedExchangeRates[key] = (parseFloat(originalExchangeRates.usd) * parseFloat(exchangeRates[key])).toString();
+						}
+						global.exchangeRates = {
+							...originalExchangeRates,
+							...extendedExchangeRates
+						}
+						global.exchangeRatesUpdateTime = new Date();
+	
+						debugLog("Using extended exchange rates: " + JSON.stringify(global.exchangeRates) + " starting at " + global.exchangeRatesUpdateTime);
+	
+					} else {
+						debugLog("Unable to get extended exchange rate data");
+					}
+				} else {
+					logError("83ms2hsnw2je34zc2", {error:error, response:response, body:body});
+				}
+			});
 		});
 	}
 }
@@ -861,5 +899,6 @@ module.exports = {
 	outputTypeAbbreviation: outputTypeAbbreviation,
 	outputTypeName: outputTypeName,
 	serviceBitsToName: serviceBitsToName,
-	perfMeasure: perfMeasure
+	perfMeasure: perfMeasure,
+	getExchangeRatesUpdateTime: getExchangeRatesUpdateTime,
 };
