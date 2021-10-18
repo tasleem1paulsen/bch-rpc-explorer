@@ -500,7 +500,6 @@ function refreshExchangeRates() {
 	}
 }
 
-
 function getExchangeFromExchangeRateExtensions() {
 	// Any other kind of currency conversion must use the BCHUSD base conversion rate to be calculated, in consecuence --no-rates must be disabled.
 	if (coins[config.coin].exchangedRateDataExtension.length > 0 && global.exchangeRates['usd']) {
@@ -513,7 +512,7 @@ function getExchangeFromExchangeRateExtensions() {
 					if (exchangeRates != null || Object.entries(exchangeRates).length > 0) {
 						var originalExchangeRates = global.exchangeRates;
 						var extendedExchangeRates =  {};
-						for	(const  key in exchangeRates) {
+						for (const  key in exchangeRates) {
 							extendedExchangeRates[key] = (parseFloat(originalExchangeRates.usd) * parseFloat(exchangeRates[key])).toString();
 						}
 						global.exchangeRates = {
