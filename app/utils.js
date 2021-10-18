@@ -500,9 +500,6 @@ function refreshExchangeRates() {
 	}
 }
 
-function getExchangeRatesUpdateTime() {
-	return global.exchangeRatesUpdateTime;
-}
 
 function getExchangeFromExchangeRateExtensions() {
 	// Any other kind of currency conversion must use the BCHUSD base conversion rate to be calculated, in consecuence --no-rates must be disabled.
@@ -899,6 +896,5 @@ module.exports = {
 	outputTypeAbbreviation: outputTypeAbbreviation,
 	outputTypeName: outputTypeName,
 	serviceBitsToName: serviceBitsToName,
-	perfMeasure: perfMeasure,
-	getExchangeRatesUpdateTime: getExchangeRatesUpdateTime,
+	perfMeasure: perfMeasure
 };
