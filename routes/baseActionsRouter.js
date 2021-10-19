@@ -840,7 +840,7 @@ function getInputPayloadContractPayload(tx) {
 	let scriptSig = "";
 	try {
 		scriptSig = tx.vin[0].scriptSig.hex;
-        scriptAsm = tx.vin[0].scriptSig.asm;
+		scriptAsm = tx.vin[0].scriptSig.asm;
 	} catch (e) {
 		// API change?
 		return null;
@@ -849,29 +849,29 @@ function getInputPayloadContractPayload(tx) {
 	if (!scriptSig.match(redeemscript_regex)) {
 		return null;
 	}
-    try {
-        const stackElements = scriptAsm.split(' ');
-        stackElements.pop(); // redeemscript
-        const push3 = stackElements.pop();
-        if (push3 === undefined) return null;
-        const push2 = stackElements.pop();
-        if (push2 === undefined) return null;
-        const push1 = stackElements.pop();
-        if (push1 === undefined) return null;
+	try {
+		const stackElements = scriptAsm.split(' ');
+		stackElements.pop(); // redeemscript
+		const push3 = stackElements.pop();
+		if (push3 === undefined) return null;
+		const push2 = stackElements.pop();
+		if (push2 === undefined) return null;
+		const push1 = stackElements.pop();
+		if (push1 === undefined) return null;
 
-        let payload = push3;
-        if (push2 !== '0') {
-            payload += push2;
-        }
-        if (push1 !== '0') {
-            payload += push1;
-        }
-        return payload;
-    }
-    catch (e) {
-        console.log(e);
-        return null;
-    }
+		let payload = push3;
+		if (push2 !== '0') {
+		    payload += push2;
+		}
+		if (push1 !== '0') {
+		    payload += push1;
+		}
+		return payload;
+	}
+	catch (e) {
+	    console.log(e);
+	    return null;
+	}
 }
 
 function calcFee(tx, inputTxs) {
