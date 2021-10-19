@@ -235,6 +235,15 @@ block content
 
 								p Run&nbsp;
 									a(href=("https://flipstarter.cash")) your own flipstarter crowdfunding campaign.
+						if (result.inputPayloadContract != null)
+							p This looks like an&nbsp;
+								a(href=("https://nerdekollektivet.gitlab.io/votepeer-documentation/input-payload-contract/")) Input Payload Contract
+								span &nbsp;transaction. Input Payload Contract is used to deliver a chunk of arbitrary data on the blockchain.
+
+							p The embedded data is #{result.inputPayloadContract.length} bytes. This is the embedded data:
+								div.highlight
+									pre
+										code.json.bg-light(data-lang="json") "#{result.inputPayloadContract}"
 
 
 
