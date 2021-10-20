@@ -47,6 +47,15 @@ var currencyUnits = [
 		decimalPlaces:2,
 		symbol:"€"
 	},
+	{
+		type:"exchanged",
+		name:"ARS",
+		multiplier:"ars",
+		values:["ars"],
+		decimalPlaces:2,
+		symbol:"$",
+		isExtendedRate: true
+	},
 ];
 
 module.exports = {
@@ -600,7 +609,34 @@ module.exports = {
 			return null;
 		}
 	},
+	exchangeRateDataExtension:[
+		{
+			jsonUrl:"https://api.yadio.io/exrates",
+			responseBodySelectorFunction:function(responseBody) {
+				//console.log("Exchange Rate Response: " + JSON.stringify(responseBody));
 
+				var exchangedCurrencies = ["ARS"];
+				
+				if (responseBody.base) {
+					var exchangeRates = {};
+					
+					for (var i = 0; i < exchangedCurrencies.length; i++) {
+						var key = exchangedCurrencies[i];
+						if (responseBody['USD']) {
+							// If found duped currency units for the same api source then skip all instead of retrieve wrong rates.
+							var applicableUnit = currencyUnits.filter(x => x.name === key).length == 1 ? currencyUnits.find(x => x.name === key) : undefined;
+							if (applicableUnit) {
+								exchangeRates[key.toLowerCase()] = parseFloat(responseBody['USD'][key]).toString();
+							}
+						}
+					}
+					return exchangeRates;
+				}
+	
+				return null;
+			}
+		}
+	],
 	blockRewardFunction:function(blockHeight, chain) {
 		var eras = [ new Decimal8(50) ];
 		for (var i = 1; i < 34; i++) {
