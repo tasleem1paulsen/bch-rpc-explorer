@@ -2,7 +2,13 @@
 if (exchangeRates || networkVolume)
 	- colClass = "col-lg-4 px-2";
 
+if (currencyFormatTypeOverride)
+	- var currencyFormatTypeInt = currencyFormatTypeOverride
+else
+	- var currencyFormatTypeInt = currencyFormatType;
+
 - var utxoCalculatingDesc = "At startup the app pulls a summary of the UTXO set. Until this summary is retrieved this data can't be displayed. Wait for the summary request to your node to return, then refresh this page.";
+- var currencyFormatInfo = utils.getCurrencyFormatInfo(currencyFormatTypeInt);
 
 div.row.index-summary
 	div(class=colClass)
@@ -161,7 +167,10 @@ div.row.index-summary
 						tr
 							th.px-2.px-lg-0.px-xl-2
 								i.fas.fa-money-bill-wave-alt.mr-1.summary-icon
-								span.border-dotted(data-toggle="tooltip", title=("Exchange-rate data from: " + coinConfig.exchangeRateData.jsonUrl)) Exchange Rate
+								if (currencyFormatInfo.type == "exchanged" && currencyFormatInfo.isExtendedRate)
+									span.border-dotted(data-toggle="tooltip", title=("Exchange-rate data from: " + coinConfig.exchangeRateDataExtension[0].jsonUrl)) Exchange Rate
+								else
+									span.border-dotted(data-toggle="tooltip", title=("Exchange-rate data from: " + coinConfig.exchangeRateData.jsonUrl)) Exchange Rate
 							td.text-right.text-monospace
 								span #{utils.formatValueInActiveCurrency(1.0)}
 
