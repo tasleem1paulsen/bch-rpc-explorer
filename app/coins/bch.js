@@ -54,6 +54,7 @@ var currencyUnits = [
 		values:["ars"],
 		decimalPlaces:2,
 		symbol:"$",
+		isExtendedRate: true
 	},
 ];
 
