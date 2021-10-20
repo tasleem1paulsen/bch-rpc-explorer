@@ -609,7 +609,7 @@ module.exports = {
 			return null;
 		}
 	},
-	exchangedRateDataExtension:[
+	exchangeRateDataExtension:[
 		{
 			jsonUrl:"https://api.yadio.io/exrates",
 			responseBodySelectorFunction:function(responseBody) {
