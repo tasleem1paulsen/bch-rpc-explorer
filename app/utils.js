@@ -856,6 +856,14 @@ function serviceBitsToName (services) {
 	return serviceBits;
 }
 
+function getTransactionDatetime(utcEpochTime) {
+	var epoch = new Date(0);
+	epoch.setUTCSeconds(utcEpochTime);
+	var formatted_date = epoch.getFullYear() + "-" + (epoch.getMonth() + 1) + "-" + epoch.getDate() + " " + epoch.toLocaleTimeString();
+
+	return formatted_date;
+}
+
 module.exports = {
 	reflectPromise: reflectPromise,
 	redirectToConnectPageIfNeeded: redirectToConnectPageIfNeeded,
@@ -895,5 +903,6 @@ module.exports = {
 	outputTypeAbbreviation: outputTypeAbbreviation,
 	outputTypeName: outputTypeName,
 	serviceBitsToName: serviceBitsToName,
-	perfMeasure: perfMeasure
+	perfMeasure: perfMeasure,
+	getTransactionDatetime: getTransactionDatetime
 };
