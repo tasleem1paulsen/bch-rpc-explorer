@@ -860,7 +860,7 @@ function serviceBitsToName (services) {
 function getTransactionDatetime(utcEpochTime) {
 	var epoch = new Date(0);
 	epoch.setUTCSeconds(utcEpochTime);
-	var formatted_date = epoch.getFullYear() + "-" + (epoch.getMonth() + 1) + "-" + epoch.getDate() + " " + epoch.toLocaleTimeString();
+	var formatted_date = epoch.getFullYear() + "-" + (epoch.getMonth() + 1) + "-" + epoch.getDate() + " " + epoch.toUTCString();
 
 	return formatted_date;
 }
