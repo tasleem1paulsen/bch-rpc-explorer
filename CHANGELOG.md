@@ -1,3 +1,16 @@
+#### v0.0.8
+##### 2021-10-22
+
+- Identify Input Payload Contract (voter.cash)
+- add support to recognize flipstarter transaction
+- fix a tx decoder error in case of no inputs
+- add a new source for exchange rates for all fiat that are not supported by kraken
+- use USD as default currency
+- add 1h difficulty estimate and probvide diff value for the next block
+- improve pagination
+- fix various layouts and display problems
+- use `git log --no-merges v0.0.7..v0.0.8` for a detailed list of changes
+
 #### v0.0.7
 ##### 2020-11-26
 
