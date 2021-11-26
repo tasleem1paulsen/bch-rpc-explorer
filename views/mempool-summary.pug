@@ -373,17 +373,23 @@ block endOfBody
 			for (var i = 0; i < rawdata.length; i++) {
 				var txMempoolInfo = rawdata[i].entry;
 
-				var fee = txMempoolInfo.modifiedfee;
+				if (txMempoolInfo.modifiedfee) {
+					var fee = txMempoolInfo.modifiedfee;
+				}
+				else
+				{
+					var fee = txMempoolInfo.fees.modified;
+				}
+				var feePerByte = fee / size;
 				var size = txMempoolInfo.size;
-				var feePerByte = txMempoolInfo.modifiedfee / size;
 				var age = Date.now() / 1000 - txMempoolInfo.time;
 
 				if (fee > maxFee) {
-					maxFee = txMempoolInfo.modifiedfee;
+					maxFee = fee;
 				}
 
 				if (feePerByte > maxFeePerByte) {
-					maxFeePerByte = txMempoolInfo.modifiedfee / size;
+					maxFeePerByte = feePerByte;
 				}
 
 				ages.push({age:age, txid:"abc"});
@@ -485,9 +491,15 @@ block endOfBody
 			var satsMultiplier = !{coinConfig.baseCurrencyUnit.multiplier};
 			for (var x = 0; x < rawdata.length; x++) {
 				var txMempoolInfo = rawdata[x].entry;
-				var fee = txMempoolInfo.modifiedfee;
+				if (txMempoolInfo.modifiedfee) {
+					var fee = txMempoolInfo.modifiedfee;
+				}
+				else
+				{
+					var fee = txMempoolInfo.fees.modified;
+				}
+				var feePerByte = fee / size;
 				var size = txMempoolInfo.size;
-				var feePerByte = txMempoolInfo.modifiedfee / size;
 				var satoshiPerByte = feePerByte * satsMultiplier;
 				var age = Date.now() / 1000 - txMempoolInfo.time;
 
@@ -511,7 +523,14 @@ block endOfBody
 				}
 
 				summary["count"]++;
-				summary["totalFees"] += txMempoolInfo.modifiedfee;
+				if (txMempoolInfo.modifiedfee) {
+					summary["totalFees"] += txMempoolInfo.modifiedfee;
+				}
+				else
+				{
+					summary["totalFees"] += txMempoolInfo.fees.modified;
+				}
+
 				summary["totalBytes"] += size;
 
 				var ageBucketIndex = Math.min(ageBucketCount - 1, parseInt(age / (maxAge / ageBucketCount)));
