@@ -293,7 +293,7 @@ block content
 							div.card-body.px-2.px-md-3
 								h3.h6.mb-0
 									// the below is not trailing spaces, it is actually needed
-									span #{mempoolDetails.ancestors.length.toLocaleString()}
+									span #{mempoolDetails.ancestors.length.toLocaleString()} 
 
 									if (mempoolDetails.ancestors.length == 1)
 										span Ancestor
@@ -312,7 +312,7 @@ block content
 							div.card-body.px-2.px-md-3
 								h3.h6.mb-0
 									// the below is not trailing spaces, it is actually needed
-									span #{mempoolDetails.descendants.length.toLocaleString()}
+									span #{mempoolDetails.descendants.length.toLocaleString()} 
 									if (mempoolDetails.descendants.length == 1)
 										span Descendant
 									else
