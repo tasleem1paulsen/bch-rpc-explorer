@@ -101,6 +101,9 @@ block content
 
 								if (peerIpSummary && peerIpSummary.ips)
 									th.data-header Location
+								
+								if (peerSummary.getpeerinfo_has_mapped_as)
+									th.data-header AS
 
 								th.data-header Last Send / Receive (m:s)
 
@@ -132,6 +135,10 @@ block content
 												span ?
 
 											- var ipAddr = null;
+
+									if (peerSummary.getpeerinfo_has_mapped_as)
+										td.data-cell.text-monospace
+											a(href="https://bgp.he.net/AS" + item.mapped_as) AS#{item.mapped_as}
 
 									td.ata-cell.text-monospace #{lastSendAgo} / #{lastRecvAgo}
 

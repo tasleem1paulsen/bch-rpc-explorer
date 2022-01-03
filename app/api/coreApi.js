@@ -353,6 +353,8 @@ function getPeerSummary() {
 			var result = {};
 			result.getpeerinfo = getpeerinfo;
 
+			result.getpeerinfo_has_mapped_as = getpeerinfo.length > 0 && "mapped_as" in getpeerinfo[0];
+
 			var versionSummaryMap = {};
 			for (var i = 0; i < getpeerinfo.length; i++) {
 				var x = getpeerinfo[i];
