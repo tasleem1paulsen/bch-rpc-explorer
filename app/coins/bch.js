@@ -436,7 +436,7 @@ module.exports = {
 			date: "2017-08-01",
 			chain: "main",
 			blockHeight: 478559,
-			blockHash: "0000000000000000011865af4122fe3b144e2cbeea86142e8ff2fb4107352d43",
+			blockHash: "000000000000000000651ef99cb9fcbe0dadde1d424bd9f15ff20136191a5eec",
 			summary: "First block after UAHF.",
 			referenceUrl: "https://twitter.com/btcfork/status/892449023893831680"
 		},
