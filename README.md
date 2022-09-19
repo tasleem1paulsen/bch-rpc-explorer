@@ -35,9 +35,9 @@ The below instructions are geared toward BCH, but can be adapted easily to other
 1. Install and run a full, archiving node - [instructions](https://bitcoinunlimited.info/download). Ensure that your bitcoin node has full transaction indexing enabled (`txindex=1`) and the RPC server enabled (`server=1`) adding the flags into the bitcoind executable.
 2. Synchronize your node with the Bitcoin network.
 3. Run bch-rpc-explorer passing the cookie route based on the defined path to store files download with BCH-Unlimited. (Check cli arguments section)
-3. "Recent" version of Node.js (8+ recommended).
-4. You could also run an [ElectrsCash](https://github.com/bitcoinunlimited/ElectrsCash) and configure the explorer to received data from it (optional)
-5. You need to use nodejs version 12.9 or higher due to the use of [Promise.allSettled()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled) method
+4. "Recent" version of Node.js (8+ recommended).
+5. You could also run an [ElectrsCash](https://github.com/bitcoinunlimited/ElectrsCash) and configure the explorer to received data from it (optional)
+6. You need to use nodejs version 12.9 or higher due to the use of [Promise.allSettled()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled) method
 
 ## Instructions
 
