@@ -76,6 +76,7 @@ module.exports = {
 	maxBlockSizeByNetwork: {
 		"main":   32000000,
 		"test":   32000000,
+		"chip":    2000000,
 		"test4":   2000000,
 		"scale": 256000000
 	},
@@ -84,6 +85,7 @@ module.exports = {
 	maxSupplyByNetwork: {
 		"main": new Decimal(20999817.31308491), // ref: https://bitcoin.stackexchange.com/a/38998
 		"test": new Decimal(21000000),
+		"chip": new Decimal(21000000),
 		"test4": new Decimal(21000000),
 		"scale": new Decimal(21000000),
 		"regtest": new Decimal(21000000)
@@ -98,6 +100,7 @@ module.exports = {
 	genesisBlockHashesByNetwork:{
 		"main":    "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
 		"test":    "000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943",
+		"chip":    "000000001dd410c49a788668ce26751718cc797474d3152a5fc073dd44fd9f7b",
 		"test4":   "000000001dd410c49a788668ce26751718cc797474d3152a5fc073dd44fd9f7b",
 		"scale":   "00000000e6453dc2dfe1ffa19023f86002eb11dbb8e87d0291a4599f0430be52",
 		"regtest": "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206"
@@ -105,6 +108,7 @@ module.exports = {
 	genesisCoinbaseTransactionIdsByNetwork: {
 		"main":    "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
 		"test":    "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+		"chip":   "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
 		"test4":   "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
 		"scale":   "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
 		"regtest": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"
@@ -173,6 +177,38 @@ module.exports = {
 			"blockhash": "000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943",
 			"time": 1296688602,
 			"blocktime": 1296688602
+		},
+		"chip": {
+			"hex": "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000",
+			"txid": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+			"hash": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+			"version": 1,
+			"size": 204,
+			"locktime": 0,
+			"vin": [
+				{
+					"coinbase": "04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73",
+					"sequence": 4294967295
+				}
+			],
+			"vout": [
+				{
+					"value": 50.00000000,
+					"n": 0,
+					"scriptPubKey": {
+						"asm": "04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f OP_CHECKSIG",
+						"hex": "4104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac",
+						"reqSigs": 1,
+						"type": "pubkey",
+						"addresses": [
+							"mpXwg4jMtRhuSpVq4xS3HFHmCmWp9NyGKt"
+						]
+					}
+				}
+			],
+			"blockhash": "000000001dd410c49a788668ce26751718cc797474d3152a5fc073dd44fd9f7b",
+			"time": 1597811185,
+			"blocktime": 1597811185
 		},
 		"test4": {
 			"hex": "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000",
@@ -306,6 +342,39 @@ module.exports = {
 			"avgfeerate": 0,
 			"avgtxsize": 0,
 			"blockhash": "000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943",
+			"feerate_percentiles": [
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"height": 0,
+			"ins": 0,
+			"maxfee": 0,
+			"maxfeerate": 0,
+			"maxtxsize": 0,
+			"medianfee": 0,
+			"mediantime": 1296688602,
+			"mediantxsize": 0,
+			"minfee": 0,
+			"minfeerate": 0,
+			"mintxsize": 0,
+			"outs": 1,
+			"subsidy": 50,
+			"time": 1296688602,
+			"total_out": 0,
+			"total_size": 0,
+			"totalfee": 0,
+			"txs": 1,
+			"utxo_increase": 1,
+			"utxo_size_inc": 117
+		},
+		"chip": {
+			"avgfee": 0,
+			"avgfeerate": 0,
+			"avgtxsize": 0,
+			"blockhash": "000000001dd410c49a788668ce26751718cc797474d3152a5fc073dd44fd9f7b",
 			"feerate_percentiles": [
 				0,
 				0,
