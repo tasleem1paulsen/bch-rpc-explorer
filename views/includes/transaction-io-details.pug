@@ -204,7 +204,7 @@ div.row.text-monospace
 										div
 											small.font-weight-bold data
 											small (utf-8) - 
-											small #{utils.hex2string(vout.scriptPubKey.asm.substring("OP_RETURN ".length))}
+											small #{utils.hex2string(vout.scriptPubKey.hex.substring("OP_RETURN ".length))}
 											br
 											small
 												a(href="javascript:void(0)" onclick=`$('#op-return-hex-${tx.txid}-${vout.n}').show(); $(this).hide(); return false;`) show raw
