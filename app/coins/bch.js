@@ -649,6 +649,70 @@ module.exports = {
 			alertBodyHtml: "This transaction doesn't really exist! This is the coinbase transaction of the <a href='/block/000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f'>Bitcoin Genesis Block</a>. For more background about this special-case transaction, you can read <a href='https://github.com/bitcoin/bitcoin/issues/3303'>this brief discussion</a> among some of the <a href='https://bitcoin.org'>Bitcoin</a> developers.",
 			referenceUrl: "https://github.com/bitcoin/bitcoin/issues/3303"
 		},
+
+		// chipnet
+		{
+			type: "blockheight",
+			date: "2022-11-15",
+			chain: "chip",
+			blockHeight: 121957,
+			blockHash:
+				"0000000056087dee73fb66178ca70da89dfd0be098b1a63cf6fe93934cd04c78",
+			summary: "May 2023 Upgrade Chipnet Activation",
+			alertBodyHtml:
+				"The May 2023 Upgrade for Bitcoin Cash activated on chipnet shortly after 12 UTC, November 15, 2022. Chipnet activates upgrades 6 months early, giving developers months to build with new upgrades before they're active on the main network. Chipnet offers more certainty, wider testing, and stronger launches. 🚀",
+			referenceUrl: "https://blog.bitjson.com/bitcoin-cash-upgrade-2023/",
+		},
+		{
+			type: "tx",
+			date: "2022-11-15",
+			chain: "chip",
+			txid: "856c7b8a7607b7302cbe21a03944ead936e4486bd1f3e030b7f1b53af0338f0f",
+			summary: "An 87-byte transaction",
+			alertBodyHtml:
+				"Before the May 2023 Upgrade activated, transactions were required to be at least 100 bytes, wasting space in some contract applications. This is the first transaction smaller than 100 bytes mined on chipnet.",
+			referenceUrl: "https://twitter.com/bitjson/status/1592576796205387776",
+		},
+		{
+			type: "tx",
+			date: "2022-11-15",
+			chain: "chip",
+			txid: "a0152b142c7acafbc2af757754797dfde62582db3ed0edd380a0e977cae0f777",
+			summary: "CashTokens Demo: Double-Category Genesis",
+			alertBodyHtml:
+				"A two-category token genesis transaction: every output type, every token amount encoding length, one minting and one immutable non-fungible token (NFT). Note, this transaction can also be located using the chipnet CashAccount: <code>CashTokens#121957</code>.",
+			referenceUrl: "https://twitter.com/bitjson/status/1592576797467893760",
+		},
+		{
+			type: "tx",
+			date: "2022-11-15",
+			chain: "chip",
+			txid: "b84debf788680257285e8a67e3a52592bc17089f1dce997c0f8255b4e9608c41",
+			summary: "CashTokens Demo: NFT Minting",
+			alertBodyHtml:
+				'Genesis for a third category; merges all fungible tokens from the first CashTokens Demo transaction, placing the max amount in an NFT-locked covenant marked with "reserved supply" (using a mutable token); mints a variety of NFTs.',
+			referenceUrl: "https://twitter.com/bitjson/status/1592576798675546112",
+		},
+		{
+			type: "tx",
+			date: "2022-11-15",
+			chain: "chip",
+			txid: "670a0402bd50af7fee349511221e5b92eb90dcc4e1d3dce451e228fc1c6aa39a",
+			summary: "First NFT Spend",
+			alertBodyHtml:
+				'The first spend of an NFT on chipnet. A minimal transaction moving an immutable NFT (capability: "none") from one address to another. The NFT has a commitment of <code>0xf09f8c8e</code> (utf8: <code>🌎</code>).',
+			referenceUrl: "https://twitter.com/bitjson/status/1592576800340574208",
+		},
+		{
+			type: "tx",
+			date: "2022-11-15",
+			chain: "chip",
+			txid: "142e5adef124019b4929e7656fc20b7a061987e6d340d47a3753cee17eb6049e",
+			summary: "NFT-unlocked Covenant Spend",
+			alertBodyHtml:
+				"An NFT-locked covenant is unlocked using an NFT. The NFTs commitment is <code>0x68656c6c6f</code> (utf8: <code>hello</code>) which only enables the release of 1000 FTs per block. (Inspect the contract to see that the <code>🌎</code> NFT unconditionally unlocks the vault.)",
+			referenceUrl: "https://twitter.com/bitjson/status/1592576802118959104",
+		},
 	],
 	exchangeRateData:{
 		// see https://www.kraken.com/features/api#get-ticker-info for doc on that API
