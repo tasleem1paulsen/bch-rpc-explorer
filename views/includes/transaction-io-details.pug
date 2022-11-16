@@ -231,6 +231,26 @@ div.row.text-monospace
 											br
 											small.word-wrap #{vout.scriptPubKey.hex}
 
+									if (vout.tokenData)
+										- var tokenColor = `hsl(${utils.tokenCategory2HueSaturation(vout.tokenData.category)},${session.uiTheme && session.uiTheme == "dark" ?'67%':'50%'})`;
+										div
+											small.font-weight-bold token data
+										if (vout.tokenData.amount !== "0")
+											div.mb-tiny
+												small.data-tag(style=`background-color:${tokenColor}!important;`) amount: #{vout.tokenData.amount}
+										if (vout.tokenData.nft)
+											div.mb-tiny
+												small.word-wrap.data-tag(style=`display:inline-block;background-color:${tokenColor}!important;`) 
+													span.font-weight-bold #{vout.tokenData.nft.capability === "none" ? "" : `${vout.tokenData.nft.capability} ` }
+													span nft: #{vout.tokenData.nft.commitment.length === 0 ? "(empty)" : vout.tokenData.nft.commitment}
+										div
+											small
+												a(href="javascript:void(0)" onclick=`$('#token-category-hex-${tx.txid}-${vout.n}').show(); $(this).hide(); return false;`) show category
+										div(id=`token-category-hex-${tx.txid}-${vout.n}`, style="display: none;")
+											small.font-weight-bold token category
+											small &nbsp;-&nbsp;
+											small.word-wrap #{vout.tokenData.category}
+
 							div.tx-io-value
 								if (utxos)
 									if (utxos[voutIndex])

@@ -804,6 +804,19 @@ function outputTypeAbbreviation(outputType) {
 	}
 }
 
+/**
+ * Given a 32-byte hex-encoded token category, return a deterministic hue and
+ * saturation value to use in HSL colors representing the token category. 
+ * Usage: `hsl(${ tokenCategory2HueSaturation(vout.tokenData.category) }, 50%)`
+ */
+function tokenCategory2HueSaturation(category) {
+	const bin = hex2array(category);
+	const raw = bin.reduce((acc, num) => acc * num, 1) % 36000;
+	const hue = (raw / 100).toFixed(0);
+	const saturation = (raw / 360 + 50).toFixed(0);
+	return `${hue},${saturation}%`;
+}
+
 function prettyScript(inScript, indentChar) {
 	var indenter=["OP_IF", "OP_ELSE"]
 	var outdenter=["OP_ENDIF", "OP_ELSE"]
@@ -876,6 +889,7 @@ module.exports = {
 	hex2ascii: hex2ascii,
 	hex2array: hex2array,
 	hex2string: hex2string,
+	tokenCategory2HueSaturation: tokenCategory2HueSaturation,
 	splitArrayIntoChunks: splitArrayIntoChunks,
 	splitArrayIntoChunksByChunkCount: splitArrayIntoChunksByChunkCount,
 	getRandomString: getRandomString,
