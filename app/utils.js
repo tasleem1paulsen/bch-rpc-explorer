@@ -787,6 +787,7 @@ function buildQrCodeUrl(str, results) {
 
 function outputTypeAbbreviation(outputType) {
 	var map = {
+		"multisig": "bare-multisig",
 		"pubkey": "p2pk",
 		"pubkeyhash": "p2pkh",
 		"scripthash": "p2sh",
@@ -829,6 +830,7 @@ function prettyScript(inScript, indentChar) {
 
 function outputTypeName(outputType) {
 	var map = {
+		"multisig": "Bare Multisig",
 		"pubkey": "Pay to Public Key",
 		"pubkeyhash": "Pay to Public Key Hash",
 		"scripthash": "Pay to Script Hash",
