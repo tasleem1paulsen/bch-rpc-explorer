@@ -61,7 +61,7 @@ div.row.text-monospace
 
 									else
 										div.word-wrap
-											small.data-tag.bg-dark.mr-2
+											small.data-tag-secondary.border-secondary.mr-2
 												span(title=`Input Type: ${utils.outputTypeName(vout.scriptPubKey.type)}`, data-toggle="tooltip") #{utils.outputTypeAbbreviation(vout.scriptPubKey.type)}
 
 											if (vout.coinbaseSpend)
@@ -94,6 +94,27 @@ div.row.text-monospace
 																i.fas.fa-certificate.text-primary
 
 													span )
+										
+										if (vout.tokenData)
+											- var tokenColor = `hsl(${utils.tokenCategory2HueSaturation(vout.tokenData.category)},${session.uiTheme && session.uiTheme == "dark" ?'67%':'40%'})`;
+
+											div
+												small
+													a(href="javascript:void(0)" onclick=`$('#token-category-hex-${tx.txid}-input-${vout.n}').show(); $(this).hide(); return false;`) show token category
+											div(id=`token-category-hex-${tx.txid}-input-${vout.n}`, style="display: none;")
+												small token category&nbsp;-&nbsp;
+												small.word-wrap #{vout.tokenData.category}
+
+											if (vout.tokenData.nft)
+												div.mb-tiny.mt-tiny
+													small
+														if (vout.tokenData.nft.capability !== "none")
+															span.data-tag.font-weight-bold(style=`display:inline-block;background-color:${tokenColor}!important;`) 
+																span(title=`Non-fungible token capability: ${vout.tokenData.nft.capability}`, data-toggle="tooltip") #{vout.tokenData.nft.capability} nft
+															span &nbsp;-&nbsp;
+														else
+															span(title=`Non-fungible token capability: ${vout.tokenData.nft.capability}`, data-toggle="tooltip") nft&nbsp;-&nbsp;
+													small.word-wrap.data-tag(style=`display:inline-block;background-color:${tokenColor}!important;`) #{vout.tokenData.nft.commitment.length === 0 ? "(empty)" : vout.tokenData.nft.commitment}
 
 								div.tx-io-value
 									if (txVin.coinbase)
@@ -103,6 +124,10 @@ div.row.text-monospace
 										if (vout && vout.value)
 											- var currencyValue = vout.value;
 											include ./value-display.pug
+									if (vout && vout.tokenData && vout.tokenData.amount !== "0")
+										div
+											span(title=`Fungible token amount`, data-toggle="tooltip")
+												small.data-tag(style=`background-color:${tokenColor}!important;`) #{vout.tokenData.amount}
 
 					hr
 
@@ -181,7 +206,7 @@ div.row.text-monospace
 								if (vout.scriptPubKey)
 									if (vout.scriptPubKey.addresses)
 										div.mb-tiny
-											small.data-tag.bg-dark
+											small.data-tag-secondary.border-secondary(style="color:inherit;border 1px solid;")
 												span(title=`Output Type: ${utils.outputTypeName(vout.scriptPubKey.type)}`, data-toggle="tooltip") #{utils.outputTypeAbbreviation(vout.scriptPubKey.type)}
 
 										each addr in vout.scriptPubKey.addresses
@@ -218,7 +243,7 @@ div.row.text-monospace
 
 									else
 										div.mb-tiny
-											small.data-tag.bg-dark
+											small.data-tag-secondary.border-secondary
 												span(title=`Output Type: ${utils.outputTypeName(vout.scriptPubKey.type)}`, data-toggle="tooltip") #{utils.outputTypeAbbreviation(vout.scriptPubKey.type)}
 
 										div
@@ -232,24 +257,25 @@ div.row.text-monospace
 											small.word-wrap #{vout.scriptPubKey.hex}
 
 									if (vout.tokenData)
-										- var tokenColor = `hsl(${utils.tokenCategory2HueSaturation(vout.tokenData.category)},${session.uiTheme && session.uiTheme == "dark" ?'67%':'50%'})`;
-										div
-											small.font-weight-bold token data
-										if (vout.tokenData.amount !== "0")
-											div.mb-tiny
-												small.data-tag(style=`background-color:${tokenColor}!important;`) amount: #{vout.tokenData.amount}
-										if (vout.tokenData.nft)
-											div.mb-tiny
-												small.word-wrap.data-tag(style=`display:inline-block;background-color:${tokenColor}!important;`) 
-													span.font-weight-bold #{vout.tokenData.nft.capability === "none" ? "" : `${vout.tokenData.nft.capability} ` }
-													span nft: #{vout.tokenData.nft.commitment.length === 0 ? "(empty)" : vout.tokenData.nft.commitment}
+										- var tokenColor = `hsl(${utils.tokenCategory2HueSaturation(vout.tokenData.category)},${session.uiTheme && session.uiTheme == "dark" ?'67%':'40%'})`;
+
 										div
 											small
-												a(href="javascript:void(0)" onclick=`$('#token-category-hex-${tx.txid}-${vout.n}').show(); $(this).hide(); return false;`) show category
-										div(id=`token-category-hex-${tx.txid}-${vout.n}`, style="display: none;")
-											small.font-weight-bold token category
-											small &nbsp;-&nbsp;
+												a(href="javascript:void(0)" onclick=`$('#token-category-hex-${tx.txid}-output-${vout.n}').show(); $(this).hide(); return false;`) show token category
+										div(id=`token-category-hex-${tx.txid}-output-${vout.n}`, style="display: none;")
+											small token category&nbsp;-&nbsp;
 											small.word-wrap #{vout.tokenData.category}
+
+										if (vout.tokenData.nft)
+											div.mb-tiny.mt-tiny
+												small
+													if (vout.tokenData.nft.capability !== "none")
+														span.data-tag.font-weight-bold(style=`display:inline-block;background-color:${tokenColor}!important;`) 
+															span(title=`Non-fungible token capability: ${vout.tokenData.nft.capability}`, data-toggle="tooltip") #{vout.tokenData.nft.capability} nft
+														span &nbsp;-&nbsp;
+													else
+														span(title=`Non-fungible token capability: ${vout.tokenData.nft.capability}`, data-toggle="tooltip") nft&nbsp;-&nbsp;
+												small.word-wrap.data-tag(style=`display:inline-block;background-color:${tokenColor}!important;`) #{vout.tokenData.nft.commitment.length === 0 ? "(empty)" : vout.tokenData.nft.commitment}
 
 							div.tx-io-value
 								if (utxos)
@@ -261,7 +287,10 @@ div.row.text-monospace
 
 								- var currencyValue = vout.value;
 								include ./value-display.pug
-
+								if (vout.tokenData && vout.tokenData.amount !== "0")
+									div
+										span(title=`Fungible token amount`, data-toggle="tooltip")
+											small.data-tag(style=`background-color:${tokenColor}!important;`) #{vout.tokenData.amount}
 
 				hr
 

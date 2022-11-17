@@ -787,7 +787,7 @@ function buildQrCodeUrl(str, results) {
 
 function outputTypeAbbreviation(outputType) {
 	var map = {
-		"multisig": "bare-multisig",
+		"multisig": "bms",
 		"pubkey": "p2pk",
 		"pubkeyhash": "p2pkh",
 		"scripthash": "p2sh",
@@ -813,7 +813,7 @@ function tokenCategory2HueSaturation(category) {
 	const bin = hex2array(category);
 	const raw = bin.reduce((acc, num) => acc * num, 1) % 36000;
 	const hue = (raw / 100).toFixed(0);
-	const saturation = (raw / 360 + 50).toFixed(0);
+	const saturation = Math.min(100, (raw / 360 + 50)).toFixed(0);
 	return `${hue},${saturation}%`;
 }
 
