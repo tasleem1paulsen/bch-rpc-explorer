@@ -8,8 +8,6 @@ var util = require('util');
 var moment = require('moment');
 var bitcoinCore = require("bitcoin-core");
 var qrcode = require('qrcode');
-var bitcoinjs = require('bitcoinjs-lib');
-var cashaddrjs = require('cashaddrjs');
 var sha256 = require("crypto-js/sha256");
 var hexEnc = require("crypto-js/enc-hex");
 var Decimal = require("decimal.js");
@@ -26,6 +24,7 @@ var rpcApi = require("./../app/api/rpcApi.js");
 const bch = require('bindings')('bch');
 
 const v8 = require('v8');
+const { decodeBase58Address, decodeBech32, decodeCashAddress, instantiateSha256 } = require("@bitauth/libauth");
 
 const forceCsrf = csurf({ ignoreMethods: [] });
 
@@ -980,7 +979,7 @@ router.get("/tx/:transactionId", function(req, res, next) {
 	});
 });
 
-router.get("/address/:address", function(req, res, next) {
+router.get("/address/:address", async (req, res) => {
 	var limit = config.site.addressTxPageSize;
 	var offset = 0;
 	var sort = "desc";
@@ -1015,35 +1014,33 @@ router.get("/address/:address", function(req, res, next) {
 	res.locals.paginationBaseUrl = `/address/${address}?sort=${sort}`;
 	res.locals.transactions = [];
 	res.locals.addressApiSupport = addressApi.getCurrentAddressApiFeatureSupport();
-
 	res.locals.result = {};
 
-	try {
-		res.locals.addressObj = bitcoinjs.address.fromBase58Check(address);
+	let sha256 = await instantiateSha256();
+	let decodedBase58Address = decodeBase58Address(sha256, address);
+	if (typeof decodedBase58Address !== "string") { // When error libauth return string
+		res.locals.addressObj = {
+			hash: decodedBase58Address.payload,
+			version: decodedBase58Address.version
+		}
+	} else {
+		// Address is not base58
+		var addressWithPrefix;
+		var prefix = global.activeBlockchain == "main" ? "bitcoincash:" : "bchtest:";
+		if(!address.includes(prefix)) {
+			addressWithPrefix = prefix.concat(address);
+		} else {
+			addressWithPrefix = address;
+		}
 
-	} catch (err) {
-		//if (!err.toString().startsWith("Error: Non-base58 character")) {
-		//	res.locals.pageErrors.push(utils.logError("u3gr02gwef", err));
-		//}
-
-		try {
-			res.locals.addressObj = bitcoinjs.address.fromBech32(address);
-
-		} catch (err2) {
-			//res.locals.pageErrors.push(utils.logError("u02qg02yqge", err));
-			try {
-				var saneAddress = "";
-				var prefix = global.activeBlockchain == "main" ? "bitcoincash:" : "bchtest:";
-				if(!address.includes(prefix)) {
-					saneAddress = prefix.concat(address);
-				} else {
-					saneAddress = address;
-				}
-				res.locals.addressObj = cashaddrjs.decode(saneAddress);
-				res.locals.addressObj["isCashAddr"]=true;
-			} catch(err3) {
-				//res.locals.pageErrors.push(utils.logError("address parsing error", err3));
-			}
+		let decodedCashAddress = decodeCashAddress(addressWithPrefix);
+		if (typeof decodedCashAddress !== "string") {
+			res.locals.addressObj = decodedCashAddress;
+			res.locals.addressObj["isCashAddr"] = true;
+		} else {
+			res.locals.pageErrors.push(
+				utils.logError("Address is not valid")
+			);
 		}
 	}
 
