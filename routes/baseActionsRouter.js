@@ -1016,8 +1016,8 @@ router.get("/address/:address", async (req, res) => {
 	res.locals.addressApiSupport = addressApi.getCurrentAddressApiFeatureSupport();
 	res.locals.result = {};
 
-	let sha256 = await instantiateSha256();
-	let decodedBase58Address = decodeBase58Address(sha256, address);
+	let sha256Impl = await instantiateSha256();
+	let decodedBase58Address = decodeBase58Address(sha256Impl, address);
 	if (typeof decodedBase58Address !== "string") { // When error libauth return string
 		res.locals.addressObj = {
 			hash: decodedBase58Address.payload,
