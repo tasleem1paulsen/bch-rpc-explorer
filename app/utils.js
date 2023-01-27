@@ -787,6 +787,7 @@ function buildQrCodeUrl(str, results) {
 
 function outputTypeAbbreviation(outputType) {
 	var map = {
+		"multisig": "bms",
 		"pubkey": "p2pk",
 		"pubkeyhash": "p2pkh",
 		"scripthash": "p2sh",
@@ -801,6 +802,19 @@ function outputTypeAbbreviation(outputType) {
 	} else {
 		return "???";
 	}
+}
+
+/**
+ * Given a 32-byte hex-encoded token category, return a deterministic hue and
+ * saturation value to use in HSL colors representing the token category. 
+ * Usage: `hsl(${ tokenCategory2HueSaturation(vout.tokenData.category) }, 50%)`
+ */
+function tokenCategory2HueSaturation(category) {
+	const bin = hex2array(category);
+	const raw = bin.reduce((acc, num) => acc * num, 1) % 36000;
+	const hue = (raw / 100).toFixed(0);
+	const saturation = Math.min(100, (raw / 360 + 50)).toFixed(0);
+	return `${hue},${saturation}%`;
 }
 
 function prettyScript(inScript, indentChar) {
@@ -829,6 +843,7 @@ function prettyScript(inScript, indentChar) {
 
 function outputTypeName(outputType) {
 	var map = {
+		"multisig": "Bare Multisig",
 		"pubkey": "Pay to Public Key",
 		"pubkeyhash": "Pay to Public Key Hash",
 		"scripthash": "Pay to Script Hash",
@@ -874,6 +889,7 @@ module.exports = {
 	hex2ascii: hex2ascii,
 	hex2array: hex2array,
 	hex2string: hex2string,
+	tokenCategory2HueSaturation: tokenCategory2HueSaturation,
 	splitArrayIntoChunks: splitArrayIntoChunks,
 	splitArrayIntoChunksByChunkCount: splitArrayIntoChunksByChunkCount,
 	getRandomString: getRandomString,
