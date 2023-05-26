@@ -15,13 +15,15 @@ block content
 			small.text-monospace #{txid}
 		hr
 
-		ul.nav.nav-tabs.mb-3
-			li.nav-item
-				a.nav-link.active(data-toggle="tab", href="#tab-details", role="tab") Details
-			li.nav-item
-				a.nav-link(data-toggle="tab", href="#tab-scripts", role="tab") Scripts
-			li.nav-item
-				a.nav-link(data-toggle="tab", href="#tab-json", role="tab") JSON
+		ul.nav.nav-tabs
+			li.nav-item.page-tab
+				a.nav-link.active(data-toggle="tab", href="#Details", role="tab") Details
+			li.nav-item.page-tab
+				a.nav-link(data-toggle="tab", href="#Scripts", role="tab") Scripts
+			li.nav-item.page-tab
+				a.nav-link(data-toggle="tab", href="#Json", role="tab") JSON
+			li.nav-item.page-tab
+				a.nav-link(data-toggle="tab", href="#Cross", role="tab") CROSS-CHECK
 
 		- DecimalRounded = Decimal.clone({ precision: 4, rounding: 2 })
 
@@ -39,7 +41,7 @@ block content
 			- totalOutputValue = totalOutputValue.plus(new Decimal(vout.value));
 
 		div.tab-content
-			div.tab-pane.active(id="tab-details", role="tabpanel")
+			div.tab-pane.active(id="Details", role="tabpanel")
 				if (global.specialTransactions && global.specialTransactions[txid])
 					div.alert.alert-primary.shadow-sm.pb-0
 						div.float-left(style="width: 55px; height: 55px; font-size: 18px;")
@@ -325,7 +327,7 @@ block content
 											a.text-monospace(href=("/tx/" + descendantTxid)) #{descendantTxid}
 
 
-			div.tab-pane(id="tab-scripts", role="tabpanel")
+			div.tab-pane(id="Scripts", role="tabpanel")
 				div.card.shadow-sm.mb-3
 					div.card-body.px-2.px-md-3
 						h3.h6.mb-0 Input Scripts
@@ -381,7 +383,7 @@ block content
 													br
 													span.text-muted (decoded) #{utils.hex2string(vout.scriptPubKey.hex)}
 
-			div.tab-pane(id="tab-json", role="tabpanel")
+			div.tab-pane(id="Json", role="tabpanel")
 				div.card.shadow-sm.mb-3
 					div.card-body
 						h3.h6.mb-0 Transaction
@@ -407,3 +409,15 @@ block content
 							code.json.bg-light(data-lang="json") #{JSON.stringify(mempoolDetails, null, 4)}
 
 				//pre #{JSON.stringify(result.txInputs, null, 4)}
+
+			div.tab-pane(id="Cross", role="tabpanel")
+				div.card.shadow-sm.mb-3
+					div.card-body
+						h3.h6.mb-0 External sources
+						hr
+
+						div.highlight
+							li
+								a.text-monospace(href=("https://3xpl.com/bitcoin-cash/transaction/" + txid)) 3xpl.com
+							li
+								a.text-monospace(href=("https://blockchair.com/bitcoin-cash/transaction/" + txid)) blockchair.com
